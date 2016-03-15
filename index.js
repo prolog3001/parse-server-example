@@ -33,6 +33,7 @@ var api = new ParseServer({
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || 'http://localhost:1337',  // Don't forget to change to https if needed
   publicServerURL: process.env.PUBLIC_SERVER_URL,
+  verifyUserEmails: true,
   emailAdapter: simpleMailgunAdapter,
   push: {
      adapter: oneSignalPushAdapter
