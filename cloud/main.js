@@ -230,12 +230,13 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
   pushQuery.find({
     success: function(results) {
     console.log("#### Sessions to Reoccurre " + results.length);
-      var newRecurringSessionsArray = new Array(results.length);
-      var edittedRecurringSessionsArray = new Array(results.length);
+        //OLD variables from before HistorySession object needed
+      //var newRecurringSessionsArray = new Array(results.length);
+      //var oldSessionsArray = new Array(results.length);
       
-      //var sum = 0;
+      //var sum = 0;//Very OLD, befor this function even worked(?)
       for (var i = 0; i < results.length; ++i) {
-        var newSession = results[i].clone();
+        var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
         newSession.set("attenders_count", 0);
         var date =  new Date(newSession.get("date").getTime());
            switch (newSession.get("occurrence")){
@@ -261,37 +262,75 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
             }
             newSession.set("date", date);
             newSession.set("day", date.getDay() + 1);
-            results[i].set("occurrence", -1 * results[i].get("occurrence"));
+            //newRecurringSessionsArray.push(newSession);
             
-            newRecurringSessionsArray.push(newSession);
-            edittedRecurringSessionsArray.push(results[i]);
-      }
-      if(newRecurringSessionsArray.length > 0 && edittedRecurringSessionsArray.length > 0){
-        Parse.Object.saveAll(newRecurringSessionsArray, {
-          success: function(list) {
-            console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
-            Parse.Object.saveAll(edittedRecurringSessionsArray, {
-              success: function(list) {
-            console.log("#### Saving Old Recurring Sessions Array  " + newRecurringSessionsArray.length);
-                response.success('success');
-              },
-              error: function(error) {
-                response.error('Wasnt able to save Old Recurring Sessions');
-              },
+            //Start copying old session with everything (including attenders!)
+            var oldSession = results[i];//This is going to be deleted at the end
+            oldSession.set("occurrence", -1 * results[i].get("occurrence"));
+            var HistorySession = Parse.Object.extend("HistorySession");
+            var copiedSession = new HistorySession();//This is the actual oldSession, but go inside "HistorySession"
+            var keySet = Object.keys(oldSession.toJSON());
+            console.log("#### OBtained Old Session Keys " + keySet.length);
+            
+            for (int j=0 ; j<keySet.length : j++) {
+                //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+                if (keySet[j] != "attenders" && keySet[j] != "messages") {
+                    copiedSession.set(keySet[j], thisSession.get(keySet[j]));
+                }
+            }
+            //copiedSession.set("attenders_count", oldSession.get("attenders_count"));
+
+            //Duplicate attenders into new session that reoccurred
+            var attenders = oldSession.relation("attenders");
+            var attendersQuery = attenders.query();
+            attendersQuery.find({
+                success: function(attendersRelation) {
+                    console.log("#### Copy Attenders From Old Session " + attendersRelation.length);
+                    var newAttenders = copiedSession.relation("attenders");
+                    for(int k=0 ; k<attendersRelation.length ; k++){
+                        newAttenders.push(attendersRelation[k]);
+                    }
+                    
+                    //Save copiedSession into HistorySession with his attenders
+                    copiedSession.save(null, {
+                        success: function(copiedSession) {
+                            console.log("#### Saved copiedSession with his attenders");
+                            newSession.save(null, {
+                                success: function(newSession) {
+                                    console.log("#### Saved newSession with his new date, time and occurrence");
+                                    response.success('Saved newSession with his new date, time and occurrence');
+                                    oldSession.destroy({
+                                                    success:function() {
+                                                         response.success('oldSession deleted...');
+                                                    },
+                                                    error:function(error) {
+                                                         response.error('Could not delete object.');
+                                                    }
+                                               });
+                              },
+                              error: function(newSession, error) {
+                                response.error('ERROR: Did not save newSession...');
+                              },
+                            });
+                            response.success('Saved copiedSession with everything..');
+                      },
+                      error: function(error) {
+                        response.error('ERROR: Did not save copiedSession...');
+                      },
+                    });
+                },
+                error: function() {
+                    response.error("attenders from relation lookup failed");
+                }
             });
-          },
-          error: function(error) {
-            response.error('Wasnt able to save New Recurring Sessions');
-          },
-        });
       }
-      response.success('success');
+      response.success('Found Recurring Sessions' + results.length);
     },
     error: function() {
       response.error('Wasnt able to find Recurring Sessions');
     }
   });
-  response.success('Saved Reoccurred Sessions');
+//   response.success('Saved Reoccurred Sessions');
   
     Date.isLeapYear = function (year) { 
         return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); 
