@@ -219,8 +219,7 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
 });
 
 Parse.Cloud.define('updateRecurringSessions', function(request, response) {
-    console.log("#### updateRecurringSessions");
-    /*
+  console.log("#### updateRecurringSessions");
   var excludeMinusOccurences = [0, -1, -2, -3];
   var then = new Date();
   then.setHours(then.getHours() - 1);
@@ -356,5 +355,5 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
         this.setDate(Math.min(n, this.getDaysInMonth()));
         return this;
     };
-    */
+    
 });
