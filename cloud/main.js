@@ -231,7 +231,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
     success: function(results) {
     console.log("#### Sessions to Reoccurre " + results.length);
     if(results.length > 0){
-          for (var i = 0 ; i < results.length ; ++i) {
+          for (var i = 0 ; i < results.length ; i++) {
             var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
             newSession.set("attenders_count", 0);
             var date =  new Date(newSession.get("date").getTime());
@@ -270,8 +270,8 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 for (var j=0 ; j<keySet.length ; j++) {
                     //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
                     if (keySet[j] != "attenders" && keySet[j] != "messages") {
-                        copiedSession.set(keySet[j], thisSession.get(keySet[j]));
                         console.log("#### Session Key to Copy " + keySet[j]);
+                        copiedSession.set(keySet[j], thisSession.get(keySet[j]));
                     }
                 }
 
