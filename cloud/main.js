@@ -271,7 +271,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                     //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
                     if (keySet[j] != "attenders" && keySet[j] != "messages") {
                         console.log("#### Session Key to Copy " + keySet[j]);
-                        copiedSession.set(keySet[j], thisSession.get(keySet[j]));
+                        copiedSession.set(keySet[j], oldSession.get(keySet[j]));
                     }
                 }
 
