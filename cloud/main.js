@@ -235,7 +235,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
       //var oldSessionsArray = new Array(results.length);
       
       //var sum = 0;//Very OLD, befor this function even worked(?)
-      for (var i = 0; i < results.length; ++i) {
+      for (var i = 0 ; i < results.length ; ++i) {
         var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
         newSession.set("attenders_count", 0);
         var date =  new Date(newSession.get("date").getTime());
@@ -272,7 +272,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
             var keySet = Object.keys(oldSession.toJSON());
             console.log("#### OBtained Old Session Keys " + keySet.length);
             
-            for (int j=0 ; j<keySet.length : j++) {
+            for (var j=0 ; j<keySet.length ; j++) {
                 //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
                 if (keySet[j] != "attenders" && keySet[j] != "messages") {
                     copiedSession.set(keySet[j], thisSession.get(keySet[j]));
@@ -287,7 +287,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 success: function(attendersRelation) {
                     console.log("#### Copy Attenders From Old Session " + attendersRelation.length);
                     var newAttenders = copiedSession.relation("attenders");
-                    for(int k=0 ; k<attendersRelation.length ; k++){
+                    for(var k=0 ; k<attendersRelation.length ; k++){
                         newAttenders.push(attendersRelation[k]);
                     }
                     
