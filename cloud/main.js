@@ -265,12 +265,13 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 var HistorySession = Parse.Object.extend("HistorySession");
                 var copiedSession = new HistorySession();//This is the actual oldSession, but go inside "HistorySession"
                 var keySet = Object.keys(oldSession.toJSON());
-                console.log("#### OBtained Old Session Keys " + keySet.length);
+                console.log("#### Obtained Old Session Keys " + keySet.length);
                 
                 for (var j=0 ; j<keySet.length ; j++) {
                     //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
                     if (keySet[j] != "attenders" && keySet[j] != "messages") {
                         copiedSession.set(keySet[j], thisSession.get(keySet[j]));
+                        console.log("#### Session Key to Copy " + keySet[j]);
                     }
                 }
 
