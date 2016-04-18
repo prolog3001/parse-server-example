@@ -232,8 +232,8 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
     success: function(results) {
     console.log("#### Sessions to Reoccurre " + results.length);
     if(results.length > 0){
+          var continueScanning = false;
           for (var i = 0 ; i < results.length ; i++) {
-            var continueScanning = false;
             var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
             newSession.set("attenders_count", 0);
             var date =  new Date(newSession.get("date").getTime());
@@ -271,7 +271,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 
                 for (var j=0 ; j<keySet.length ; j++) {
                     //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
-                    console.log("#### Found Session Key " + keySet[j]);
+                    //console.log("#### Found Session Key " + keySet[j]);
                     if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" 
                         && keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
                         console.log("#### Session Key to Copy " + keySet[j]);
@@ -282,6 +282,10 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 //Duplicate attenders into new session that reoccurred
                 var attenders = oldSession.relation("attenders");
                 console.log("#### Try to Copy Attenders From Old Session");
+                
+                if(attenders == null){
+                    console.log("#### Attenders From Old Session = NULL");
+                }
                 var attendersQuery = attenders.query();
                 attendersQuery.find({
                     success: function(attendersRelation) {
