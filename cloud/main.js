@@ -355,36 +355,31 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                 ;
                         }
 
-                        //Start copying old session with everything (including attenders!)
-                        var keySet = Object.keys(oldSession.toJSON());
-                        var HistorySession = Parse.Object.extend("HistorySession");
-                        var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
-                        console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
-
-                        for (var j = 0; j < keySet.length; j++) {
-                            //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
-                            //console.log("#### Found Session Key " + keySet[j]);
-                            if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
-                                keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
-                                // console.log("#### Session Key to Copy " + keySet[j]);
-                                historySession.set(keySet[j], oldSession.get(keySet[j]));
-                            }
-                        }
-                        historySession.set("occurrence", -1 * historySession.get("occurrence"));
-                        
-                        //Duplicate attenders into new session that reoccurred
                         var attendersRelation = oldSession.relation("attenders");
                         console.log("#### Try to Copy Attenders From Old Session");
-                        if (attendersRelation == null) {
-                            console.log("#### Attenders From Old Session = NULL");
-                            continue;
-                        }
-                        
                         var attendersQuery = attendersRelation.query();
                         attendersQuery.find({
                             success: function(attenderObjects) {
                                 console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
 
+                                //Start copying old session with everything (including attenders!)
+                                var keySet = Object.keys(oldSession.toJSON());
+                                var HistorySession = Parse.Object.extend("HistorySession");
+                                var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
+                                console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
+        
+                                //Duplicate attenders into historySession
+                                for (var j = 0; j < keySet.length; j++) {
+                                    //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+                                    //console.log("#### Found Session Key " + keySet[j]);
+                                    if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
+                                        keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
+                                        // console.log("#### Session Key to Copy " + keySet[j]);
+                                        historySession.set(keySet[j], oldSession.get(keySet[j]));
+                                    }
+                                }
+                                //Occurrence is negative in history
+                                historySession.set("occurrence", -1 * historySession.get("occurrence"));
                                 if (attenderObjects.length > 0) {
                                     var newAttenders = historySession.relation("attenders");
                                     for (var k = 0; k < attenderObjects.length; k++) {
@@ -395,33 +390,14 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                         }
                                     }
                                 }
+                                //Save historySession into HistorySession with his attenders
+                                historySession.save();
 
                                 //Set new data to oldSession (new occurrence, no attenders, no attenders_count)
                                 oldSession.set("date", date);
                                 oldSession.set("day", date.getDay() + 1); //Day of week starts from 0
                                 oldSession.set("attenders_count", 0);
-
-                                //Save historySession into HistorySession with his attenders
-                                historySession.save(null, {
-                                    success: function(historySession) {
-                                        console.log("#### Saved historySession with his attenders");
-                                        oldSession.save(null, {
-                                            success: function(oldSession) {
-                                                console.log("#### Saved oldSession with his new date, time and occurrence");
-                                                response.success('Saved oldSession with his new date, time and occurrence');
-                                            },
-                                            error: function(oldSession, error) {
-                                                console.log('ERROR: Did not save oldSession...');
-                                                response.error('ERROR: Did not save oldSession...');
-                                            },
-                                        });
-                                        response.success('Saved historySession with everything..');
-                                    },
-                                    error: function(historySession, error) {
-                                        console.log('ERROR: Did not save historySession...');
-                                        response.error('ERROR: Did not save historySession...');
-                                    },
-                                });
+                                oldSession.save();
                             }
                         });
                     }
