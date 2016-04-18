@@ -368,7 +368,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                 var keySet = Object.keys(oldSession.toJSON());
                                 var HistorySession = Parse.Object.extend("HistorySession");
                                 var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
-                                console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
+                                // console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
         
                                 //Duplicate attenders into historySession
                                 for (var j = 0; j < keySet.length; j++) {
@@ -376,7 +376,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                     //console.log("#### Found Session Key " + keySet[j]);
                                     if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
                                         keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
-                                        console.log("#### Session Key to Copy " + keySet[j]);
+                                        // console.log("#### Session Key to Copy " + keySet[j]);
                                         historySession.set(keySet[j], oldSession.get(keySet[j]));
                                     }
                                 }
@@ -388,7 +388,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                         if(attenderObjects[k] != null){
                                             newAttenders.add(attenderObjects[k]);//copy each attender from oldSession
                                             attendersRelation.remove(attenderObjects[k]);//Remove each attender from renewd oldSession
-                                            console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
+                                            // console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
                                         }
                                     }
                                 }
