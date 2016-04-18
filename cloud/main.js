@@ -281,6 +281,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 
                 //Duplicate attenders into new session that reoccurred
                 var attenders = oldSession.relation("attenders");
+                console.log("#### Try to Copy Attenders From Old Session");
                 var attendersQuery = attenders.query();
                 attendersQuery.find({
                     success: function(attendersRelation) {
