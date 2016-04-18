@@ -330,11 +330,11 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
             if (results.length > 0) {
                 for (var i = results.length - 1; i >= 0; i--) {
                     if (results.length > 0) {
-            			console.log("#### Session to Reoccurre " + results.get("title"));
                         var oldSession = results[i]; //This is going to be deleted at the end
                         var keySet = Object.keys(oldSession.toJSON());
                         var attendersRelation = oldSession.relation("attenders");
                         results.splice(i, 1); //remove element after using it for the last time..
+            			console.log("#### Session to Reoccurre " + oldSession.get("title"));
 
                         var newSession = oldSession.clone(); //This one is going to be saved into MSessions with new occurrence values
                         newSession.set("attenders_count", 0);
