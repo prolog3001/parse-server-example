@@ -309,7 +309,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                                                    });
                                   },
                                   error: function(newSession, error) {
-                                                             continueScanning = true;
+                                    continueScanning = true;
                                     response.error('ERROR: Did not save newSession...');
                                   },
                                 });
@@ -327,7 +327,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                     }
                 });
                 while(continueScanning == false){
-                    
+                    console.log("#### Wait for deleting of old session to finish...");
                 }
           }
         }
