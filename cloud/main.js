@@ -234,6 +234,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
     if(results.length > 0){
           var continueScanning = false;
           for (var i = 0 ; i < results.length ; i++) {
+            continueScanning = false;
             var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
             newSession.set("attenders_count", 0);
             var date =  new Date(newSession.get("date").getTime());
@@ -337,9 +338,9 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                         response.error("attenders from relation lookup failed");
                     }
                 });
-                while(continueScanning == false){
-                    //console.log("#### Wait for deleting of old session to finish...");
-                }
+                // while(continueScanning == false){
+                //     //console.log("#### Wait for deleting of old session to finish...");
+                // }
           }
         }
       response.success('Found Recurring Sessions' + results.length);
