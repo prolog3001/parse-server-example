@@ -404,11 +404,11 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                                 console.log("#### Saved newSession with his new date, time and occurrence");
                                                 response.success('Saved newSession with his new date, time and occurrence');
                                                 oldSession.destroy({
-                                                    success: function() {
+                                                    success: function(oldSession) {
                                                         console.log('oldSession deleted...');
                                                         response.success('oldSession deleted...');
                                                     },
-                                                    error: function(error) {
+                                                    error: function(oldSession, error) {
                                                         console.log('Could not delete object..');
                                                         response.error('Could not delete object..');
                                                     }
@@ -421,25 +421,17 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                         });
                                         response.success('Saved copiedSession with everything..');
                                     },
-                                    error: function(error) {
+                                    error: function(copiedSession, error) {
                                         console.log('ERROR: Did not save copiedSession...');
                                         response.error('ERROR: Did not save copiedSession...');
                                     },
                                 });
-                            },
-                            error: function() {
-                                console.log("attenders from relation lookup failed");
-                                response.error("attenders from relation lookup failed");
                             }
                         });
                     }
                 }
             }
             response.success('Found Recurring Sessions' + results.length);
-        },
-        error: function() {
-            console.log('Wasnt able to find Recurring Sessions');
-            response.error('Wasnt able to find Recurring Sessions');
         }
     });
     //   response.success('Saved Reoccurred Sessions');
