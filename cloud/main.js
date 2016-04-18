@@ -306,16 +306,19 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                                         oldSession.destroy({
                                                         success:function() {
                                                              continueScanning = true;
+                                                             console.log('oldSession deleted...');
                                                              response.success('oldSession deleted...');
                                                         },
                                                         error:function(error) {
                                                              continueScanning = true;
-                                                             response.error('Could not delete object.');
+                                                             console.log('Could not delete object..');
+                                                             response.error('Could not delete object..');
                                                         }
                                                    });
                                   },
                                   error: function(newSession, error) {
                                     continueScanning = true;
+                                    console.log('ERROR: Did not save newSession...');
                                     response.error('ERROR: Did not save newSession...');
                                   },
                                 });
@@ -323,12 +326,14 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                           },
                           error: function(error) {
                             continueScanning = true;
+                            console.log('ERROR: Did not save copiedSession...');
                             response.error('ERROR: Did not save copiedSession...');
                           },
                         });
                     },
                     error: function() {
                         continueScanning = true;
+                        console.log("attenders from relation lookup failed");
                         response.error("attenders from relation lookup failed");
                     }
                 });
@@ -340,6 +345,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
       response.success('Found Recurring Sessions' + results.length);
     },
     error: function() {
+      console.log('Wasnt able to find Recurring Sessions');
       response.error('Wasnt able to find Recurring Sessions');
     }
   });
