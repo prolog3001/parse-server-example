@@ -326,13 +326,13 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
     pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
     pushQuery.find({
         success: function(results) {
-            var sessionToReOccurre = results.slice();//Duplicate all relevant sessions
+            var sessionToReOccurre = results.slice(0);//Duplicate all relevant sessions
+            console.log("#### Sessions to Reoccurre " + sessionToReOccurre.length);
             if (sessionToReOccurre.length > 0) {
                 for (var i = sessionToReOccurre.length - 1; i >= 0; i--) {
                     if (sessionToReOccurre.length > 0 && i>=0) {
                         var oldSession = sessionToReOccurre[i]; //This is going to be deleted at the end
                         
-                        console.log("#### Sessions to Reoccurre " + sessionToReOccurre.length);
                         sessionToReOccurre.splice(i, 1); //remove element after using it for the last time..
                         console.log("#### Sessions to Reoccurre (After splice) " + sessionToReOccurre.length);
                         
