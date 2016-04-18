@@ -232,115 +232,111 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
     success: function(results) {
     console.log("#### Sessions to Reoccurre " + results.length);
     if(results.length > 0){
-          var continueScanning = false;
-          for (var i = 0 ; i < results.length ; i++) {
-            continueScanning = false;
-            var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
-            newSession.set("attenders_count", 0);
-            var date =  new Date(newSession.get("date").getTime());
-               switch (newSession.get("occurrence")){
-                   case 1: 
-                      do {
-                        //  date.setHours(then.getHours() + 24);
-                         date.setDate(date.getDate() + 1);
-                      } while (date <= then);
-                   break;
-                
-                   case 2: 
-                      do {
-                        //  date.setHours(then.getHours() + 7 * 24);
-                          date.setDate(date.getDate() + 7);
-                      } while (date <= then);
-                   break;
-                
-                   case 3: 
-                        //  date.setHours(then.getHours() + 4 * 7 * 24);
-                         date.addMonths(1);
-                   break;
-                   default:  ;
-                }
-                newSession.set("date", date);
-                newSession.set("day", date.getDay() + 1);
-
-                //Start copying old session with everything (including attenders!)
-                var oldSession = results[i];//This is going to be deleted at the end
-                oldSession.set("occurrence", -1 * results[i].get("occurrence"));
-                var HistorySession = Parse.Object.extend("HistorySession");
-                var copiedSession = new HistorySession();//This is the actual oldSession, but go inside "HistorySession"
-                var keySet = Object.keys(oldSession.toJSON());
-                console.log("#### Obtained Old Session Keys " + (keySet.length-5));
-                
-                for (var j=0 ; j<keySet.length ; j++) {
-                    //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
-                    //console.log("#### Found Session Key " + keySet[j]);
-                    if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" 
-                        && keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
-                        console.log("#### Session Key to Copy " + keySet[j]);
-                        copiedSession.set(keySet[j], oldSession.get(keySet[j]));
+          for (var i = results.length-1 ; i >= 0 ; i--) {
+            if(results.length > 0){
+                var newSession = results[i].clone();//This one is going to be saved into MSessions with new occurrence values
+                newSession.set("attenders_count", 0);
+                var date =  new Date(newSession.get("date").getTime());
+                   switch (newSession.get("occurrence")){
+                       case 1: 
+                          do {
+                            //  date.setHours(then.getHours() + 24);
+                             date.setDate(date.getDate() + 1);
+                          } while (date <= then);
+                       break;
+                    
+                       case 2: 
+                          do {
+                            //  date.setHours(then.getHours() + 7 * 24);
+                              date.setDate(date.getDate() + 7);
+                          } while (date <= then);
+                       break;
+                    
+                       case 3: 
+                            //  date.setHours(then.getHours() + 4 * 7 * 24);
+                             date.addMonths(1);
+                       break;
+                       default:  ;
                     }
-                }
-
-                //Duplicate attenders into new session that reoccurred
-                var attenders = oldSession.relation("attenders");
-                console.log("#### Try to Copy Attenders From Old Session");
-                
-                if(attenders == null){
-                    console.log("#### Attenders From Old Session = NULL");
-                }
-                var attendersQuery = attenders.query();
-                attendersQuery.find({
-                    success: function(attendersRelation) {
-                        console.log("#### Copy Attenders From Old Session " + attendersRelation.length);
-                        var newAttenders = copiedSession.relation("attenders");
-                        for(var k=0 ; k<attendersRelation.length ; k++){
-                            newAttenders.push(attendersRelation[k]);
+                    newSession.set("date", date);
+                    newSession.set("day", date.getDay() + 1);
+    
+                    //Start copying old session with everything (including attenders!)
+                    var oldSession = results[i];//This is going to be deleted at the end
+                    results.splice(i,1);//remove element after using it for the last time..
+                    oldSession.set("occurrence", -1 * oldSession.get("occurrence"));
+                    var HistorySession = Parse.Object.extend("HistorySession");
+                    var copiedSession = new HistorySession();//This is the actual oldSession, but go inside "HistorySession"
+                    var keySet = Object.keys(oldSession.toJSON());
+                    console.log("#### Obtained Old Session Keys " + (keySet.length-5));
+                    
+                    for (var j=0 ; j<keySet.length ; j++) {
+                        //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+                        //console.log("#### Found Session Key " + keySet[j]);
+                        if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" 
+                            && keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
+                            console.log("#### Session Key to Copy " + keySet[j]);
+                            copiedSession.set(keySet[j], oldSession.get(keySet[j]));
                         }
-                        
-                        //Save copiedSession into HistorySession with his attenders
-                        copiedSession.save(null, {
-                            success: function(copiedSession) {
-                                console.log("#### Saved copiedSession with his attenders");
-                                newSession.save(null, {
-                                    success: function(newSession) {
-                                        console.log("#### Saved newSession with his new date, time and occurrence");
-                                        response.success('Saved newSession with his new date, time and occurrence');
-                                        oldSession.destroy({
-                                                        success:function() {
-                                                             continueScanning = true;
-                                                             console.log('oldSession deleted...');
-                                                             response.success('oldSession deleted...');
-                                                        },
-                                                        error:function(error) {
-                                                             continueScanning = true;
-                                                             console.log('Could not delete object..');
-                                                             response.error('Could not delete object..');
-                                                        }
-                                                   });
-                                  },
-                                  error: function(newSession, error) {
-                                    continueScanning = true;
-                                    console.log('ERROR: Did not save newSession...');
-                                    response.error('ERROR: Did not save newSession...');
-                                  },
-                                });
-                                response.success('Saved copiedSession with everything..');
-                          },
-                          error: function(error) {
-                            continueScanning = true;
-                            console.log('ERROR: Did not save copiedSession...');
-                            response.error('ERROR: Did not save copiedSession...');
-                          },
-                        });
-                    },
-                    error: function() {
-                        continueScanning = true;
-                        console.log("attenders from relation lookup failed");
-                        response.error("attenders from relation lookup failed");
                     }
-                });
-                // while(continueScanning == false){
-                //     //console.log("#### Wait for deleting of old session to finish...");
-                // }
+    
+                    //Duplicate attenders into new session that reoccurred
+                    var attenders = oldSession.relation("attenders");
+                    console.log("#### Try to Copy Attenders From Old Session");
+                    
+                    if(attenders == null){
+                        console.log("#### Attenders From Old Session = NULL");
+                    }
+                    var attendersQuery = attenders.query();
+                    attendersQuery.find({
+                        success: function(attendersRelation) {
+                            console.log("#### Copy Attenders From Old Session " + attendersRelation.length);
+                            var newAttenders = copiedSession.relation("attenders");
+                            for(var k=0 ; k<attendersRelation.length ; k++){
+                                newAttenders.push(attendersRelation[k]);
+                            }
+                            
+                            //Save copiedSession into HistorySession with his attenders
+                            copiedSession.save(null, {
+                                success: function(copiedSession) {
+                                    console.log("#### Saved copiedSession with his attenders");
+                                    newSession.save(null, {
+                                        success: function(newSession) {
+                                            console.log("#### Saved newSession with his new date, time and occurrence");
+                                            response.success('Saved newSession with his new date, time and occurrence');
+                                            oldSession.destroy({
+                                                            success:function() {
+                                                                 console.log('oldSession deleted...');
+                                                                 response.success('oldSession deleted...');
+                                                            },
+                                                            error:function(error) {
+                                                                 console.log('Could not delete object..');
+                                                                 response.error('Could not delete object..');
+                                                            }
+                                                       });
+                                      },
+                                      error: function(newSession, error) {
+                                        console.log('ERROR: Did not save newSession...');
+                                        response.error('ERROR: Did not save newSession...');
+                                      },
+                                    });
+                                    response.success('Saved copiedSession with everything..');
+                              },
+                              error: function(error) {
+                                console.log('ERROR: Did not save copiedSession...');
+                                response.error('ERROR: Did not save copiedSession...');
+                              },
+                            });
+                        },
+                        error: function() {
+                            console.log("attenders from relation lookup failed");
+                            response.error("attenders from relation lookup failed");
+                        }
+                    });
+                    // while(continueScanning == false){
+                    //     //console.log("#### Wait for deleting of old session to finish...");
+                    // }
+            }
           }
         }
       response.success('Found Recurring Sessions' + results.length);
