@@ -391,8 +391,10 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                 if (attenderObjects.length > 0) {
                                     var newAttenders = copiedSession.relation("attenders");
                                     for (var k = 0; k < attenderObjects.length; k++) {
-                                        newAttenders.push(attenderObjects[k]);
-                                        console.log("#### Copied Attender To copiedSessionn " + attenderObjects[k].get("username"));
+                                        if(attenderObjects[k] != null){
+                                            newAttenders.add(attenderObjects[k]);
+                                            console.log("#### Copied Attender To copiedSessionn " + attenderObjects[k].get("username"));
+                                        }
                                     }
                                 }
 
