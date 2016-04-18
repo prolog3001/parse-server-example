@@ -431,7 +431,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                     }
                 }
             }
-            response.success('Found Recurring Sessions' + results.length);
+            response.success('Found Recurring Sessions ' + results.length);
         }
     });
     //   response.success('Saved Reoccurred Sessions');
