@@ -377,7 +377,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                     //console.log("#### Found Session Key " + keySet[j]);
                                     if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
                                         keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
-                                        // console.log("#### Session Key to Copy " + keySet[j]);
+                                        console.log("#### Session Key to Copy " + keySet[j]);
                                         historySession.set(keySet[j], oldSession.get(keySet[j]));
                                     }
                                 }
@@ -395,12 +395,14 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                                 }
                                 //Save historySession into HistorySession with his attenders
                                 historySession.save();
+                                console.log("#### Saved historySession ");
 
                                 //Set new data to oldSession (new occurrence, no attenders, no attenders_count)
                                 oldSession.set("date", date);
                                 oldSession.set("day", date.getDay() + 1); //Day of week starts from 0
                                 oldSession.set("attenders_count", 0);
                                 oldSession.save();
+                                console.log("#### Saved oldSession ");
                             }
                         });
                     }
