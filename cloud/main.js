@@ -327,7 +327,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                     }
                 });
                 while(continueScanning == false){
-                    console.log("#### Wait for deleting of old session to finish...");
+                    //console.log("#### Wait for deleting of old session to finish...");
                 }
           }
         }
