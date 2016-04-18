@@ -385,13 +385,14 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
                         }
                         var attendersQuery = attendersRelation.query();
                         attendersQuery.find({
-                            success: function(attendersRelation) {
-                                console.log("#### Copy Attenders From Old Session " + attendersRelation.length);
+                            success: function(attenderObjects) {
+                                console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
 
-                                if (attendersRelation.length > 0) {
+                                if (attenderObjects.length > 0) {
                                     var newAttenders = copiedSession.relation("attenders");
-                                    for (var k = 0; k < attendersRelation.length; k++) {
-                                        newAttenders.push(attendersRelation[k]);
+                                    for (var k = 0; k < attenderObjects.length; k++) {
+                                        newAttenders.push(attenderObjects[k]);
+                                        console.log("#### Copied Attender To copiedSessionn " + attenderObjects[k].get("username"));
                                     }
                                 }
 
