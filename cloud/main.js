@@ -527,7 +527,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 																		 var originalSession = results[i];
 																		 iterator(i, originalSession);
 																  } else {
-																	;// response.succes('Finished')
+																	response.success('Saved Reoccurred Sessions');
 																  }
 															  },
 															  function(error) {
@@ -551,7 +551,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 		}
 	});
     console.log("#### REACHED HERE");	     
-    response.success('Saved Reoccurred Sessions');
+    //response.success('Saved Reoccurred Sessions');
 
     Date.isLeapYear = function(year) {
         return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
