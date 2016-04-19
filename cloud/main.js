@@ -316,125 +316,125 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 
 //NEW CODE FOR RE-OCCURRENCE
 Parse.Cloud.define('recurringSessions', function(request, response) {
-    console.log("#### updateRecurringSessions");
-    var excludeMinusOccurences = [0, -1, -2, -3];
-    var then = new Date();
-    then.setHours(then.getHours() - 1);
+    //console.log("#### updateRecurringSessions");
+    //var excludeMinusOccurences = [0, -1, -2, -3];
+    //var then = new Date();
+    //then.setHours(then.getHours() - 1);
 
-    var pushQuery = new Parse.Query("MSession");
-    pushQuery.lessThanOrEqualTo("date", then);
-    pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
-    pushQuery.find({
-        success: function(results) {
-            var sessionToReOccurre = results.slice(0);//Duplicate all relevant sessions
-            console.log("#### Sessions to Reoccurre " + sessionToReOccurre.length);
-            if (sessionToReOccurre.length > 0) {
-                for (var i = sessionToReOccurre.length - 1; i >= 0; i--) {
-                    if (sessionToReOccurre.length > 0 && i>=0) {
-                        var oldSession = sessionToReOccurre[i]; //This is going to be deleted at the end
+    //var pushQuery = new Parse.Query("MSession");
+    //pushQuery.lessThanOrEqualTo("date", then);
+    //pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
+    //pushQuery.find({
+    //    success: function(results) {
+    //        var sessionToReOccurre = results.slice(0);//Duplicate all relevant sessions
+    //        console.log("#### Sessions to Reoccurre " + sessionToReOccurre.length);
+    //        if (sessionToReOccurre.length > 0) {
+    //            for (var i = sessionToReOccurre.length - 1; i >= 0; i--) {
+    //                if (sessionToReOccurre.length > 0 && i>=0) {
+    //                    var oldSession = sessionToReOccurre[i]; //This is going to be deleted at the end
                         
-                        // sessionToReOccurre.splice(i, 1); //remove element after using it for the last time..
-                        // console.log("#### Sessions to Reoccurre (After splice) " + sessionToReOccurre.length);
+    //                    // sessionToReOccurre.splice(i, 1); //remove element after using it for the last time..
+    //                    // console.log("#### Sessions to Reoccurre (After splice) " + sessionToReOccurre.length);
                         
-            			console.log("#### Session to Reoccurre " + oldSession.get("title"));
+    //        			console.log("#### Session to Reoccurre " + oldSession.get("title"));
 
-                        var date = new Date(oldSession.get("date").getTime());
-                        switch (oldSession.get("occurrence")) {
-                            case 1:
-                                while (date.getTime() <= then.getTime()){
-                                    date.setDate(date.getDate() + 1);
-                                }
-                                break;
+    //                    var date = new Date(oldSession.get("date").getTime());
+    //                    switch (oldSession.get("occurrence")) {
+    //                        case 1:
+    //                            while (date.getTime() <= then.getTime()){
+    //                                date.setDate(date.getDate() + 1);
+    //                            }
+    //                            break;
 
-                            case 2:
-                                while (date.getTime() <= then.getTime()){
-                                    date.setDate(date.getDate() + 7);
-                                }
-                                break;
+    //                        case 2:
+    //                            while (date.getTime() <= then.getTime()){
+    //                                date.setDate(date.getDate() + 7);
+    //                            }
+    //                            break;
 
-                            case 3:
-                                date.addMonths(1);
-                                break;
-                        }
+    //                        case 3:
+    //                            date.addMonths(1);
+    //                            break;
+    //                    }
 
-                        var attendersRelation = oldSession.relation("attenders");
-                        console.log("#### Try to Copy Attenders From Old Session - " + oldSession.get("title"));
-                        var attendersQuery = attendersRelation.query();
-                        attendersQuery.find({
-                            success: function(attenderObjects) {
-                                console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
+    //                    var attendersRelation = oldSession.relation("attenders");
+    //                    console.log("#### Try to Copy Attenders From Old Session - " + oldSession.get("title"));
+    //                    var attendersQuery = attendersRelation.query();
+    //                    attendersQuery.find({
+    //                        success: function(attenderObjects) {
+    //                            console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
 
-                                //Start copying old session with everything (including attenders!)
-                                var keySet = Object.keys(oldSession.toJSON());
-                                var HistorySession = Parse.Object.extend("HistorySession");
-                                var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
-                                // console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
+    //                            //Start copying old session with everything (including attenders!)
+    //                            var keySet = Object.keys(oldSession.toJSON());
+    //                            var HistorySession = Parse.Object.extend("HistorySession");
+    //                            var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
+    //                            // console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
         
-                                //Duplicate attenders into historySession
-                                for (var j = 0; j < keySet.length; j++) {
-                                    //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
-                                    //console.log("#### Found Session Key " + keySet[j]);
-                                    if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
-                                        keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
-                                        // console.log("#### Session Key to Copy " + keySet[j]);
-                                        historySession.set(keySet[j], oldSession.get(keySet[j]));
-                                    }
-                                }
-                                //Occurrence is negative in history
-                                historySession.set("occurrence", -1 * historySession.get("occurrence"));
-                                if (attenderObjects.length > 0) {
-                                    var newAttenders = historySession.relation("attenders");
-                                    for (var k = 0; k < attenderObjects.length; k++) {
-                                        if(attenderObjects[k] != null){
-                                            newAttenders.add(attenderObjects[k]);//copy each attender from oldSession
-                                            attendersRelation.remove(attenderObjects[k]);//Remove each attender from renewd oldSession
-                                            // console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
-                                        }
-                                    }
-                                }
-                                //Save historySession into HistorySession with his attenders
-                                historySession.save();
-                                console.log("#### Saved historySession - " + historySession.get("title"));
+    //                            //Duplicate attenders into historySession
+    //                            for (var j = 0; j < keySet.length; j++) {
+    //                                //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+    //                                //console.log("#### Found Session Key " + keySet[j]);
+    //                                if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
+    //                                    keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
+    //                                    // console.log("#### Session Key to Copy " + keySet[j]);
+    //                                    historySession.set(keySet[j], oldSession.get(keySet[j]));
+    //                                }
+    //                            }
+    //                            //Occurrence is negative in history
+    //                            historySession.set("occurrence", -1 * historySession.get("occurrence"));
+    //                            if (attenderObjects.length > 0) {
+    //                                var newAttenders = historySession.relation("attenders");
+    //                                for (var k = 0; k < attenderObjects.length; k++) {
+    //                                    if(attenderObjects[k] != null){
+    //                                        newAttenders.add(attenderObjects[k]);//copy each attender from oldSession
+    //                                        attendersRelation.remove(attenderObjects[k]);//Remove each attender from renewd oldSession
+    //                                        // console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
+    //                                    }
+    //                                }
+    //                            }
+    //                            //Save historySession into HistorySession with his attenders
+    //                            historySession.save();
+    //                            console.log("#### Saved historySession - " + historySession.get("title"));
 
-                                //Set new data to oldSession (new occurrence, no attenders, no attenders_count)
-                                oldSession.set("date", date);
-                                oldSession.set("day", date.getDay() + 1); //Day of week starts from 0
-                                oldSession.set("attenders_count", 0);
-                                oldSession.save();
-                                console.log("#### Saved oldSession - " + oldSession.get("title"));
-                            }
-                        });
-                    }
-                }
-            }
-            response.success('Found Recurring Sessions ' + results.length);
-        }
-    });
-    //   response.success('Saved Reoccurred Sessions');
+    //                            //Set new data to oldSession (new occurrence, no attenders, no attenders_count)
+    //                            oldSession.set("date", date);
+    //                            oldSession.set("day", date.getDay() + 1); //Day of week starts from 0
+    //                            oldSession.set("attenders_count", 0);
+    //                            oldSession.save();
+    //                            console.log("#### Saved oldSession - " + oldSession.get("title"));
+    //                        }
+    //                    });
+    //                }
+    //            }
+    //        }
+    //        response.success('Found Recurring Sessions ' + results.length);
+    //    }
+    //});
+    ////   response.success('Saved Reoccurred Sessions');
 
-    Date.isLeapYear = function(year) {
-        return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
-    };
+    //Date.isLeapYear = function(year) {
+    //    return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
+    //};
 
-    Date.getDaysInMonth = function(year, month) {
-        return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-    };
+    //Date.getDaysInMonth = function(year, month) {
+    //    return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+    //};
 
-    Date.prototype.isLeapYear = function() {
-        return Date.isLeapYear(this.getFullYear());
-    };
+    //Date.prototype.isLeapYear = function() {
+    //    return Date.isLeapYear(this.getFullYear());
+    //};
 
-    Date.prototype.getDaysInMonth = function() {
-        return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
-    };
+    //Date.prototype.getDaysInMonth = function() {
+    //    return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+    //};
 
-    Date.prototype.addMonths = function(value) {
-        var n = this.getDate();
-        this.setDate(1);
-        this.setMonth(this.getMonth() + value);
-        this.setDate(Math.min(n, this.getDaysInMonth()));
-        return this;
-    };
+    //Date.prototype.addMonths = function(value) {
+    //    var n = this.getDate();
+    //    this.setDate(1);
+    //    this.setMonth(this.getMonth() + value);
+    //    this.setDate(Math.min(n, this.getDaysInMonth()));
+    //    return this;
+    //};
 
 });
 
@@ -520,21 +520,39 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 										originalSession.set("date", date);
 										originalSession.set("day", date.getDay() + 1); //Day of week starts from 0
 										originalSession.set("attenders_count", 0);
-										originalSession.save(null).then(function(object) {
-																// the original object was saved.
-																console.log("#### Saved originalSession - " + originalSession.get("title"));
-																i++;
-																if (i < results.length) {
-																		 var originalSession = results[i];
-																		 iterator(i, originalSession);
-																  } else {
-																	response.success('Saved Reoccurred Sessions');
-																  }
-															  },
-															  function(error) {
-																// saving the object failed.
-																console.log("#### Error saving originalSession - " + originalSession.get("title"));
-															  });
+										originalSession.save(null, {
+													  success: function(object) {
+													    	// the original object was saved.
+														console.log("#### Saved originalSession - " + originalSession.get("title"));
+														i++;
+														if (i < results.length) {
+																 var originalSession = results[i];
+																 iterator(i, originalSession);
+														  } else {
+															response.success('Saved Reoccurred Sessions');
+														  }
+													  },
+													  error: function(object, error) {
+													        // saving the object failed.
+													        console.log("#### Error saving originalSession - " + originalSession.get("title"));
+													  }
+													});
+										
+										// originalSession.save(null).then(function(object) {
+										// 						// the original object was saved.
+										// 						console.log("#### Saved originalSession - " + originalSession.get("title"));
+										// 						i++;
+										// 						if (i < results.length) {
+										// 								 var originalSession = results[i];
+										// 								 iterator(i, originalSession);
+										// 						  } else {
+										// 							response.success('Saved Reoccurred Sessions');
+										// 						  }
+										// 					  },
+										// 					  function(error) {
+										// 						// saving the object failed.
+										// 						console.log("#### Error saving originalSession - " + originalSession.get("title"));
+										// 					  });
 										
 								  },
 								  function(error) {
