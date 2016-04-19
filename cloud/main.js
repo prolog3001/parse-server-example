@@ -318,6 +318,8 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 Parse.Cloud.define('recurringSessions', function(request, response) {
     var params = request.params;
     var session = params.object_id;
+    console.log("#### Look for session id - " + session);
+    
     var then = new Date();
     then.setHours(then.getHours() - 1);
 	
@@ -391,7 +393,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
 					oldSession.set("attenders_count", 0);
 					oldSession.save();
 					console.log("#### Saved oldSession - " + oldSession.get("title"));
-					response.error("Saved oldSession - " + oldSession.get("title"));
+					response.success("Saved oldSession - " + oldSession.get("title"));
 				}
 			});
 			},
