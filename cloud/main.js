@@ -522,9 +522,10 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 										originalSession.save(null).then(function(object) {
 																// the original object was saved.
 																console.log("#### Saved originalSession - " + originalSession.get("title"));
-																if (i < results.length - 1) {
-																		 var originalSession = results[i + 1];
-																		 iterator(i + 1, originalSession);
+																i++;
+																if (i < results.length) {
+																		 var originalSession = results[i];
+																		 iterator(i, originalSession);
 																  } else {
 																	response.succes()
 																  }
