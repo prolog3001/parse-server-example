@@ -318,6 +318,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 Parse.Cloud.define('recurringSessions', function(request, response) {
     var params = request.params;
     var session = params.object_id;
+    var sessionOccurrence = params.occurrence;
     console.log("#### Look for session id - " + session);
     
     var then = new Date();
@@ -330,7 +331,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
             console.log("#### Successfully retrieved Session " + sessions[0].get("title"));
             var oldSession = sessions[0];
 			var date = new Date(oldSession.get("date").getTime());
-			switch (oldSession.get("occurrence")) {
+			switch (sessionOccurrence) {
 				case 1:
 					while (date.getTime() <= then.getTime()){
 						date.setDate(date.getDate() + 1);
@@ -372,7 +373,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
 						}
 					}
 					//Occurrence is negative in history
-					historySession.set("occurrence", -1 * historySession.get("occurrence"));
+					historySession.set("occurrence", -1 * sessionOccurrence);
 					if (attenderObjects.length > 0) {
 						var newAttenders = historySession.relation("attenders");
 						for (var k = 0; k < attenderObjects.length; k++) {
@@ -391,6 +392,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
 					oldSession.set("date", date);
 					oldSession.set("day", date.getDay() + 1); //Day of week starts from 0
 					oldSession.set("attenders_count", 0);
+					oldSession.set("occurrence", sessionOccurrence);
 					oldSession.save();
 					console.log("#### Saved oldSession - " + oldSession.get("title"));
 					response.success("Saved oldSession - " + oldSession.get("title"));
