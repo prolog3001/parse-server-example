@@ -451,6 +451,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
         success: function(results) {
 			console.log("#### Sessions to Reoccurre " + results.length);
 			var iterator = function(i, originalSession) {
+			  console.log("#### Original Session " + originalSession);
 			  if (originalSession) {
 				  
 				var attendersRelation = originalSession.relation("attenders");
@@ -558,8 +559,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 								  function(error) {
 									// saving the object failed.
 									console.log("#### Error saving historySession - " + originalSession.get("title"));
-									  });
-						}
+						});
 						var date = new Date(originalSession.get("date").getTime());
 						switch (originalSession.get("occurrence")) {
 							case 1:
@@ -603,7 +603,9 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 									        // saving the object failed.
 									        console.log("#### Error saving originalSession - " + originalSession.get("title"));
 									  }
-									});
+						});			  
+					}
+						
 				});
 			  }
 			}
