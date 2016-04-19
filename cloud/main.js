@@ -449,7 +449,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
     pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
     pushQuery.find({
         success: function(results) {
-			
+			console.log("#### Sessions to Reoccurre " + results.length);
 			var iterator = function(i, originalSession) {
 			  if (originalSession) {
 				  
@@ -543,8 +543,10 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 				});
 			  }
 			}
-			if(results.length > 0)
+			if(results.length > 0){
+				console.log("#### Sessions to Reoccurre " + results.length);
 				iterator(0, results[0]);
+			}
 		}
 	});
 			     
