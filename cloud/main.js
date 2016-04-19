@@ -323,7 +323,7 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
     var then = new Date();
     then.setHours(then.getHours() - 1);
 	
-    var sessionQuery = new Parse.Query(Parse.User);
+    var sessionQuery = new Parse.Query("MSession");
     sessionQuery.equalTo('objectId', session);
     sessionQuery.find({
         success: function(sessions) {
