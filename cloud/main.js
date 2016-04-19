@@ -437,3 +437,141 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
     };
 
 });
+
+Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
+
+    var excludeMinusOccurences = [0, -1, -2, -3];
+    var then = new Date();
+    then.setHours(then.getHours() - 1);
+
+    var pushQuery = new Parse.Query("MSession");
+    pushQuery.lessThanOrEqualTo("date", then);
+    pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
+    pushQuery.find({
+        success: function(results) {
+			
+			var iterator = function(i, originalSession) {
+			  if (originalSession) {
+				  
+				var attendersRelation = originalSession.relation("attenders");
+				console.log("#### Try to Copy Attenders From Old Session - " + originalSession.get("title"));
+				var attendersQuery = attendersRelation.query();
+				attendersQuery.find({
+					success: function(attenderObjects) {
+						console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
+						//Start copying old session with everything (including attenders!)
+						var keySet = Object.keys(originalSession.toJSON());
+						var HistorySession = Parse.Object.extend("HistorySession");
+						var historySession = new HistorySession(); //This is the actual originalSession, but go inside "HistorySession"
+						// console.log("#### Obtained originalSession Keys " + (keySet.length - 5));
+
+						//Duplicate attenders into historySession
+						for (var j = 0; j < keySet.length; j++) {
+							//------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+							//console.log("#### Found Session Key " + keySet[j]);
+							if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
+								keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
+								// console.log("#### Session Key to Copy " + keySet[j]);
+								historySession.set(keySet[j], originalSession.get(keySet[j]));
+							}
+						}
+						//Occurrence is negative in history
+						historySession.set("occurrence", -1 * historySession.get("occurrence"));
+						
+						if (attenderObjects.length > 0) {
+							var newAttenders = historySession.relation("attenders");
+							for (var k = 0; k < attenderObjects.length; k++) {
+								if(attenderObjects[k] != null){
+									newAttenders.add(attenderObjects[k]);//copy each attender from originalSession
+									attendersRelation.remove(attenderObjects[k]);//Remove each attender from renewd originalSession
+									// console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
+								}
+							}
+						}
+						//Save historySession into HistorySession with his attenders
+						historySession.save(null).then(function(object) {
+																// history object was saved.
+																console.log("#### Saved historySession - " + historySession.get("title"));
+																var date = new Date(originalSession.get("date").getTime());
+																switch (originalSession.get("occurrence")) {
+																	case 1:
+																		do {
+																			//  date.setHours(then.getHours() + 24);
+																			date.setDate(date.getDate() + 1);
+																		} while (date <= then);
+																		break;
+
+																	case 2:
+																		do {
+																			//  date.setHours(then.getHours() + 7 * 24);
+																			date.setDate(date.getDate() + 7);
+																		} while (date <= then);
+																		break;
+
+																	case 3:
+																		//  date.setHours(then.getHours() + 4 * 7 * 24);
+																		date.addMonths(1);
+																		break;
+																	default:
+																		;
+																}
+																//Set new data to originalSession (new occurrence, no attenders, no attenders_count)
+																originalSession.set("date", date);
+																originalSession.set("day", date.getDay() + 1); //Day of week starts from 0
+																originalSession.set("attenders_count", 0);
+																originalSession.save({ key: value }).then(function(object) {
+																										// the original object was saved.
+																										console.log("#### Saved originalSession - " + originalSession.get("title"));
+																										if (i < results.length) {
+																												 var originalSession = results[i];
+																												 iterator(i + 1, originalSession);
+																										  } else {
+																											response.succes()
+																										  }
+																									  },
+																									  function(error) {
+																										// saving the object failed.
+																										console.log("#### Error saving originalSession - " + originalSession.get("title"));
+																									  });
+																
+														  },
+														  function(error) {
+															// saving the object failed.
+															console.log("#### Error saving historySession - " + originalSession.get("title"));
+														  });
+					}
+				});
+			  }
+			}
+			if(results.length > 0)
+				iterator(0, results[0]);
+		}
+	});
+			     
+    response.success('Saved Reoccurred Sessions');
+
+    Date.isLeapYear = function(year) {
+        return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
+    };
+
+    Date.getDaysInMonth = function(year, month) {
+        return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+    };
+
+    Date.prototype.isLeapYear = function() {
+        return Date.isLeapYear(this.getFullYear());
+    };
+
+    Date.prototype.getDaysInMonth = function() {
+        return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+    };
+
+    Date.prototype.addMonths = function(value) {
+        var n = this.getDate();
+        this.setDate(1);
+        this.setMonth(this.getMonth() + value);
+        this.setDate(Math.min(n, this.getDaysInMonth()));
+        return this;
+    };
+
+});
