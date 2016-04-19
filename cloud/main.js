@@ -519,7 +519,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 										originalSession.set("date", date);
 										originalSession.set("day", date.getDay() + 1); //Day of week starts from 0
 										originalSession.set("attenders_count", 0);
-										originalSession.save({ key: value }).then(function(object) {
+										originalSession.save(null).then(function(object) {
 																// the original object was saved.
 																console.log("#### Saved originalSession - " + originalSession.get("title"));
 																if (i < results.length) {
