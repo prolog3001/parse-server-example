@@ -490,55 +490,55 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 						}
 						//Save historySession into HistorySession with his attenders
 						historySession.save(null).then(function(object) {
-																// history object was saved.
-																console.log("#### Saved historySession - " + historySession.get("title"));
-																var date = new Date(originalSession.get("date").getTime());
-																switch (originalSession.get("occurrence")) {
-																	case 1:
-																		do {
-																			//  date.setHours(then.getHours() + 24);
-																			date.setDate(date.getDate() + 1);
-																		} while (date <= then);
-																		break;
+										// history object was saved.
+										console.log("#### Saved historySession - " + historySession.get("title"));
+										var date = new Date(originalSession.get("date").getTime());
+										switch (originalSession.get("occurrence")) {
+											case 1:
+												do {
+													//  date.setHours(then.getHours() + 24);
+													date.setDate(date.getDate() + 1);
+												} while (date <= then);
+												break;
 
-																	case 2:
-																		do {
-																			//  date.setHours(then.getHours() + 7 * 24);
-																			date.setDate(date.getDate() + 7);
-																		} while (date <= then);
-																		break;
+											case 2:
+												do {
+													//  date.setHours(then.getHours() + 7 * 24);
+													date.setDate(date.getDate() + 7);
+												} while (date <= then);
+												break;
 
-																	case 3:
-																		//  date.setHours(then.getHours() + 4 * 7 * 24);
-																		date.addMonths(1);
-																		break;
-																	default:
-																		;
-																}
-																//Set new data to originalSession (new occurrence, no attenders, no attenders_count)
-																originalSession.set("date", date);
-																originalSession.set("day", date.getDay() + 1); //Day of week starts from 0
-																originalSession.set("attenders_count", 0);
-																originalSession.save({ key: value }).then(function(object) {
-																										// the original object was saved.
-																										console.log("#### Saved originalSession - " + originalSession.get("title"));
-																										if (i < results.length) {
-																												 var originalSession = results[i];
-																												 iterator(i + 1, originalSession);
-																										  } else {
-																											response.succes()
-																										  }
-																									  },
-																									  function(error) {
-																										// saving the object failed.
-																										console.log("#### Error saving originalSession - " + originalSession.get("title"));
-																									  });
-																
-														  },
-														  function(error) {
-															// saving the object failed.
-															console.log("#### Error saving historySession - " + originalSession.get("title"));
-														  });
+											case 3:
+												//  date.setHours(then.getHours() + 4 * 7 * 24);
+												date.addMonths(1);
+												break;
+											default:
+												;
+										}
+										//Set new data to originalSession (new occurrence, no attenders, no attenders_count)
+										originalSession.set("date", date);
+										originalSession.set("day", date.getDay() + 1); //Day of week starts from 0
+										originalSession.set("attenders_count", 0);
+										originalSession.save({ key: value }).then(function(object) {
+																// the original object was saved.
+																console.log("#### Saved originalSession - " + originalSession.get("title"));
+																if (i < results.length) {
+																		 var originalSession = results[i];
+																		 iterator(i + 1, originalSession);
+																  } else {
+																	response.succes()
+																  }
+															  },
+															  function(error) {
+																// saving the object failed.
+																console.log("#### Error saving originalSession - " + originalSession.get("title"));
+															  });
+										
+								  },
+								  function(error) {
+									// saving the object failed.
+									console.log("#### Error saving historySession - " + originalSession.get("title"));
+									  });
 					}
 				});
 			  }
