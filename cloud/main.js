@@ -316,6 +316,90 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 
 //NEW CODE FOR RE-OCCURRENCE
 Parse.Cloud.define('recurringSessions', function(request, response) {
+    var params = request.params;
+    var session = params.object_id;
+    var then = new Date();
+    then.setHours(then.getHours() - 1);
+	
+    var sessionQuery = new Parse.Query(Parse.User);
+    sessionQuery.equalTo('objectId', session);
+    sessionQuery.find({
+        success: function(sessions) {
+            console.log("#### Successfully retrieved Session " + sessions[0].get("title"));
+            var oldSession = sessions[0];
+			var date = new Date(oldSession.get("date").getTime());
+			switch (oldSession.get("occurrence")) {
+				case 1:
+					while (date.getTime() <= then.getTime()){
+						date.setDate(date.getDate() + 1);
+					}
+					break;
+
+				case 2:
+					while (date.getTime() <= then.getTime()){
+						date.setDate(date.getDate() + 7);
+					}
+					break;
+
+				case 3:
+					date.addMonths(1);
+					break;
+			}
+
+			var attendersRelation = oldSession.relation("attenders");
+			console.log("#### Try to Copy Attenders From Old Session - " + oldSession.get("title"));
+			var attendersQuery = attendersRelation.query();
+			attendersQuery.find({
+				success: function(attenderObjects) {
+					console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
+
+					//Start copying old session with everything (including attenders!)
+					var keySet = Object.keys(oldSession.toJSON());
+					var HistorySession = Parse.Object.extend("HistorySession");
+					var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
+					// console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
+
+					//Duplicate attenders into historySession
+					for (var j = 0; j < keySet.length; j++) {
+						//------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+						//console.log("#### Found Session Key " + keySet[j]);
+						if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
+							keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
+							// console.log("#### Session Key to Copy " + keySet[j]);
+							historySession.set(keySet[j], oldSession.get(keySet[j]));
+						}
+					}
+					//Occurrence is negative in history
+					historySession.set("occurrence", -1 * historySession.get("occurrence"));
+					if (attenderObjects.length > 0) {
+						var newAttenders = historySession.relation("attenders");
+						for (var k = 0; k < attenderObjects.length; k++) {
+							if(attenderObjects[k] != null){
+								newAttenders.add(attenderObjects[k]);//copy each attender from oldSession
+								attendersRelation.remove(attenderObjects[k]);//Remove each attender from renewd oldSession
+								// console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
+							}
+						}
+					}
+					//Save historySession into HistorySession with his attenders
+					historySession.save();
+					console.log("#### Saved historySession - " + historySession.get("title"));
+
+					//Set new data to oldSession (new occurrence, no attenders, no attenders_count)
+					oldSession.set("date", date);
+					oldSession.set("day", date.getDay() + 1); //Day of week starts from 0
+					oldSession.set("attenders_count", 0);
+					oldSession.save();
+					console.log("#### Saved oldSession - " + oldSession.get("title"));
+					response.error("Saved oldSession - " + oldSession.get("title"));
+				}
+			});
+			},
+        error: function(error) {
+            console.log("#### Error: " + error.code + " " + error.message);
+            response.error(error);
+        }
+    });
     //console.log("#### updateRecurringSessions");
     //var excludeMinusOccurences = [0, -1, -2, -3];
     //var then = new Date();
