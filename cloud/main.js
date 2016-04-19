@@ -492,6 +492,7 @@ Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 						historySession.save(null).then(function(object) {
 										// history object was saved.
 										console.log("#### Saved historySession - " + historySession.get("title"));
+										console.log("#### i is - " + i);
 										var date = new Date(originalSession.get("date").getTime());
 										switch (originalSession.get("occurrence")) {
 											case 1:
