@@ -526,6 +526,82 @@ Parse.Cloud.define('recurringSessions', function(request, response) {
 
 });
 
+Parse.Cloud.define('sessionsToHistory', function(request, response) {
+    var params = request.params;
+    var session = params.object_id;
+    console.log("#### Look for session id - " + session);
+
+    var sessionQuery = new Parse.Query("MSession");
+    sessionQuery.equalTo('objectId', session);
+    sessionQuery.find({
+        success: function(sessions) {
+            console.log("#### Successfully retrieved Session " + sessions[0].get("title"));
+            var oldSession = sessions[0];
+            var attendersRelation = oldSession.relation("attenders");
+            console.log("#### Try to Copy Attenders From Old Session - " + oldSession.get("title"));
+            var attendersQuery = attendersRelation.query();
+            attendersQuery.find({
+                success: function(attenderObjects) {
+                    console.log("#### Copy Attenders From Old Session " + attenderObjects.length);
+
+                    //Start copying old session with everything (including attenders!)
+                    var keySet = Object.keys(oldSession.toJSON());
+                    var HistorySession = Parse.Object.extend("HistorySession");
+                    var historySession = new HistorySession(); //This is the actual oldSession, but go inside "HistorySession"
+                    // console.log("#### Obtained Old Session Keys " + (keySet.length - 5));
+
+                    //Duplicate attenders into historySession
+                    for (var j = 0; j < keySet.length; j++) {
+                        //------------------RELATIONS CAN'T BE COPIED!!!-------------------------
+                        //console.log("#### Found Session Key " + keySet[j]);
+                        if (keySet[j] != "attenders" && keySet[j] != "messages" && keySet[j] != "objectId" &&
+                            keySet[j] != "createdAt" && keySet[j] != "updatedAt") {
+                            // console.log("#### Session Key to Copy " + keySet[j]);
+                            historySession.set(keySet[j], oldSession.get(keySet[j]));
+                        }
+                    }
+                    //Occurrence is negative in history
+                    historySession.set("occurrence", 0);
+                    if (attenderObjects.length > 0) {
+                        var newAttenders = historySession.relation("attenders");
+                        for (var k = 0; k < attenderObjects.length; k++) {
+                            if (attenderObjects[k] != null) {
+                                newAttenders.add(attenderObjects[k]); //copy each attender from oldSession
+                                attendersRelation.remove(attenderObjects[k]); //Remove each attender from renewd oldSession
+                                // console.log("#### Copied Attender To historySession " + attenderObjects[k].get("username"));
+                            }
+                        }
+                    }
+                    //Save historySession into HistorySession with his attenders
+                    historySession.save(null, {
+                        success: function(historySession) {
+                            console.log("#### Saved historySession - " + historySession.get("title"));
+                            oldSession.destroy({
+                                success: function(oldSession) {
+                                    console.log("#### deleted oldSession");
+                                    response.success("deleted oldSession");
+                                },
+                                error: function(oldSession, error) {
+                                    console.log("#### Error: " + error.code + " " + error.message);
+                                    response.error(error);
+                                }
+                            });
+                        },
+                        error: function(historySession, error) {
+                            console.log("#### Error: " + error.code + " " + error.message);
+                            response.error(error);
+                        }
+                    });
+                }
+            });
+        },
+        error: function(error) {
+            console.log("#### Error: " + error.code + " " + error.message);
+            response.error(error);
+        }
+    });
+});
+
 Parse.Cloud.define('testUpdateRecurringSessions', function(request, response) {
 
     var excludeMinusOccurences = [0, -1, -2, -3];
