@@ -117,7 +117,7 @@ Parse.Cloud.define('addMessageToUserRelationMessages', function(request, respons
    //             }
    //         });
     
-}
+});
 Parse.Cloud.define('pushChannelMedidate', function(request, response) {
 
     // request has 2 parameters: params passed by the client and the authorized user
