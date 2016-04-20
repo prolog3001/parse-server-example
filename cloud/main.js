@@ -87,6 +87,37 @@ Parse.Cloud.define('oneSignalPush', function(request, response) {
     return promise;
 });
 
+Parse.Cloud.define('addMessageToUserRelationMessages', function(request, response) {
+
+    var Message = Parse.Object.extend("Message");
+    // request has 2 parameters: params passed by the client and the authorized user
+    var params = request.params;
+    var chatOwner = new Parse.User({id:params.chatOwnerId}); //ids of relevant users
+    var message = Message.createWithoutData(params.messageId); //ids of relevant users
+   
+   var relation = user.relation("messages");
+            relation.add(message);
+
+            user.save(null, {
+                success:function(){response.success("Message was saved to relation");},
+                error:function(error){response.error("Error saving message + error.code");}
+            });
+   //chatOwner.fetch().then(function(user) {
+   //         var sender = user.get('username');
+
+   //         // Find devices associated with these users
+   //         var pushQuery = new Parse.Query(Parse.Installation);
+   //         pushQuery.containedIn("user", users);
+
+   //         // Send push notification to query
+   //         return Parse.Push.send({
+   //             where: pushQuery,
+   //             data: {
+   //                 alert: sender + " sent you a track: " + trackTitle
+   //             }
+   //         });
+    
+}
 Parse.Cloud.define('pushChannelMedidate', function(request, response) {
 
     // request has 2 parameters: params passed by the client and the authorized user
