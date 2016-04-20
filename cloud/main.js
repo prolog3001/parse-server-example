@@ -95,13 +95,13 @@ Parse.Cloud.define('addMessageToUserRelationMessages', function(request, respons
     var chatOwner = new Parse.User({id:params.chatOwnerId}); //ids of relevant users
     var message = Message.createWithoutData(params.messageId); //ids of relevant users
    
-   var relation = user.relation("messages");
-            relation.add(message);
+    var relation = chatOwner.relation("messages");
+    relation.add(message);
 
-            user.save(null, {
-                success:function(){response.success("Message was saved to relation");},
-                error:function(error){response.error("Error saving message + error.code");}
-            });
+    chatOwner.save(null, {
+        success:function(){response.success("Message was saved to relation");},
+        error:function(error){response.error("Error saving message + error.code");}
+    });
    //chatOwner.fetch().then(function(user) {
    //         var sender = user.get('username');
 
