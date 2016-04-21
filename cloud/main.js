@@ -100,10 +100,9 @@ Parse.Cloud.define('addMessageToUserRelationMessages', function(request, respons
     chatOwner.save(null, {
         success:function(){
         	response.success("Message was saved to relation");
-        	
         },
         error:function(error){
-        	response.error("Error saving message + error.code");
+        	response.error("Error saving message" + error.code);
         }
     });
 });
