@@ -232,6 +232,108 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
     });
 });
 
+Parse.Cloud.define('updateRecurringSessions', function(request, response) {
+
+    var excludeMinusOccurences = [0, -1, -2, -3];
+    var then = new Date();
+    then.setHours(then.getHours() - 1);
+
+    var pushQuery = new Parse.Query("MSession");
+    pushQuery.lessThanOrEqualTo("date", then);
+    pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
+    pushQuery.find({
+        success: function(results) {
+            console.log("#### Sessions to Reoccurre " + results.length);
+            var newRecurringSessionsArray = new Array(results.length);
+            var edittedRecurringSessionsArray = new Array(results.length);
+
+            //var sum = 0;
+            for (var i = 0; i < results.length; ++i) {
+                var newSession = results[i].clone();
+                newSession.set("attenders_count", 0);
+                var date = new Date(newSession.get("date").getTime());
+                switch (newSession.get("occurrence")) {
+                    case 1:
+                        do {
+                            //  date.setHours(then.getHours() + 24);
+                            date.setDate(date.getDate() + 1);
+                        } while (date <= then);
+                        break;
+
+                    case 2:
+                        do {
+                            //  date.setHours(then.getHours() + 7 * 24);
+                            date.setDate(date.getDate() + 7);
+                        } while (date <= then);
+                        break;
+
+                    case 3:
+                        //  date.setHours(then.getHours() + 4 * 7 * 24);
+                        date.addMonths(1);
+                        break;
+                    default:
+                        ;
+                }
+                newSession.set("date", date);
+                newSession.set("day", date.getDay() + 1);
+                results[i].set("occurrence", -1 * results[i].get("occurrence"));
+
+                newRecurringSessionsArray.push(newSession);
+                edittedRecurringSessionsArray.push(results[i]);
+            }
+            if (newRecurringSessionsArray.length > 0 && edittedRecurringSessionsArray.length > 0) {
+                Parse.Object.saveAll(newRecurringSessionsArray, {
+                    success: function(list) {
+                        console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
+                        Parse.Object.saveAll(edittedRecurringSessionsArray, {
+                            success: function(list) {
+                                console.log("#### Saving Old Recurring Sessions Array  " + newRecurringSessionsArray.length);
+                                response.success('success');
+                            },
+                            error: function(error) {
+                                response.error('Wasnt able to save Old Recurring Sessions');
+                            },
+                        });
+                    },
+                    error: function(error) {
+                        response.error('Wasnt able to save New Recurring Sessions');
+                    },
+                });
+            }
+            response.success('success');
+        },
+        error: function() {
+            response.error('Wasnt able to find Recurring Sessions');
+        }
+    });
+    response.success('Saved Reoccurred Sessions');
+
+    Date.isLeapYear = function(year) {
+        return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
+    };
+
+    Date.getDaysInMonth = function(year, month) {
+        return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+    };
+
+    Date.prototype.isLeapYear = function() {
+        return Date.isLeapYear(this.getFullYear());
+    };
+
+    Date.prototype.getDaysInMonth = function() {
+        return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+    };
+
+    Date.prototype.addMonths = function(value) {
+        var n = this.getDate();
+        this.setDate(1);
+        this.setMonth(this.getMonth() + value);
+        this.setDate(Math.min(n, this.getDaysInMonth()));
+        return this;
+    };
+
+});
+
 //NEW CODE FOR RE-OCCURRENCE
 Parse.Cloud.define('recurringSessions', function(request, response) {
     var params = request.params;
