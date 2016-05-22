@@ -368,7 +368,7 @@ Parse.Cloud.define('updateRecurringSessions2', function(request, response) {
 	                	    console.log("Day number   " + dayNumber);
 	                	    var isInDaysArray = $.inArray(dayNumber, dailyDaysArray) != -1;
 	                	    console.log("Exists in array?   " + isInDaysArray);
-                	    	while(!isInDaysArray)
+                	    	}while(!isInDaysArray)
                 	    }else
                 	    {
                 	    	date.setDate(date.getDate() + 1);
