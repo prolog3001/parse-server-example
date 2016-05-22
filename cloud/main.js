@@ -366,11 +366,11 @@ Parse.Cloud.define('updateRecurringSessions2', function(request, response) {
                 	    	    date.setDate(date.getDate() + 1);
 	                	    var dayNumber = date.getDay() + 1;
 	                	    console.log("Day number   " + dayNumber);
-	                	    var isInDaysArray = $.inArray(dayNumber, dailyDaysArray) != -1;
 	                	    console.log("Exists in array?   " + isInDaysArray);
-                	    	}while(!isInDaysArray)
+                	    	}while($.inArray(dayNumber, dailyDaysArray) == -1)
                 	    }else
                 	    {
+                	    	console.log("NO DAYS DEFINED OR WEEKLY");
                 	    	date.setDate(date.getDate() + 1);
                 	    }
                         } while (date <= then);
