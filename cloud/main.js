@@ -257,19 +257,20 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 switch (newSession.get("occurrence")) {
                     case 1:
                         do {
-                            if(dailyDaysArray !== undefined && dailyDaysArray[0]!=0)
-                	    {
-                	    	console.log("This Daily has sessions days and   " + dailyDaysArray);
-                	    	do{
-                	    	    date.setDate(date.getDate() + 1);
-	                	    var dayNumber = date.getDay() + 1;
-	                	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-                	    	}while(dailyDaysArray.indexOf(dayNumber) == -1)
-                	    }else
-                	    {
-                	    	console.log("NO DAYS DEFINED OR WEEKLY");
-                	    	date.setDate(date.getDate() + 1);
-                	    }
+                     //       if(dailyDaysArray !== undefined && dailyDaysArray[0]!=0)
+                	    //{
+                	    //	console.log("This Daily has sessions days and   " + dailyDaysArray);
+                	    //	do{
+                	    //	    date.setDate(date.getDate() + 1);
+	                	   // var dayNumber = date.getDay() + 1;
+	                	   // console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
+                	    //	}while(dailyDaysArray.indexOf(dayNumber) == -1)
+                	    //}else
+                	    //{
+                	    //	console.log("NO DAYS DEFINED OR WEEKLY");
+                	    //	date.setDate(date.getDate() + 1);
+                	    //}
+                	    date.setDate(date.getDate() + 1);
                         } while (date <= then);
                         break;
 
