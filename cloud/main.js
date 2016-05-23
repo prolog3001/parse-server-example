@@ -301,7 +301,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                         console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                         Parse.Object.saveAll(edittedRecurringSessionsArray, {
                             success: function(list) {
-                                console.log("#### Saving Old Recurring Sessions Array  " + newRecurringSessionsArray.length);
+                                console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
                                 response.success('success');
                             },
                             error: function(error) {
