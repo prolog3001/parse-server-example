@@ -334,7 +334,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
     //        response.error('Wasnt able to find Recurring Sessions');
     //    }
     //});
-    //response.success('Saved Reoccurred Sessions');
+    response.success('Saved Reoccurred Sessions');
 
     //Date.isLeapYear = function(year) {
     //    return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
