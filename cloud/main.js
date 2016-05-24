@@ -255,38 +255,38 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                 
                 var date = new Date(newSession.get("date").getTime());
                 switch (newSession.get("occurrence")) {
-                    case 1:
-                    	var j;
-                        do {
-                            if(dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0]!== 0)
-                	    {
-                	    	console.log("This Daily has sessions days and   " + dailyDaysArray);
+    //                case 1:
+    //                	var j;
+    //                    do {
+    //                        if(dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0]!== 0)
+    //            	    {
+    //            	    	console.log("This Daily has sessions days and   " + dailyDaysArray);
                 	    	
-                	    	for (j = 0; j <= 7 ; j++) {
-				    date.setDate(date.getDate() + 1);
-	                	    var dayNumber = date.getDay() + 1;
-	                	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-	                	    if(dailyDaysArray.indexOf(dayNumber) > -1)
-	                		 break;
-				}
+    //            	    	for (j = 0; j <= 7 ; j++) {
+				//     date.setDate(date.getDate() + 1);
+	   //             	    var dayNumber = date.getDay() + 1;
+	   //             	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
+	   //             	    if(dailyDaysArray.indexOf(dayNumber) > -1)
+	   //             		 break;
+				// }
 			
-                	    	// do{
-                	    	//     date.setDate(date.getDate() + 1);
-	                	    //var dayNumber = date.getDay() + 1;
-	                	    //console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-                	    	// }while(dailyDaysArray.indexOf(dayNumber) == -1)
-                	    }else
-                	    {
-                	    	console.log("NO DAYS DEFINED OR WEEKLY");
-                	    	date.setDate(date.getDate() + 1);
-                	    }
-                	    //date.setDate(date.getDate() + 1);
-                        } while (date <= then);
-                	if(j==7){
-                	    console.log("##########Couldn't Find Day in Days Array#################");
-			    continue;
-                	}
-                        break;
+    //            	    	// do{
+    //            	    	//     date.setDate(date.getDate() + 1);
+	   //             	    //var dayNumber = date.getDay() + 1;
+	   //             	    //console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
+    //            	    	// }while(dailyDaysArray.indexOf(dayNumber) == -1)
+    //            	    }else
+    //            	    {
+    //            	    	console.log("NO DAYS DEFINED OR WEEKLY");
+    //            	    	date.setDate(date.getDate() + 1);
+    //            	    }
+    //            	    //date.setDate(date.getDate() + 1);
+    //                    } while (date <= then);
+    //            	if(j==7){
+    //            	    console.log("##########Couldn't Find Day in Days Array#################");
+			 //   continue;
+    //            	}
+    //                    break;
 
                     case 2:
                         do {
