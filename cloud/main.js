@@ -266,7 +266,7 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 				    date.setDate(date.getDate() + 1);
 	                	    var dayNumber = date.getDay() + 1;
 	                	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-	                	    if(dailyDaysArray.indexOf(dayNumber) !== -1)
+	                	    if(dailyDaysArray.indexOf(dayNumber) > -1)
 	                		 break;
 				}
 			
