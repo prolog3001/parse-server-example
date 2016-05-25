@@ -34,17 +34,18 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
-  },
+  }
+  // ,
   // emailAdapter: simpleMailgunAdapter,
   // push: {
   //     adapter: oneSignalPushAdapter
   // },
-    customPages: {
-      invalidLink: process.env.HOST_URL + 'invalid_link.html',
-      verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
-      choosePassword: process.env.HOST_URL + 'choose_password.html',
-      passwordResetSuccess: process.env.HOST_URL + 'password_reset_success.html'
-    }
+    // customPages: {
+    //   invalidLink: process.env.HOST_URL + 'invalid_link.html',
+    //   verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
+    //   choosePassword: process.env.HOST_URL + 'choose_password.html',
+    //   passwordResetSuccess: process.env.HOST_URL + 'password_reset_success.html'
+    // }
 });
 // var api = new ParseServer({
 //   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
