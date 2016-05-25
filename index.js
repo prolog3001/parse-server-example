@@ -11,7 +11,7 @@ if (!databaseUri) {
 //Mailgun - reset password
 var simpleMailgunAdapter = require('parse-server-simple-mailgun-adapter')({
   apiKey: process.env.MAILGUN_KEY || '',
-  domain: process.env.PUBLIC_SERVER_URL || 'medidatewith.me',
+  domain: process.env.DOMAIN || 'medidatewith.me',
   fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
 });
 
