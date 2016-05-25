@@ -11,19 +11,19 @@ if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
-//Mailgun - reset password
-var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
-  apiKey: process.env.MAILGUN_KEY || '',
-  domain: process.env.DOMAIN || 'medidatewith.me',
-  fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
-});
+// //Mailgun - reset password
+// var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
+//   apiKey: process.env.MAILGUN_KEY || '',
+//   domain: process.env.DOMAIN || 'medidatewith.me',
+//   fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
+// });
 
-//Push Adapter
-var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
-var oneSignalPushAdapter = new OneSignalPushAdapter({
-  oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-  oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-});
+// //Push Adapter
+// var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
+// var oneSignalPushAdapter = new OneSignalPushAdapter({
+//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
+//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
+// });
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
