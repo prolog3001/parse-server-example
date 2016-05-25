@@ -35,10 +35,10 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   },
-  emailAdapter: simpleMailgunAdapter,
-  push: {
-      adapter: oneSignalPushAdapter
-  },
+  // emailAdapter: simpleMailgunAdapter,
+  // push: {
+  //     adapter: oneSignalPushAdapter
+  // },
     customPages: {
       invalidLink: process.env.HOST_URL + 'invalid_link.html',
       verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
