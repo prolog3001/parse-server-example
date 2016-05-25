@@ -12,18 +12,18 @@ if (!databaseUri) {
 }
 
 //Mailgun - reset password
-var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
-  apiKey: process.env.MAILGUN_KEY || '',
-  domain: process.env.DOMAIN || 'medidatewith.me',
-  fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
-});
+// var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
+//   apiKey: process.env.MAILGUN_KEY || '',
+//   domain: process.env.DOMAIN || 'medidatewith.me',
+//   fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
+// });
 
 // //Push Adapter
-// var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
-// var oneSignalPushAdapter = new OneSignalPushAdapter({
-//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-// });
+var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
+var oneSignalPushAdapter = new OneSignalPushAdapter({
+  oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
+  oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
+});
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
@@ -35,10 +35,10 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   },
-  emailAdapter: simpleMailgunAdapter
-  // push: {
-  //     adapter: oneSignalPushAdapter
-  // },
+  //emailAdapter: simpleMailgunAdapter,
+  push: {
+      adapter: oneSignalPushAdapter
+  }
     // customPages: {
     //   invalidLink: process.env.HOST_URL + 'invalid_link.html',
     //   verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
