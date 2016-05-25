@@ -19,32 +19,32 @@ if (!databaseUri) {
 // });
 
 // //Push Adapter
-var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
-var oneSignalPushAdapter = new OneSignalPushAdapter({
-  oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-  oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-});
+// var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
+// var oneSignalPushAdapter = new OneSignalPushAdapter({
+//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
+//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
+// });
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'myAppId',
-  //appName: 'Medidate',
+  appName: 'Medidate',
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   },
   //emailAdapter: simpleMailgunAdapter,
-  push: {
-      adapter: oneSignalPushAdapter
-  }
-    // customPages: {
-    //   invalidLink: process.env.HOST_URL + 'invalid_link.html',
-    //   verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
-    //   choosePassword: process.env.HOST_URL + 'choose_password.html',
-    //   passwordResetSuccess: process.env.HOST_URL + 'password_reset_success.html'
-    // }
+  // push: {
+  //     adapter: oneSignalPushAdapter
+  // }
+    customPages: {
+      invalidLink: process.env.HOST_URL + 'invalid_link.html',
+      verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
+      choosePassword: process.env.HOST_URL + 'choose_password.html',
+      passwordResetSuccess: process.env.HOST_URL + 'password_reset_success.html'
+    }
 });
 // var api = new ParseServer({
 //   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
