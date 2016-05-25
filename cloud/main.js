@@ -529,6 +529,6 @@ Parse.Cloud.define('sessionsToHistory', function(request, response) {
     //        console.log("#### Error: " + error.code + " " + error.message);
     //        response.error(error);
     //    }
-    	response.success("was sessions history");
-    });
+    //});
+    response.success("was sessions history");
 });
