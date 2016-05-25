@@ -9,11 +9,11 @@ if (!databaseUri) {
 }
 
 //Mailgun - reset password
-// var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
-//   apiKey: process.env.MAILGUN_KEY || '',
-//   domain: process.env.DOMAIN || 'medidatewith.me',
-//   fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
-// });
+var simpleMailgunAdapter = require('parse-server/src/Adapters/Email/SimpleMailgunAdapter')({
+  apiKey: process.env.MAILGUN_KEY || '',
+  domain: process.env.DOMAIN || 'medidatewith.me',
+  fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
+});
 
 //Push Adapter
 // var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
@@ -32,7 +32,7 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   },
-  //emailAdapter: simpleMailgunAdapter,
+  emailAdapter: simpleMailgunAdapter,
   // push: {
   //     adapter: oneSignalPushAdapter
   // },
