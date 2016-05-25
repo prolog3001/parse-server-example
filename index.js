@@ -16,7 +16,7 @@ var simpleMailgunAdapter = require('parse-server-simple-mailgun-adapter')({
 });
 
 //Push Adapter
-// var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
+var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
 var oneSignalPushAdapter = new OneSignalPushAdapter({
   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
