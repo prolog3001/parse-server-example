@@ -11,12 +11,12 @@ if (!databaseUri) {
   console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
-// //Mailgun - reset password
-// var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
-//   apiKey: process.env.MAILGUN_KEY || '',
-//   domain: process.env.DOMAIN || 'medidatewith.me',
-//   fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
-// });
+//Mailgun - reset password
+var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
+  apiKey: process.env.MAILGUN_KEY || '',
+  domain: process.env.DOMAIN || 'medidatewith.me',
+  fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
+});
 
 // //Push Adapter
 // var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
@@ -34,9 +34,8 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
-  }
-  // ,
-  // emailAdapter: simpleMailgunAdapter,
+  },
+  emailAdapter: simpleMailgunAdapter
   // push: {
   //     adapter: oneSignalPushAdapter
   // },
