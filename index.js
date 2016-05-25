@@ -1,7 +1,3 @@
-import OneSignalPushAdapter from './OneSignalPushAdapter'
-export default OneSignalPushAdapter
-module.exports = OneSignalPushAdapter;
-
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
@@ -20,11 +16,11 @@ if (!databaseUri) {
 // });
 
 //Push Adapter
-var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
-var oneSignalPushAdapter = new OneSignalPushAdapter({
-  oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-  oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-});
+// var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
+// var oneSignalPushAdapter = new OneSignalPushAdapter({
+//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
+//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
+// });
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
@@ -37,9 +33,9 @@ var api = new ParseServer({
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
   },
   //emailAdapter: simpleMailgunAdapter,
-  push: {
-      adapter: oneSignalPushAdapter
-  },
+  // push: {
+  //     adapter: oneSignalPushAdapter
+  // },
   customPages: {
     invalidLink: process.env.HOST_URL + 'invalid_link.html',
     verifyEmailSuccess: process.env.HOST_URL + 'verify_email_success.html',
