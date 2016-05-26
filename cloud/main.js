@@ -305,13 +305,13 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
                                 response.success('success');
                             },
                             error: function(error) {
-                            	console.log("wasnt able to save  " + error);
+                            	console.log("wasnt able to save  " + error.code);
                                 response.error('Wasnt able to save Old Recurring Sessions');
                             },
                         });
                     },
                     error: function(error) {
-                    	console.log("wasnt able to save  " + error);
+                    	console.log("wasnt able to save  " + error.code);
                         response.error('Wasnt able to save New Recurring Sessions');
                     },
                 });
