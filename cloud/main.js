@@ -352,101 +352,102 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 
 Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
 
-    var delayFoo = function(){	
-    var excludeMinusOccurences = [0, -1, -2, -3];
-    var then = new Date();
-    then.setHours(then.getHours() - 1);
-
-    var pushQuery = new Parse.Query("MSession");
-    pushQuery.lessThanOrEqualTo("date", then);
-    pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
-    pushQuery.find({
-        success: function(results) {
-            console.log("#### Sessions to Reoccurre " + results.length);
-            var newRecurringSessionsArray = new Array(results.length);
-            var edittedRecurringSessionsArray = new Array(results.length);
-
-            //var sum = 0;
-            for (var i = 0; i < results.length; ++i) {
-                var newSession = results[i].clone();
-                newSession.set("attenders_count", 0);
-                var dailyDaysArray = newSession.get("session_occurrence_days");
-                
-                var date = new Date(newSession.get("date").getTime());
-                switch (newSession.get("occurrence")) {
-                    case 1:
-                        do {
-                            if(dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0]!== 0)
-                	    {
-                	    	console.log("This Daily has sessions days and   " + dailyDaysArray);
-                	    	do{
-                	    	    date.setDate(date.getDate() + 1);
-	                	    var dayNumber = date.getDay() + 1;
-	                	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-                	    	}while(dailyDaysArray.indexOf(dayNumber) == -1)
-                	    }else
-                	    {
-                	    	console.log("NO DAYS DEFINED OR WEEKLY");
-                	    	date.setDate(date.getDate() + 1);
-                	    }
-                	    //date.setDate(date.getDate() + 1);
-                        } while (date <= then);
-                        break;
-
-                    case 2:
-                        do {
-                            //  date.setHours(then.getHours() + 7 * 24);
-                            date.setDate(date.getDate() + 7);
-                        } while (date <= then);
-                        break;
-
-                    case 3:
-                        //  date.setHours(then.getHours() + 4 * 7 * 24);
-                        date.addMonths(1);
-                        break;
-                    default:
-                        ;
-                }
-                newSession.set("date", date);
-                newSession.set("day", date.getDay() + 1);
-                results[i].set("occurrence", -1 * results[i].get("occurrence"));
-
-                newRecurringSessionsArray.push(newSession);
-                edittedRecurringSessionsArray.push(results[i]);
-            }
-            if (newRecurringSessionsArray.length > 0 && edittedRecurringSessionsArray.length > 0) {
-                Parse.Object.saveAll(newRecurringSessionsArray, {
-                    success: function(list) {
-                        console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
-                        Parse.Object.saveAll(edittedRecurringSessionsArray, {
-                            success: function(list) {
-                                console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
-                                //response.success('success');
-                                
-                                
-                                
-				delay(10000).then(delayFoo);
-                            },
-                            error: function(error) {
-                            	console.log("wasnt able to save  " + error.code);
-                                response.error('Wasnt able to save Old Recurring Sessions');
-                            },
-                        });
-                    },
-                    error: function(error) {
-                    	console.log("wasnt able to save  " + error.code);
-                        response.error('Wasnt able to save New Recurring Sessions');
-                    },
-                });
-            }
-            response.success('success');
-        },
-        error: function() {
-            response.error('Wasnt able to find Recurring Sessions');
-        }
-    });
-    
-    };
+    //var delayFoo = function(){
+    var timerTick = 1;
+    while(true){
+    	if(timerTick % 10000000){
+    	    timerTick = 1;
+	    var excludeMinusOccurences = [0, -1, -2, -3];
+	    var then = new Date();
+	    then.setHours(then.getHours() - 1);
+	
+	    var pushQuery = new Parse.Query("MSession");
+	    pushQuery.lessThanOrEqualTo("date", then);
+	    pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
+	    pushQuery.find({
+	        success: function(results) {
+	            console.log("#### Sessions to Reoccurre " + results.length);
+	            var newRecurringSessionsArray = new Array(results.length);
+	            var edittedRecurringSessionsArray = new Array(results.length);
+	
+	            //var sum = 0;
+	            for (var i = 0; i < results.length; ++i) {
+	                var newSession = results[i].clone();
+	                newSession.set("attenders_count", 0);
+	                var dailyDaysArray = newSession.get("session_occurrence_days");
+	                
+	                var date = new Date(newSession.get("date").getTime());
+	                switch (newSession.get("occurrence")) {
+	                    case 1:
+	                        do {
+	                            if(dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0]!== 0)
+	                	    {
+	                	    	console.log("This Daily has sessions days and   " + dailyDaysArray);
+	                	    	do{
+	                	    	    date.setDate(date.getDate() + 1);
+		                	    var dayNumber = date.getDay() + 1;
+		                	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
+	                	    	}while(dailyDaysArray.indexOf(dayNumber) == -1)
+	                	    }else
+	                	    {
+	                	    	console.log("NO DAYS DEFINED OR WEEKLY");
+	                	    	date.setDate(date.getDate() + 1);
+	                	    }
+	                	    //date.setDate(date.getDate() + 1);
+	                        } while (date <= then);
+	                        break;
+	
+	                    case 2:
+	                        do {
+	                            //  date.setHours(then.getHours() + 7 * 24);
+	                            date.setDate(date.getDate() + 7);
+	                        } while (date <= then);
+	                        break;
+	
+	                    case 3:
+	                        //  date.setHours(then.getHours() + 4 * 7 * 24);
+	                        date.addMonths(1);
+	                        break;
+	                    default:
+	                        ;
+	                }
+	                newSession.set("date", date);
+	                newSession.set("day", date.getDay() + 1);
+	                results[i].set("occurrence", -1 * results[i].get("occurrence"));
+	
+	                newRecurringSessionsArray.push(newSession);
+	                edittedRecurringSessionsArray.push(results[i]);
+	            }
+	            if (newRecurringSessionsArray.length > 0 && edittedRecurringSessionsArray.length > 0) {
+	                Parse.Object.saveAll(newRecurringSessionsArray, {
+	                    success: function(list) {
+	                        console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
+	                        Parse.Object.saveAll(edittedRecurringSessionsArray, {
+	                            success: function(list) {
+	                                console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
+					// delay(10000).then(delayFoo);
+	                            },
+	                            error: function(error) {
+	                            	console.log("wasnt able to save  " + error.code);
+	                                response.error('Wasnt able to save Old Recurring Sessions');
+	                            },
+	                        });
+	                    },
+	                    error: function(error) {
+	                    	console.log("wasnt able to save  " + error.code);
+	                        response.error('Wasnt able to save New Recurring Sessions');
+	                    },
+	                });
+	            }
+	            response.success('success');
+	        },
+	        error: function() {
+	            response.error('Wasnt able to find Recurring Sessions');
+	        }
+	    });
+    	}
+    }
+    //};
     response.success('Saved Reoccurred Sessions');
 
     Date.isLeapYear = function(year) {
