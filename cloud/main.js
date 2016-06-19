@@ -351,7 +351,8 @@ Parse.Cloud.define('updateRecurringSessions', function(request, response) {
 });
 
 Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
-	
+
+    var delayFoo = function(){	
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
     then.setHours(then.getHours() - 1);
@@ -421,15 +422,9 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
                             success: function(list) {
                                 console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
                                 //response.success('success');
-                                var delayFoo = function(){
-                                	Parse.Cloud.run('recurringSessionsProcess', {}, {
-					  success: function(success) {
-					    // ratings should be 4.5
-					  },
-					  error: function(error) {
-					  }
-					});
-                                };
+                                
+                                
+                                
 				delay(10000).then(delayFoo);
                             },
                             error: function(error) {
@@ -450,6 +445,8 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
             response.error('Wasnt able to find Recurring Sessions');
         }
     });
+    
+    };
     response.success('Saved Reoccurred Sessions');
 
     Date.isLeapYear = function(year) {
