@@ -430,7 +430,7 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
 					  }
 					});
                                 };
-				delay(1000).then(delayFoo);
+				delay(10000).then(delayFoo);
                             },
                             error: function(error) {
                             	console.log("wasnt able to save  " + error.code);
