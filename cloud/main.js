@@ -469,9 +469,9 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
         return this;
     };
 	
-	while(true){
+	// while(true){
 		delay(10000).then(delayFoo);
-	}
+	// }
 	var delayUntil;
 	var delayPromise;
 	
