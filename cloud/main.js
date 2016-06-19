@@ -462,9 +462,9 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
 	  _delay();
 	  return delayPromise;
 	  };
-     while(true){
-		delay(10000).then(delayFoo);
-	 }
+     //while(true){
+	delay(10000).then(delayFoo);
+	 //}
     response.success('Saved Reoccurred Sessions');
 
     Date.isLeapYear = function(year) {
