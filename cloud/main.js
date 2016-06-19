@@ -422,6 +422,13 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
                         Parse.Object.saveAll(edittedRecurringSessionsArray, {
                             success: function(list) {
                                 console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
+                                Parse.Cloud.run('recurringSessionsProcess', {}, {
+					  success: function(success) {
+					    // ratings should be 4.5
+					  },
+					  error: function(error) {
+					  }
+					});
                             },
                             error: function(error) {
                             	console.log("wasnt able to save  " + error.code);
@@ -463,7 +470,7 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
 	  return delayPromise;
 	  };
      //while(true){
-	delay(10000).then(delayFoo);
+	delay(30000).then(delayFoo);
 	 //}
     response.success('Saved Reoccurred Sessions');
 
