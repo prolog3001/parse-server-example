@@ -356,7 +356,7 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
     var timerTick = 1;
     while(true){
     	timerTick++;
-    	if(timerTick % 10000000){
+    	if(timerTick % 10000000 == 0){
     	    timerTick = 1;
 	    var excludeMinusOccurences = [0, -1, -2, -3];
 	    var then = new Date();
