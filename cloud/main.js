@@ -420,7 +420,7 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
                         Parse.Object.saveAll(edittedRecurringSessionsArray, {
                             success: function(list) {
                                 console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
-                                response.success('success');
+                                //response.success('success');
                                 var delayFoo = function(){
                                 	Parse.Cloud.run('recurringSessionsProcess', {}, {
 					  success: function(success) {
