@@ -443,6 +443,25 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
     });
     
     };
+    
+    var delayUntil;
+	var delayPromise;
+	
+	var _delay = function () {
+	   if (Date.now() >= delayUntil) {
+	      delayPromise.resolve();
+	      return;
+	   } else {
+	      process.nextTick(_delay);
+	   }
+	 }
+	
+	var delay = function(delayTime) {
+	  delayUntil = Date.now() + delayTime;
+	  delayPromise = new Parse.Promise();
+	  _delay();
+	  return delayPromise;
+	  };
      while(true){
 		delay(10000).then(delayFoo);
 	 }
@@ -471,27 +490,6 @@ Parse.Cloud.define('recurringSessionsProcess', function(request, response) {
         this.setDate(Math.min(n, this.getDaysInMonth()));
         return this;
     };
-	
-	
-	var delayUntil;
-	var delayPromise;
-	
-	var _delay = function () {
-	   if (Date.now() >= delayUntil) {
-	      delayPromise.resolve();
-	      return;
-	   } else {
-	      process.nextTick(_delay);
-	   }
-	 }
-	
-	var delay = function(delayTime) {
-	  delayUntil = Date.now() + delayTime;
-	  delayPromise = new Parse.Promise();
-	  _delay();
-	  return delayPromise;
-	  };
-	
 });
 	
 //NEW CODE FOR RE-OCCURRENCE
