@@ -368,7 +368,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     //console.log("emailBody " + emailBody);
     //console.log("emailSubject " + emailSubject);
     //console.log("fromName " + fromName);
-    //console.log("fromEmail " + fromEmail);
+    console.log("fromEmail " + fromEmail);
     //console.log("toEmail " + toEmail);
     //console.log("toName " + toName);    
 
