@@ -356,12 +356,16 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 
 
     var emailBody = request.params.emailBody;
+   
     var emailSubject = request.params.emailSubject;
     var fromName = request.params.fromName;
-    var fromEmail = request.params.fromEmail;
+    var fromEmail = "no-reply@medidatewith.me";
     var toEmail = request.params.toEmail;
     var toName = request.params.toName;
 
+    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    emailBody = emailBody.replace("Your friend", fromName);
+    
     var fromString = fromName + " <"+fromEmail+">";
     var toString = toName + " <"+toEmail+">"
 
