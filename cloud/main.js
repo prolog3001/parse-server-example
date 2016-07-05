@@ -365,10 +365,11 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var fromString = fromName + " <"+fromEmail+">";
     var toString = toName + " <"+toEmail+">"
 
+    //console.log("fromEmail " + fromEmail);
     //console.log("emailBody " + emailBody);
     //console.log("emailSubject " + emailSubject);
     //console.log("fromName " + fromName);
-    console.log("fromEmail " + fromEmail);
+    //console.log("fromEmail " + fromEmail);
     //console.log("toEmail " + toEmail);
     //console.log("toName " + toName);    
 
@@ -380,12 +381,6 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     };
 
     var simpleMailgunAdapter = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY || '', domain: process.env.DOMAIN || 'medidatewith.me'});
-   // //Mailgun - reset password
-   // var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
-	  //apiKey: process.env.MAILGUN_KEY || '',
-	  //domain: process.env.DOMAIN || 'medidatewith.me',
-	  //fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
-   // });
     simpleMailgunAdapter.messages().send(data, function (error, body) {
         if (error) {
             console.log("got an error in sendEmail: " + error);
