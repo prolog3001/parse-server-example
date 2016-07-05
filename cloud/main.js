@@ -379,7 +379,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
         html: emailBody
     };
 
-    mailgun.messages().send(data, function (error, body) {
+    simpleMailgunAdapter.messages().send(data, function (error, body) {
         if (error) {
             console.log("got an error in sendEmail: " + error);
             response.error(err);
