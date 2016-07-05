@@ -365,12 +365,12 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var fromString = fromName + " <"+fromEmail+">";
     var toString = toName + " <"+toEmail+">"
 
-    console.log("emailBody " + emailBody);
-    console.log("emailSubject " + emailSubject);
-    console.log("fromName " + fromName);
-    console.log("fromEmail " + fromEmail);
-    console.log("toEmail " + toEmail);
-    console.log("toName " + toName);    
+    //console.log("emailBody " + emailBody);
+    //console.log("emailSubject " + emailSubject);
+    //console.log("fromName " + fromName);
+    //console.log("fromEmail " + fromEmail);
+    //console.log("toEmail " + toEmail);
+    //console.log("toName " + toName);    
 
     var data = {
         from: fromString,
