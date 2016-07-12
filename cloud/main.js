@@ -358,16 +358,16 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var emailBody = request.params.emailBody;
     var emailSubject = request.params.emailSubject;
     var fromName = request.params.fromName;
-    var fromStudentEmail = request.params.studentEmail;
+    var studentEmail = request.params.studentEmail;
     var fromEmail = "no-reply@medidatewith.me";
     
     var toEmail = request.params.toEmail;
     var toName = request.params.toName;
     
-    var sessionDate = request.params.session_date;
-    var sessionTitle = request.params.session_title;
+    var sessionDate = request.params.sessionDate;
+    var sessionTitle = request.params.sessionTitle;
     
-    var studentReason = request.params.student_reason;
+    var studentReason = request.params.studentReason;
     
     switch (emailType) {
     	//Invite Friend
@@ -389,9 +389,9 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("student_name", fromName);
     	    emailBody = emailBody.replace("student_name", fromName);
-    	    emailBody = emailBody.replace("session_date", sessionDate);
-    	    emailBody = emailBody.replace("session_title", sessionTitle);
-    	    emailBody = emailBody.replace("student_reason", studentReason);
+    	    emailBody = emailBody.replace("sessionDate", sessionDate);
+    	    emailBody = emailBody.replace("sessionTitle", sessionTitle);
+    	    emailBody = emailBody.replace("studentReason", studentReason);
             console.log("#### Email:Request Refund");
             break;
         //Refunded
