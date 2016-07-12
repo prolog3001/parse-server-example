@@ -416,7 +416,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 	        to: toString,
 	        bcc: bccEmail,
 	        subject: emailSubject,
-	        h:Reply-To fromStudentString,
+	        h: fromStudentString,
 	        html: emailBody
 	    };
             console.log("#### Email:Request Refund");
