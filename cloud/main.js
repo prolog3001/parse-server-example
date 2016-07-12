@@ -353,7 +353,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 Parse.Cloud.define("sendEmail", function(request, response) {
 
     console.log("sendEmail " + new Date());
-    var emailType = request.params.email_type;
+    var emailType = request.params.emailType;
     
     var emailBody = request.params.emailBody;
     var emailSubject = request.params.emailSubject;
