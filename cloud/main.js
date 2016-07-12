@@ -372,6 +372,10 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     
     var data;
     
+    var fromString = fromName + " <"+fromEmail+">";
+    var fromStudentString = fromName + " <"+studentEmail+">";
+    var toString = toName + " <"+toEmail+">"
+    
     switch (emailType) {
     	//Invite Friend
         case 0:
@@ -403,14 +407,16 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("student_name", fromName);
     	    emailBody = emailBody.replace("student_name", fromName);
+    	    emailBody = emailBody.replace("student_email", studentEmail);
     	    emailBody = emailBody.replace("sessionDate", sessionDate);
     	    emailBody = emailBody.replace("sessionTitle", sessionTitle);
     	    emailBody = emailBody.replace("studentReason", studentReason);
 	    data = {
-	        from: fromString,
+	        from: fromStudentString,
 	        to: toString,
 	        bcc: bccEmail,
 	        subject: emailSubject,
+	        h:Reply-To: fromStudentString,
 	        html: emailBody
 	    };
             console.log("#### Email:Request Refund");
@@ -424,9 +430,6 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             return;
             break;
     }
-    
-    var fromString = fromName + " <"+fromEmail+">";
-    var toString = toName + " <"+toEmail+">"
 
     var simpleMailgunAdapter = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY || '', domain: process.env.DOMAIN || 'medidatewith.me'});
     simpleMailgunAdapter.messages().send(data, function (error, body) {
