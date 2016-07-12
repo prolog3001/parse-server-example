@@ -353,31 +353,59 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 Parse.Cloud.define("sendEmail", function(request, response) {
 
     console.log("sendEmail " + new Date());
-
-
+    var emailType = request.params.email_type;
+    
     var emailBody = request.params.emailBody;
-   
     var emailSubject = request.params.emailSubject;
     var fromName = request.params.fromName;
+    var fromStudentEmail = request.params.studentEmail;
     var fromEmail = "no-reply@medidatewith.me";
+    
     var toEmail = request.params.toEmail;
     var toName = request.params.toName;
-
-    if(toName && 0 !== toName.length)
-    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    emailBody = emailBody.replace("Your friend", fromName);
-    emailBody = emailBody.replace("Your friend", fromName);
+    
+    var sessionDate = request.params.session_date;
+    var sessionTitle = request.params.session_title;
+    
+    var studentReason = request.params.student_reason;
+    
+    switch (emailType) {
+    	//Invite Friend
+        case 0:
+            if(toName && 0 !== toName.length)
+    		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("Your friend", fromName);
+    	    emailBody = emailBody.replace("Your friend", fromName);
+            console.log("#### Email: Invite Friend");
+            break;
+        //Registered Seller
+        case 1:
+            pushTagKey = "user_followed_push";
+            console.log("#### Email: Registered Seller");
+            break;
+        //Request Refund
+        case 2:
+            if(toName && 0 !== toName.length)
+    		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("student_name", fromName);
+    	    emailBody = emailBody.replace("student_name", fromName);
+    	    emailBody = emailBody.replace("session_date", sessionDate);
+    	    emailBody = emailBody.replace("session_title", sessionTitle);
+    	    emailBody = emailBody.replace("student_reason", studentReason);
+            console.log("#### Email:Request Refund");
+            break;
+        //Refunded
+        case 3:
+            console.log("#### Email: Refunded");
+            break;
+        default:
+            console.log("#### NO TYPE");
+            return;
+            break;
+    }
     
     var fromString = fromName + " <"+fromEmail+">";
     var toString = toName + " <"+toEmail+">"
-
-    //console.log("fromEmail " + fromEmail);
-    //console.log("emailBody " + emailBody);
-    //console.log("emailSubject " + emailSubject);
-    //console.log("fromName " + fromName);
-    //console.log("fromEmail " + fromEmail);
-    //console.log("toEmail " + toEmail);
-    //console.log("toName " + toName);    
 
     var data = {
         from: fromString,
