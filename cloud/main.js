@@ -360,6 +360,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var fromName = request.params.fromName;
     var studentEmail = request.params.studentEmail;
     var fromEmail = "no-reply@medidatewith.me";
+    var bccEmail = "contact@medidateapp.com";
     
     var toEmail = request.params.toEmail;
     var toName = request.params.toName;
@@ -410,6 +411,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var data = {
         from: fromString,
         to: toString,
+        bcc: bccEmail,
         subject: emailSubject,
         html: emailBody
     };
