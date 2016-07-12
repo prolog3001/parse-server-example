@@ -408,15 +408,15 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     	    emailBody = emailBody.replace("student_name", fromName);
     	    emailBody = emailBody.replace("student_name", fromName);
     	    emailBody = emailBody.replace("student_email", studentEmail);
-    	    emailBody = emailBody.replace("sessionDate", sessionDate);
-    	    emailBody = emailBody.replace("sessionTitle", sessionTitle);
-    	    emailBody = emailBody.replace("studentReason", studentReason);
+    	    emailBody = emailBody.replace("session_date", sessionDate);
+    	    emailBody = emailBody.replace("session_title", sessionTitle);
+    	    emailBody = emailBody.replace("student_reason", studentReason);
 	    data = {
 	        from: fromStudentString,
 	        to: toString,
 	        bcc: bccEmail,
 	        subject: emailSubject,
-	        h:Reply-To: fromStudentString,
+	        h:Reply-To fromStudentString,
 	        html: emailBody
 	    };
             console.log("#### Email:Request Refund");
