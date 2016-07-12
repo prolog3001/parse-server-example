@@ -370,6 +370,8 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     
     var studentReason = request.params.studentReason;
     
+    var data;
+    
     switch (emailType) {
     	//Invite Friend
         case 0:
@@ -377,11 +379,22 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("Your friend", fromName);
     	    emailBody = emailBody.replace("Your friend", fromName);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
             console.log("#### Email: Invite Friend");
             break;
         //Registered Seller
         case 1:
-            pushTagKey = "user_followed_push";
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
             console.log("#### Email: Registered Seller");
             break;
         //Request Refund
@@ -393,6 +406,13 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     	    emailBody = emailBody.replace("sessionDate", sessionDate);
     	    emailBody = emailBody.replace("sessionTitle", sessionTitle);
     	    emailBody = emailBody.replace("studentReason", studentReason);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        bcc: bccEmail,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
             console.log("#### Email:Request Refund");
             break;
         //Refunded
@@ -407,14 +427,6 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     
     var fromString = fromName + " <"+fromEmail+">";
     var toString = toName + " <"+toEmail+">"
-
-    var data = {
-        from: fromString,
-        to: toString,
-        bcc: bccEmail,
-        subject: emailSubject,
-        html: emailBody
-    };
 
     var simpleMailgunAdapter = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY || '', domain: process.env.DOMAIN || 'medidatewith.me'});
     simpleMailgunAdapter.messages().send(data, function (error, body) {
