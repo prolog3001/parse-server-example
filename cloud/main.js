@@ -393,6 +393,10 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Registered Seller
         case 1:
+	    if(toName && 0 !== toName.length){
+	    	emailBody = emailBody.replace("user_name", toName);
+	    	emailBody = emailBody.replace("user_name", toName);
+	    }
 	    data = {
 	        from: fromString,
 	        to: toString,
