@@ -423,6 +423,16 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Refunded
         case 3:
+	    if(toName && 0 !== toName.length)
+	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("session_date", sessionDate);
+    	    emailBody = emailBody.replace("session_title", sessionTitle);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
             console.log("#### Email: Refunded");
             break;
         default:
