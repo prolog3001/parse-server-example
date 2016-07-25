@@ -405,8 +405,38 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 	    };
             console.log("#### Email: Registered Seller");
             break;
-        //Request Refund
+        //Paid
         case 2:
+	    if(toName && 0 !== toName.length)
+	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("session_date", sessionDate);
+    	    emailBody = emailBody.replace("session_title", sessionTitle);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        bcc: bccEmail,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
+            console.log("#### Email:Paid");
+            break;
+        //Payment Received
+        case 3:
+	    if(toName && 0 !== toName.length)
+	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("session_date", sessionDate);
+    	    emailBody = emailBody.replace("session_title", sessionTitle);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        bcc: bccEmail,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
+            console.log("#### Email: Payment Received");
+            break;
+        //Request Refund
+        case 4:
             if(toName && 0 !== toName.length)
     		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("student_name", fromName);
@@ -426,7 +456,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             console.log("#### Email:Request Refund");
             break;
         //Refunded
-        case 3:
+        case 5:
 	    if(toName && 0 !== toName.length)
 	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("session_date", sessionDate);
