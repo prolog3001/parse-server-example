@@ -368,6 +368,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var sessionDate = request.params.sessionDate;
     var sessionTitle = request.params.sessionTitle;
     var sessionPrice = request.params.sessionPrice;
+    var sessionCreator = request.params.sessionCreator;
     
     var studentReason = request.params.studentReason;
     
@@ -405,10 +406,10 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Paid
         case 2:
-	    emailBody = emailBody.replace("Hi,", "Hi " + fromName + ",");
+	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("session_price", sessionPrice);
     	    emailBody = emailBody.replace("session_date", sessionDate);
-    	    emailBody = emailBody.replace("session_creator", toName);
+    	    emailBody = emailBody.replace("session_creator", sessionCreator);
     	    emailBody = emailBody.replace("session_title", sessionTitle);
 	    data = {
 	        from: fromString,
