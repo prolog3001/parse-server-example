@@ -367,6 +367,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     
     var sessionDate = request.params.sessionDate;
     var sessionTitle = request.params.sessionTitle;
+    var sessionPrice = request.params.sessionPrice;
     
     var studentReason = request.params.studentReason;
     
