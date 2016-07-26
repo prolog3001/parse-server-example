@@ -379,8 +379,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     switch (emailType) {
     	//Invite Friend
         case 0:
-            if(toName && 0 !== toName.length)
-    		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("Your friend", fromName);
     	    emailBody = emailBody.replace("Your friend", fromName);
 	    data = {
@@ -393,10 +392,8 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Registered Seller
         case 1:
-	    if(toName && 0 !== toName.length){
-	    	emailBody = emailBody.replace("user_name", toName);
-	    	emailBody = emailBody.replace("user_name", toName);
-	    }
+	    emailBody = emailBody.replace("user_name", toName);
+	    emailBody = emailBody.replace("user_name", toName);
 	    data = {
 	        from: fromString,
 	        to: toString,
@@ -407,14 +404,14 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Paid
         case 2:
-	    if(toName && 0 !== toName.length)
-	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+	    emailBody = emailBody.replace("Hi,", "Hi " + fromName + ",");
+    	    emailBody = emailBody.replace("session_price", sessionPrice);
     	    emailBody = emailBody.replace("session_date", sessionDate);
+    	    emailBody = emailBody.replace("session_creator", toName);
     	    emailBody = emailBody.replace("session_title", sessionTitle);
 	    data = {
 	        from: fromString,
 	        to: toString,
-	        bcc: bccEmail,
 	        subject: emailSubject,
 	        html: emailBody
 	    };
@@ -422,14 +419,15 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Payment Received
         case 3:
-	    if(toName && 0 !== toName.length)
-	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("session_price", sessionPrice);
     	    emailBody = emailBody.replace("session_date", sessionDate);
     	    emailBody = emailBody.replace("session_title", sessionTitle);
+    	    emailBody = emailBody.replace("session_attender", fromName);
+    	    emailBody = emailBody.replace("session_price", sessionPrice);
 	    data = {
 	        from: fromString,
 	        to: toString,
-	        bcc: bccEmail,
 	        subject: emailSubject,
 	        html: emailBody
 	    };
@@ -437,8 +435,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Request Refund
         case 4:
-            if(toName && 0 !== toName.length)
-    		emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("student_name", fromName);
     	    emailBody = emailBody.replace("student_name", fromName);
     	    emailBody = emailBody.replace("student_email", studentEmail);
@@ -457,8 +454,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Refunded
         case 5:
-	    if(toName && 0 !== toName.length)
-	    	emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("session_date", sessionDate);
     	    emailBody = emailBody.replace("session_title", sessionTitle);
 	    data = {
