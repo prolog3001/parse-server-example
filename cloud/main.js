@@ -445,7 +445,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     	    emailBody = emailBody.replace("session_title", sessionTitle);
     	    emailBody = emailBody.replace("student_reason", studentReason);
 	    data = {
-	        from: fromStudentString,
+	        from: fromString,
 	        to: toString,
 	        bcc: bccEmail,
 	        subject: emailSubject,
