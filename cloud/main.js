@@ -500,9 +500,9 @@ Parse.Cloud.define("userJoinedFromSiteMail", function(request, response) {
     var data;
     
     var fromString = fromName + " <"+fromEmail+">";
-    var toString = toName + " <"+toEmail+">"
+    var toString = "Ophir and Matan" + " <"+toEmail+">"
     
-    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    emailBody = emailBody.replace("Hi,", "Hi " + "Ophir and Matan" + ",");
     	    emailBody = emailBody.replace("Your friend", fromName);
     	    emailBody = emailBody.replace("Your friend", fromName);
 	    data = {
