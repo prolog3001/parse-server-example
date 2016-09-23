@@ -485,3 +485,42 @@ Parse.Cloud.define("sendEmail", function(request, response) {
         }
     });
 });
+
+
+
+Parse.Cloud.define("userJoinedFromSiteMail", function(request, response) {
+
+    console.log("sendEmail " + new Date());
+    var emailBody = "User With Email:" + request.params.email + " Have Just Joined Using Medidate Site :)";
+    var emailSubject = "A New User Through the Site";
+    var fromName = "Medidate Website";
+    var fromEmail = "no-reply@medidatewith.me";
+    var toEmail = "contact@appums.com";
+    
+    var data;
+    
+    var fromString = fromName + " <"+fromEmail+">";
+    var toString = toName + " <"+toEmail+">"
+    
+    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("Your friend", fromName);
+    	    emailBody = emailBody.replace("Your friend", fromName);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        subject: emailSubject,
+	        text: emailBody
+	    };
+    console.log("#### Email: User Joined Through Site");
+
+    var simpleMailgunAdapter = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY || '', domain: process.env.DOMAIN || 'medidatewith.me'});
+    simpleMailgunAdapter.messages().send(data, function (error, body) {
+        if (error) {
+            console.log("got an error in sendEmail: " + error);
+            response.error(err);
+        }else {
+            console.log("email sent to " + toEmail + " " + new Date());
+            response.success("Email sent!");
+        }
+    });
+});
