@@ -162,6 +162,14 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
             pushQuery.equalTo("session_message_push", true);
             console.log("#### session_message_push");
             break;
+        case 6:
+            pushQuery.equalTo("session_message_push", true);
+            console.log("#### session_message_push");
+            break;
+        case 10:
+            pushQuery.equalTo("session_message_push", true);
+            console.log("#### session_message_push");
+            break;
         default:
             pushQuery.equalTo("session_changed_push", true);
             console.log("#### session_changed_push");
