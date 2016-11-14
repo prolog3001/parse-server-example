@@ -484,7 +484,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     	    emailBody = emailBody.replace("user_email_address", toEmail);
     	    emailBody = emailBody.replace("deep_link", deepLink);
     	    emailBody = emailBody.replace("session_title", sessionTitle);
-	    emailBody = emailBody.replace("mailgun_api_key", sessionTitle);
+	    emailBody = emailBody.replace("mailgun_api_key", process.env.MAILGUN_KEY);
 	    data = {
 	        from: fromString,
 	        to: toString,
