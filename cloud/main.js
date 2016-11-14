@@ -378,6 +378,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var sessionTitle = request.params.sessionTitle;
     var sessionPrice = request.params.sessionPrice;
     var sessionCreator = request.params.sessionCreator;
+    var deepLink = request.params.sessionDeepLink;
     
     var studentReason = request.params.studentReason;
     
@@ -475,6 +476,21 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 	        html: emailBody
 	    };
             console.log("#### Email: Refunded");
+            break;
+        //Invite to Session
+        case 6:
+	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+    	    emailBody = emailBody.replace("unsubscribe_tag", "session_email_invite");//changes according to email type
+    	    emailBody = emailBody.replace("user_email_address", toEmail);
+    	    emailBody = emailBody.replace("deep_link", deepLink);
+    	    emailBody = emailBody.replace("session_title", sessionTitle);
+	    data = {
+	        from: fromString,
+	        to: toString,
+	        subject: emailSubject,
+	        html: emailBody
+	    };
+            console.log("#### Email: Invitation to Session Sent");
             break;
         default:
             console.log("#### NO TYPE");
