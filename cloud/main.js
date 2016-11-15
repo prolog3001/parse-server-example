@@ -479,6 +479,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Invite to Session
         case 6:
+	    var tag = "session_email_invite";	    
 	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
     	    emailBody = emailBody.replace("user_email_address", toEmail);
     	    emailBody = emailBody.replace("session_title", sessionTitle);
@@ -488,7 +489,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 	        to: toString,
 	        subject: emailSubject,
 	        html: emailBody,
-	    	o:tag: "session_email_invite"
+	    	o:tag: tag
 	    };
             console.log("#### Email: Invitation to Session Sent");
             break;
