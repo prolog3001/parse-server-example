@@ -477,9 +477,25 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Refunded");
             break;
-            //Invite to Session
+        //Invite to Session
         case 6:
             var mailTag = "session_email_invite";
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("user_email_address", toEmail);
+            emailBody = emailBody.replace("session_title", sessionTitle);
+            emailBody = emailBody.replace("mailgun_api_key", process.env.MAILGUN_KEY);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody,
+                "o:tag": mailTag
+            };
+            console.log("#### Email: Invitation to Session Sent");
+            break;
+        //New Attender to Session
+        case 7:
+            var mailTag = "session_email_joined";
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
             emailBody = emailBody.replace("user_email_address", toEmail);
             emailBody = emailBody.replace("session_title", sessionTitle);
