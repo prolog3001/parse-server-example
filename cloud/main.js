@@ -91,18 +91,20 @@ Parse.Cloud.define('addMessageToUserRelationMessages', function(request, respons
 
     var Message = Parse.Object.extend("Message");
     var params = request.params;
-    var chatOwner = new Parse.User({id:params.chatOwnerId}); //id of user sent the message
+    var chatOwner = new Parse.User({
+        id: params.chatOwnerId
+    }); //id of user sent the message
     var message = Message.createWithoutData(params.messageId); //id of new message
-   
+
     var relation = chatOwner.relation("messages");
     relation.add(message);
 
     chatOwner.save(null, {
-        success:function(){
-        	response.success("Message was saved to relation");
+        success: function() {
+            response.success("Message was saved to relation");
         },
-        error:function(error){
-        	response.error("Error saving message" + error.code);
+        error: function(error) {
+            response.error("Error saving message" + error.code);
         }
     });
 });
@@ -261,25 +263,23 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 var newSession = results[i].clone();
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
-                
+
                 var date = new Date(newSession.get("date").getTime());
                 switch (newSession.get("occurrence")) {
                     case 1:
                         do {
-                            if(dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0]!== 0)
-                	    {
-                	    	console.log("This Daily has sessions days and   " + dailyDaysArray);
-                	    	do{
-                	    	    date.setDate(date.getDate() + 1);
-	                	    var dayNumber = date.getDay() + 1;
-	                	    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-                	    	}while(dailyDaysArray.indexOf(dayNumber) === -1)
-                	    }else
-                	    {
-                	    	console.log("NO DAYS DEFINED OR WEEKLY");
-                	    	date.setDate(date.getDate() + 1);
-                	    }
-                	    //date.setDate(date.getDate() + 1);
+                            if (dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0] !== 0) {
+                                console.log("This Daily has sessions days and   " + dailyDaysArray);
+                                do {
+                                    date.setDate(date.getDate() + 1);
+                                    var dayNumber = date.getDay() + 1;
+                                    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
+                                } while (dailyDaysArray.indexOf(dayNumber) === -1)
+                            } else {
+                                console.log("NO DAYS DEFINED OR WEEKLY");
+                                date.setDate(date.getDate() + 1);
+                            }
+                            //date.setDate(date.getDate() + 1);
                         } while (date <= then);
                         break;
 
@@ -314,13 +314,13 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 response.success('success');
                             },
                             error: function(error) {
-                            	console.log("wasnt able to save  " + error.code);
+                                console.log("wasnt able to save  " + error.code);
                                 response.error('Wasnt able to save Old Recurring Sessions');
                             },
                         });
                     },
                     error: function(error) {
-                    	console.log("wasnt able to save  " + error.code);
+                        console.log("wasnt able to save  " + error.code);
                         response.error('Wasnt able to save New Recurring Sessions');
                     },
                 });
@@ -363,134 +363,134 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 
     console.log("sendEmail " + new Date());
     var emailType = request.params.emailType;
-    
+
     var emailBody = request.params.emailBody;
     var emailSubject = request.params.emailSubject;
     var fromName = request.params.fromName;
     var studentEmail = request.params.studentEmail;
     var fromEmail = "no-reply@medidatewith.me";
     var bccEmail = "contact@medidateapp.com";
-    
+
     var toEmail = request.params.toEmail;
     var toName = request.params.toName;
-    
+
     var sessionDate = request.params.sessionDate;
     var sessionTitle = request.params.sessionTitle;
     var sessionPrice = request.params.sessionPrice;
     var sessionCreator = request.params.sessionCreator;
     var deepLink = request.params.sessionDeepLink;
-    
+
     var studentReason = request.params.studentReason;
-    
+
     var data;
-    
-    var fromString = fromName + " <"+fromEmail+">";
-    var fromStudentString = fromName + " <"+studentEmail+">";
-    var toString = toName + " <"+toEmail+">"
-    
+
+    var fromString = fromName + " <" + fromEmail + ">";
+    var fromStudentString = fromName + " <" + studentEmail + ">";
+    var toString = toName + " <" + toEmail + ">"
+
     switch (emailType) {
-    	//Invite Friend
+        //Invite Friend
         case 0:
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    	    emailBody = emailBody.replace("Your friend", fromName);
-    	    emailBody = emailBody.replace("Your friend", fromName);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        html: emailBody
-	    };
+            emailBody = emailBody.replace("Your friend", fromName);
+            emailBody = emailBody.replace("Your friend", fromName);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
             console.log("#### Email: Invite Friend");
             break;
-        //Registered Seller
+            //Registered Seller
         case 1:
-	    emailBody = emailBody.replace("user_name", toName);
-	    emailBody = emailBody.replace("user_name", toName);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        html: emailBody
-	    };
+            emailBody = emailBody.replace("user_name", toName);
+            emailBody = emailBody.replace("user_name", toName);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
             console.log("#### Email: Registered Seller");
             break;
-        //Paid
+            //Paid
         case 2:
-	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    	    emailBody = emailBody.replace("session_price", sessionPrice);
-    	    emailBody = emailBody.replace("session_date", sessionDate);
-    	    emailBody = emailBody.replace("session_creator", sessionCreator);
-    	    emailBody = emailBody.replace("session_title", sessionTitle);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        html: emailBody
-	    };
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("session_price", sessionPrice);
+            emailBody = emailBody.replace("session_date", sessionDate);
+            emailBody = emailBody.replace("session_creator", sessionCreator);
+            emailBody = emailBody.replace("session_title", sessionTitle);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
             console.log("#### Email:Paid");
             break;
-        //Payment Received
+            //Payment Received
         case 3:
-	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    	    emailBody = emailBody.replace("session_price", sessionPrice);
-    	    emailBody = emailBody.replace("session_date", sessionDate);
-    	    emailBody = emailBody.replace("session_title", sessionTitle);
-    	    emailBody = emailBody.replace("session_attender", fromName);
-    	    emailBody = emailBody.replace("session_price", sessionPrice);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        html: emailBody
-	    };
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("session_price", sessionPrice);
+            emailBody = emailBody.replace("session_date", sessionDate);
+            emailBody = emailBody.replace("session_title", sessionTitle);
+            emailBody = emailBody.replace("session_attender", fromName);
+            emailBody = emailBody.replace("session_price", sessionPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
             console.log("#### Email: Payment Received");
             break;
-        //Request Refund
+            //Request Refund
         case 4:
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    	    emailBody = emailBody.replace("student_name", fromName);
-    	    emailBody = emailBody.replace("student_name", fromName);
-    	    emailBody = emailBody.replace("student_email", studentEmail);
-    	    emailBody = emailBody.replace("session_date", sessionDate);
-    	    emailBody = emailBody.replace("session_title", sessionTitle);
-    	    emailBody = emailBody.replace("student_reason", studentReason);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        bcc: bccEmail,
-	        subject: emailSubject,
-	        h: "Reply-To" + fromStudentString,
-	        html: emailBody
-	    };
+            emailBody = emailBody.replace("student_name", fromName);
+            emailBody = emailBody.replace("student_name", fromName);
+            emailBody = emailBody.replace("student_email", studentEmail);
+            emailBody = emailBody.replace("session_date", sessionDate);
+            emailBody = emailBody.replace("session_title", sessionTitle);
+            emailBody = emailBody.replace("student_reason", studentReason);
+            data = {
+                from: fromString,
+                to: toString,
+                bcc: bccEmail,
+                subject: emailSubject,
+                h: "Reply-To" + fromStudentString,
+                html: emailBody
+            };
             console.log("#### Email:Request Refund");
             break;
-        //Refunded
+            //Refunded
         case 5:
-	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    	    emailBody = emailBody.replace("session_date", sessionDate);
-    	    emailBody = emailBody.replace("session_title", sessionTitle);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        html: emailBody
-	    };
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("session_date", sessionDate);
+            emailBody = emailBody.replace("session_title", sessionTitle);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
             console.log("#### Email: Refunded");
             break;
-        //Invite to Session
+            //Invite to Session
         case 6:
-	    var tag = "session_email_invite";	    
-	    emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
-    	    emailBody = emailBody.replace("user_email_address", toEmail);
-    	    emailBody = emailBody.replace("session_title", sessionTitle);
-	    emailBody = emailBody.replace("mailgun_api_key", process.env.MAILGUN_KEY);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        html: emailBody,
-	    	o:tag: tag
-	    };
+            var mailTag = "session_email_invite";
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("user_email_address", toEmail);
+            emailBody = emailBody.replace("session_title", sessionTitle);
+            emailBody = emailBody.replace("mailgun_api_key", process.env.MAILGUN_KEY);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody,
+                "o:tag": mailTag
+            };
             console.log("#### Email: Invitation to Session Sent");
             break;
         default:
@@ -499,12 +499,15 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
     }
 
-    var simpleMailgunAdapter = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY || '', domain: process.env.DOMAIN || 'medidatewith.me'});
-    simpleMailgunAdapter.messages().send(data, function (error, body) {
+    var simpleMailgunAdapter = require('mailgun-js')({
+        apiKey: process.env.MAILGUN_KEY || '',
+        domain: process.env.DOMAIN || 'medidatewith.me'
+    });
+    simpleMailgunAdapter.messages().send(data, function(error, body) {
         if (error) {
             console.log("got an error in sendEmail: " + error);
             response.error(err);
-        }else {
+        } else {
             console.log("email sent to " + toEmail + " " + new Date());
             response.success("Email sent!");
         }
@@ -521,29 +524,32 @@ Parse.Cloud.define("userJoinedFromSiteMail", function(request, response) {
     var fromName = "Medidate Website";
     var fromEmail = "no-reply@medidatewith.me";
     var toEmail = "contact@appums.com";
-    
+
     var data;
-    
-    var fromString = fromName + " <"+fromEmail+">";
-    var toString = "Ophir and Matan" + " <"+toEmail+">"
-    
+
+    var fromString = fromName + " <" + fromEmail + ">";
+    var toString = "Ophir and Matan" + " <" + toEmail + ">"
+
     emailBody = emailBody.replace("Hi,", "Hi " + "Ophir and Matan" + ",");
-    	    emailBody = emailBody.replace("Your friend", fromName);
-    	    emailBody = emailBody.replace("Your friend", fromName);
-	    data = {
-	        from: fromString,
-	        to: toString,
-	        subject: emailSubject,
-	        text: emailBody
-	    };
+    emailBody = emailBody.replace("Your friend", fromName);
+    emailBody = emailBody.replace("Your friend", fromName);
+    data = {
+        from: fromString,
+        to: toString,
+        subject: emailSubject,
+        text: emailBody
+    };
     console.log("#### Email: User Joined Through Site");
 
-    var simpleMailgunAdapter = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY || '', domain: process.env.DOMAIN || 'medidatewith.me'});
-    simpleMailgunAdapter.messages().send(data, function (error, body) {
+    var simpleMailgunAdapter = require('mailgun-js')({
+        apiKey: process.env.MAILGUN_KEY || '',
+        domain: process.env.DOMAIN || 'medidatewith.me'
+    });
+    simpleMailgunAdapter.messages().send(data, function(error, body) {
         if (error) {
             console.log("got an error in sendEmail: " + error);
             response.error(err);
-        }else {
+        } else {
             console.log("email sent to " + toEmail + " " + new Date());
             response.success("Email sent!");
         }
