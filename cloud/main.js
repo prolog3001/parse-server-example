@@ -362,6 +362,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 Parse.Cloud.define("sendEmail", function(request, response) {
 
     console.log("sendEmail " + new Date());
+    var mailTag = request.params.tag; //tag of email if needed (fro unsubscribers)
+    
     var emailType = request.params.emailType;
 
     var emailBody = request.params.emailBody;
@@ -479,7 +481,6 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //Invite to Session
         case 6:
-            var mailTag = "session_email_invite";
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
             emailBody = emailBody.replace("user_email_address", toEmail);
             emailBody = emailBody.replace("session_title", sessionTitle);
@@ -495,7 +496,6 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
         //New Attender to Session
         case 7:
-            var mailTag = "session_email_joined";
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
             emailBody = emailBody.replace("user_email_address", toEmail);
             emailBody = emailBody.replace("session_title", sessionTitle);
