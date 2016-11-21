@@ -248,31 +248,23 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
     var params = request.params;
     var userId = params.userId;
     var rate = params.rate;
+    
+    console.log("Put User Rating - " + rate);
+    console.log("On User - " + userId);
     var query = new Parse.Query(Parse.User);
     query.equalTo('objectId', userId);
-    query.find({
-        success: function(results) {
-            response.success(status);
-            var user = results[0];
-            user.set('rate', rate);
-            user.save(null, {
-                success: function(listing) {
-                    console.log("#### Saved User Rate");
-                    response.success('success');
-                },
-                error: function(error) {
-                    console.log("#### Did Not Save User...");
-                    response.error(error);
-                }
-            });
-        },
-
-        error: function() {
-
-            status = "No pictures exist for userId " + request.params.user;
-            response.error(status);
-        }
-    });
+    query.first({
+      success: function(object) 
+      {
+        object.set("rate", rate);
+        object.save();
+        response.success("Success");
+      },
+    error: function(error) {
+      alert("Error: " + error.code + " " + error.message);
+      response.error("Error");
+    }
+  });
 });
 
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
