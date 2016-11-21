@@ -242,6 +242,39 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
     });
 });
 
+Parse.Cloud.define('saveUserRate', function(request, response) {
+    Parse.Cloud.useMasterKey();
+
+    var params = request.params;
+    var userId = request.userId;
+    var rate = params.rate;
+    var query = new Parse.Query("Users");
+    query.equalTo("objectId", userId);
+    query.find({
+        success: function(results) {
+            response.success(status);
+            var user = results[0];
+            user.set('rate', rate);
+            user.save(null, {
+                success: function(listing) {
+                    console.log("#### Saved User Rate");
+                    response.success('success');
+                },
+                error: function(error) {
+                    console.log("#### Did Not Save User...");
+                    response.error(error);
+                }
+            });
+        },
+
+        error: function() {
+
+            status = "No pictures exist for userId " + request.params.user;
+            response.error(status);
+        }
+    });
+});
+
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 
     var excludeMinusOccurences = [0, -1, -2, -3];
@@ -363,7 +396,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 
     console.log("sendEmail " + new Date());
     var mailTag = request.params.tag; //tag of email if needed (fro unsubscribers)
-    
+
     var emailType = request.params.emailType;
 
     var emailBody = request.params.emailBody;
@@ -479,7 +512,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Refunded");
             break;
-        //Invite to Session
+            //Invite to Session
         case 6:
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
             emailBody = emailBody.replace("user_email_address", toEmail);
@@ -494,7 +527,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Invitation to Session Sent");
             break;
-        //New Attender to Session
+            //New Attender to Session
         case 7:
             emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
             emailBody = emailBody.replace("user_email_address", toEmail);
