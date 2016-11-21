@@ -248,7 +248,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
     var params = request.params;
     var userId = request.userId;
     var rate = params.rate;
-    var query = new Parse.Query("Users");
+    var query = new Parse.Query(Parse.User);
     query.equalTo("objectId", userId);
     query.find({
         success: function(results) {
