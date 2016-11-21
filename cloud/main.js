@@ -246,7 +246,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
     Parse.Cloud.useMasterKey();
 
     var params = request.params;
-    var userId = request.userId;
+    var userId = params.userId;
     var rate = params.rate;
     var query = new Parse.Query(Parse.User);
     query.equalTo("objectId", userId);
