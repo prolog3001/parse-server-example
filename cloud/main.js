@@ -537,7 +537,7 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
             }
 //           Parse.Object.saveAll(users, {
 //             success: function(list) {
-                console.log("Saved all users and qualifications - " + list.length);
+                console.log("Saved all users and qualifications - " + users.length);
 //             },
 //             error: function(error) {
 //                 console.log("Erro saving all users and qualifications..");
