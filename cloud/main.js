@@ -520,7 +520,7 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     Parse.Cloud.useMasterKey();
     console.log("saveQualificationsToIndex");
     
-    var qualifications = ['Practitioner', 'Instructor', 'Teacher', 'Master', 'Studio'];
+    var qualifications = ['', 'Practitioner', 'Instructor', 'Teacher', 'Master', 'Studio'];
     var query = new Parse.Query(Parse.User);
     query.exists('qualification');
     query.find({
