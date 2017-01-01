@@ -518,13 +518,14 @@ Parse.Cloud.define("userJoinedFromSiteMail", function(request, response) {
 
 Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     Parse.Cloud.useMasterKey();
+    console.log("saveQualificationsToIndex");
     
     var qualifications = ['Practitioner', 'Instructor', 'Teacher', 'Master', 'Studio'];
     var query = new Parse.Query(Parse.User);
     query.exists('qualification');
     query.find({
-      success: function(users) {
-        for (var i = 0; i < users.length; i++) {
+        success: function(users) {
+            for (var i = 0; i < users.length; i++) {
             for (var j = 0; j < qualifications.length; j++) {
                 if(users[i].get('qualification').equals(qualifications[j])){
                     users[i].set("qualifications", j);
@@ -542,10 +543,10 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
 //             },
 //           });
         response.success("Success");
-      },
-    error: function(error) {
-      alert("Error: " + error.code + " " + error.message);
-      response.error("Error");
-    }
-  });
+        },
+        error: function(error) {
+            console.log("#### Error: " + error.code + " " + error.message);
+            response.error(error);
+        }
+    });
 });
