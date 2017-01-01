@@ -526,15 +526,15 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     query.find({
       success: function(results) {
         console.log("Found...");
-          for (var i = 0; i < users.length; i++) {
-                for (var j = 0; j < qualifications.length; j++) {
-                    if(users[i].get('qualification').equals(qualifications[j])){
-                        users[i].set("qualifications", j);
-                        //console.log("Qualification index - " + j);
-                        break;
-                    }
-                }
-            }
+//           for (var i = 0; i < users.length; i++) {
+//                 for (var j = 0; j < qualifications.length; j++) {
+//                     if(users[i].get('qualification').equals(qualifications[j])){
+//                         users[i].set("qualifications", j);
+//                         //console.log("Qualification index - " + j);
+//                         break;
+//                     }
+//                 }
+//             }
 //           Parse.Object.saveAll(users, {
 //             success: function(list) {
                 console.log("Saved all users and qualifications - " + users.length);
