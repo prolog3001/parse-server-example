@@ -529,7 +529,7 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
             for (var j = 0; j < qualifications.length; j++) {
                 if(users[i].get('qualification').equals(qualifications[j])){
                     users[i].set("qualifications", j);
-                    console.log("Qualification index - " + j);
+                    //console.log("Qualification index - " + j);
                     break;
                 }
             }
