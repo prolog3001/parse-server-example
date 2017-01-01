@@ -522,31 +522,41 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     
     var qualifications = ['', 'Practitioner', 'Instructor', 'Teacher', 'Master', 'Studio'];
     var query = new Parse.Query(Parse.User);
-    //query.exists('qualification');
+    query.exists('qualification');
     query.find({
-        success: function(users) {
-            for (var i = 0; i < users.length; i++) {
-                for (var j = 0; j < qualifications.length; j++) {
-                    if(users[i].get('qualification').equals(qualifications[j])){
-                        users[i].set("qualifications", j);
-                        //console.log("Qualification index - " + j);
-                        break;
-                    }
-                }
-            }
-//           Parse.Object.saveAll(users, {
-//             success: function(list) {
-                console.log("Saved all users and qualifications - " + list.length);
-//             },
-//             error: function(error) {
-//                 console.log("Erro saving all users and qualifications..");
-//             },
-//           });
+      success: function(results) {
+        console.log("Found...");
         response.success("Success");
-        },
-        error: function(error) {
-            console.log("#### Error: " + error.code + " " + error.message);
-            response.error(error);
-        }
+      },
+
+      error: function(error) {
+        response.error(error);
+      }
     });
+//     query.find({
+//         success: function(users) {
+//             for (var i = 0; i < users.length; i++) {
+//                 for (var j = 0; j < qualifications.length; j++) {
+//                     if(users[i].get('qualification').equals(qualifications[j])){
+//                         users[i].set("qualifications", j);
+//                         //console.log("Qualification index - " + j);
+//                         break;
+//                     }
+//                 }
+//             }
+// //           Parse.Object.saveAll(users, {
+// //             success: function(list) {
+//                 console.log("Saved all users and qualifications - " + list.length);
+// //             },
+// //             error: function(error) {
+// //                 console.log("Erro saving all users and qualifications..");
+// //             },
+// //           });
+//         response.success("Success");
+//         },
+//         error: function(error) {
+//             console.log("#### Error: " + error.code + " " + error.message);
+//             response.error(error);
+//         }
+//     });
 });
