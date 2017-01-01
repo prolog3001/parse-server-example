@@ -523,12 +523,13 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     var qualifications = ['', 'Practitioner', 'Instructor', 'Teacher', 'Master', 'Studio'];
     var query = new Parse.Query(Parse.User);
     query.exists('qualification');
+    query.limit(1000);
     query.find({
       success: function(users) {
         console.log("Found..." + users.length);
           for (var i = 0; i < users.length; i++) {
                 for (var j = 0; j < qualifications.length; j++) {
-                    if(users[i].get('qualification').equals(qualifications[j])){
+                    if(users[i].get('qualification') == (qualifications[j])){
                         users[i].set("qualifications", j);
                         //console.log("Qualification index - " + j);
                         break;
