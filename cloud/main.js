@@ -553,7 +553,44 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
                 console.log("Saved all users and qualifications - " + users.length);
             },
             error: function(error) {
-                console.log("Erro saving all users and qualifications..");
+                console.log("Error saving all users and qualifications..");
+            },
+          });
+        response.success("Success");
+      },
+
+      error: function(error) {
+        response.error(error);
+      }
+    });   
+});
+
+Parse.Cloud.define('saveGenderToIndex', function(request, response) {
+    Parse.Cloud.useMasterKey();
+    console.log("saveGenderToIndex");
+    
+    var genders = ['Male', 'Female'];
+    var query = new Parse.Query(Parse.User);
+    query.exists('sex');
+    query.limit(1000);
+    query.find({
+      success: function(users) {
+        console.log("Found..." + users.length);
+          for (var i = 0; i < users.length; i++) {
+                for (var j = 0; j < qualifications.length; j++) {
+                    if(users[i].get('sex') == (genders[j])){
+                        users[i].set("gender", j);
+                        console.log("Gender index - " + j);
+                        break;
+                    }
+                }
+            }
+          Parse.Object.saveAll(users, {
+            success: function(list) {
+                console.log("Saved all users and genders - " + users.length);
+            },
+            error: function(error) {
+                console.log("Error saving all users and genders..");
             },
           });
         response.success("Success");
