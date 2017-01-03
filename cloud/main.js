@@ -455,7 +455,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             break;
             //Won Campaign
         case 8:
-            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("Congratulations", "Congratulations" + " " + toName);
             data = {
                 from: fromString,
                 to: toString,
