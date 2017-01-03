@@ -463,7 +463,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
                 subject: emailSubject,
                 html: emailBody
             };
-            console.log("#### Email: Refunded");
+            console.log("#### Email: Winning Campaign");
             break;
         default:
             console.log("#### NO TYPE");
