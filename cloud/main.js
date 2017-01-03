@@ -453,6 +453,17 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Invitation to Session Sent");
             break;
+            //Won Campaign
+        case 8:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email: Refunded");
+            break;
         default:
             console.log("#### NO TYPE");
             return;
