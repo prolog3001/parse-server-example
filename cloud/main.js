@@ -355,6 +355,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             data = {
                 from: fromString,
                 to: toString,
+                bcc: bccEmail,
                 subject: emailSubject,
                 html: emailBody
             };
