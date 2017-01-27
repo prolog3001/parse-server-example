@@ -39,6 +39,8 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
     var message_object_id = jsonObject.message_object_id;
     var push_notification_id = jsonObject.push_notification_id;
     var push_object_id = jsonObject.push_object_id;
+    var ios_badgeType = jsonObject.ios_badgeType;
+    var ios_badgeCount = jsonObject.ios_badgeCount;
 
     console.log("#### Push Type " + push_type);
 
@@ -112,6 +114,8 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
             message_object_id: message_object_id,
             push_notification_id: push_notification_id,
             push_object_id: push_object_id,
+            ios_badgeType: ios_badgeType,
+            ios_badgeCount: ios_badgeCount,
             custom: custom
         }
     }, {
