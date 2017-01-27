@@ -117,7 +117,8 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
             push_object_id: push_object_id,
             content_available: content_available,
             ios_badgeType: ios_badgeType,
-            ios_badgeCount: ios_badgeCount, 
+            ios_badgeCount: ios_badgeCount,
+            badge: 1,
             custom: custom
         }
     }, {
