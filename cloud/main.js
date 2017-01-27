@@ -112,7 +112,7 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
             message_object_id: message_object_id,
             push_notification_id: push_notification_id,
             push_object_id: push_object_id,
-            badge: 1,
+            badge: 'Increment',
             custom: custom
         }
     }, {
