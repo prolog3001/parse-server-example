@@ -42,6 +42,8 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
     var ios_badgeType = jsonObject.ios_badgeType;
     var ios_badgeCount = jsonObject.ios_badgeCount;
 
+    console.log("#### Badge Type " + ios_badgeType);
+    console.log("#### Badge Count " + ios_badgeCount);
     console.log("#### Push Type " + push_type);
 
     //Filter only users with thier ids in it
