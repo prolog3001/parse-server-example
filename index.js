@@ -32,7 +32,7 @@ var api = new ParseServer({
   appName: 'Medidate',
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || process.env.ALT_SERVER_URL,  // Don't forget to change to https if needed
-  publicServerURL: process.env.PUBLIC_SERVER_URL || process.env.ALT_PUBLIC_SERVER_URLL,
+  publicServerURL: process.env.PUBLIC_SERVER_URL || process.env.ALT_PUBLIC_SERVER_URL,
   verifyUserEmails: true,
   emailAdapter: simpleMailgunAdapter,
   push: {
