@@ -352,6 +352,8 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var sessionTitle = request.params.sessionTitle;
     var sessionPrice = request.params.sessionPrice;
     var sessionCreator = request.params.sessionCreator;
+    var paidTitle = request.params.paidTitle;
+    var paidPrice = request.params.paidPrice;
     var deepLink = request.params.sessionDeepLink;
 
     var studentReason = request.params.studentReason;
@@ -493,6 +495,32 @@ Parse.Cloud.define("sendEmail", function(request, response) {
                 html: emailBody
             };
             console.log("#### Email: Winning Campaign");
+            break;
+            //Advanced Paid
+        case 9:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("teacher_title", paidTitle);
+            emailBody = emailBody.replace("paid_price", paidPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email:Advanced Paid");
+            break;
+            //Teacher Payment Received
+        case 10:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("student_title", paidTitle);
+            emailBody = emailBody.replace("paid_price", paidPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email: Teacher Payment Received");
             break;
         default:
             console.log("#### NO TYPE");
