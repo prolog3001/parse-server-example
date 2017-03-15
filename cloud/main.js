@@ -1,3 +1,26 @@
+Parse.Cloud.define('removeTeacherFromStudio', function(request, response) {
+
+    var params = request.params;
+    var studio = new Parse.User({
+        id: params.studioId
+    }); //id of studio
+    var teacher = new Parse.User({
+        id: params.userToRemoveId
+    }); //id of teacher
+
+    var relation = studio.relation("associated_teachers");
+    relation.remove(teacher);
+
+    studio.save(null, {
+        success: function() {
+            response.success("Teacher was removed from studio");
+        },
+        error: function(error) {
+            response.error("Error saving message" + error.code);
+        }
+    });
+});
+
 Parse.Cloud.define('addMessageToUserRelationMessages', function(request, response) {
 
     var Message = Parse.Object.extend("Message");
