@@ -526,6 +526,60 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Teacher Payment Received");
             break;
+            
+            //Punch Ticket Paid
+        case 11:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("teacher_title", paidTitle);
+            emailBody = emailBody.replace("paid_price", paidPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email:Advanced Paid");
+            break;
+            //Teacher Punch Ticket Payment Received
+        case 12:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("student_title", paidTitle);
+            emailBody = emailBody.replace("paid_price", paidPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email: Teacher Payment Received");
+            break;
+            
+            //Registered Membership
+        case 13:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("teacher_title", paidTitle);
+            emailBody = emailBody.replace("paid_price", paidPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email:Advanced Paid");
+            break;
+            //Teacher Registered Membership of Student
+        case 14:
+            emailBody = emailBody.replace("Hi,", "Hi " + toName + ",");
+            emailBody = emailBody.replace("student_title", paidTitle);
+            emailBody = emailBody.replace("paid_price", paidPrice);
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email: Teacher Payment Received");
+            break;
         default:
             console.log("#### NO TYPE");
             return;
