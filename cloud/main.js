@@ -21,6 +21,28 @@ Parse.Cloud.define('removeTeacherFromStudio', function(request, response) {
     });
 });
 
+Parse.Cloud.define('addStudentToRequestedUserRelation', function(request, response) {
+    var params = request.params;
+    var teacher = new Parse.User({
+        id: params.teacherId //id of teacher
+    });
+    var student = new Parse.User({
+        id: params.studentId //id of student
+    })
+
+    var relation = teacher.relation("requested_students");
+    relation.add(student);
+
+    teacher.save(null, {
+        success: function() {
+            response.success("Student was saved to relation");
+        },
+        error: function(error) {
+            response.error("Error saving student" + error.code);
+        }
+    });
+});
+
 Parse.Cloud.define('addMessageToUserRelationMessages', function(request, response) {
 
     var Message = Parse.Object.extend("Message");
