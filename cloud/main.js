@@ -308,7 +308,41 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                         console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                         Parse.Object.saveAll(edittedRecurringSessionsArray, {
                             success: function(list) {
-                                console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
+                                 console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
+                                
+                                var dictNewAndEdited = []; // create an empty array
+                                for (var i = 0; i < edittedRecurringSessionsArray.length; i++) {
+                                    dictNewAndEdited.push({
+                                                key:   edittedRecurringSessionsArray[i].get("objectId"),
+                                                value: newRecurringSessionsArray[i]
+                                            });
+                                }
+                                var planSessionQuery = new Parse.Query("PlanSessionRelation");
+                                planSessionQuery.containedIn("session", edittedRecurringSessionsArray);
+                                planSessionQuery.limit(1000);
+                                planSessionQuery.find({
+                                    success: function(planSessions) 
+                                      {
+                                        for (var i = 0; i < planSessions.length; ++i) {
+                                            planSessions.set("session",dictNewAndEdited[planSessions[i].get("objectId")]);
+                                        }
+                                        Parse.Object.saveAll(planSessions, {
+                                            success: function(list) {
+
+                                                response.success('success');
+                                            },
+                                            error: function(error) {
+                                                console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
+                                                response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
+                                            },
+                                        });
+                                          
+                                      },
+                                    error: function(error) {
+                                      console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
+                                      response.error('wasnt able to find PlanSessionRelation Table');
+                                    }
+                                });
                                 response.success('success');
                             },
                             error: function(error) {
