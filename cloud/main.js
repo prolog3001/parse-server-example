@@ -313,9 +313,9 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 var dictNewAndEdited = {}; // create an empty dictionary
                                 console.log("#### Succesfully created empty dictionary...");
                                 for (var i = 0; i < editedSessionList.length; i++) {
-									var sessionObjectId = editedSessionList[i].get("objectId");
+									var sessionObjectId = editedSessionList[i].id;
 									console.log("#### Add Element to Dictionary - " + sessionObjectId);
-                                    //dictNewAndEdited[sessionObjectId] = newRecurringSessionsArray[i];
+                                    dictNewAndEdited[sessionObjectId] = newRecurringSessionsArray[i];
                                 }
                                 console.log("#### Succesfully created dictionary...");
 								
