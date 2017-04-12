@@ -310,12 +310,9 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                             success: function(list) {
                                  console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
                                 
-                                var dictNewAndEdited = []; // create an empty array
+                                var dictNewAndEdited = {}; // create an empty array
                                 for (var i = 0; i < edittedRecurringSessionsArray.length; i++) {
-                                    dictNewAndEdited.push({
-                                                edittedRecurringSessionsArray[i].get("objectId"),
-                                                newRecurringSessionsArray[i]
-                                            });
+                                    dictNewAndEdited[edittedRecurringSessionsArray[i].get("objectId")] = newRecurringSessionsArray[i];
                                 }
                                 var planSessionQuery = new Parse.Query("PlanSessionRelation");
                                 planSessionQuery.containedIn("session", edittedRecurringSessionsArray);
