@@ -310,7 +310,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                             success: function(editedSessionList) {
                                 console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
 								
-								var sessionObject = results[0];
+								/* var sessionObject = results[0];
 								var sessionObjectId = sessionObject.id;
 								console.log("#### Check first object type - " + typeof sessionObject);
 								console.log("#### Check first objectId - " + sessionObjectId.id);
@@ -353,7 +353,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                       console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
                                       response.error('wasnt able to find PlanSessionRelation Table');
                                     }
-                                });
+                                }); */
                             },
                             error: function(error) {
                                 console.log("wasnt able to save  " + error.code);
