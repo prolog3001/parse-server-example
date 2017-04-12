@@ -311,8 +311,11 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
                                 
                                 var dictNewAndEdited = {}; // create an empty dictionary
+                                console.log("#### Succesfully created empty dictionary...");
                                 for (var i = 0; i < edittedRecurringSessionsArray.length; i++) {
-                                    dictNewAndEdited[edittedRecurringSessionsArray[i].get("objectId")] = newRecurringSessionsArray[i];
+									var sessionObjectId = edittedRecurringSessionsArray[i].get("objectId");
+									console.log("#### Add Element to Dictionary - " + sessionObjectId);
+                                    dictNewAndEdited[sessionObjectId] = newRecurringSessionsArray[i];
                                 }
                                 console.log("#### Succesfully created dictionary...");
 								
@@ -321,25 +324,25 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
                                     success: function(planSessions) {
-					if(planSessions != null){
-						console.log("#### Plan Sessions Array  " + planSessions.length);
-						for (var i = 0; i < planSessions.length; ++i) {
-							planSessions.set("session",dictNewAndEdited[planSessions[i].get("objectId")]);
-							console.log("#### ObjectId  - " + planSessions[i].get("objectId"));
-						}
-						Parse.Object.saveAll(planSessions, {
-							success: function(list) {
-								console.log("#### planSessions Saved");
-								response.success('success');
-							},
-							error: function(error) {
-								console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
-								response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
-							},
-						});
-					}else{
-						response.success('No plans to update');
-					}
+										if(planSessions != null){
+											console.log("#### Plan Sessions Array  " + planSessions.length);
+											for (var i = 0; i < planSessions.length; ++i) {
+												planSessions.set("session",dictNewAndEdited[planSessions[i].get("objectId")]);
+												console.log("#### ObjectId  - " + planSessions[i].get("objectId"));
+											}
+											Parse.Object.saveAll(planSessions, {
+												success: function(list) {
+													console.log("#### planSessions Saved");
+													response.success('success');
+												},
+												error: function(error) {
+													console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
+													response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
+												},
+											});
+										}else{
+											response.success('No plans to update');
+										}
                                       },
                                     error: function(error) {
                                       console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
