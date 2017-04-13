@@ -306,16 +306,19 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
                     success: function(newSessionList) {
                         console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
+						console.log("#### Id of first element is newSessionList - " + newSessionList[0].id);
                         Parse.Object.saveAll(results, {
                             success: function(editedSessionList) {
+								
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
 								
                                 console.log("#### Succesfully created empty dictionary...");
                                 for (var i = 0; i < results.length; i++) {
-									var sessionObjectId = results[i].id;
-									console.log("#### Add Element to Dictionary - " + sessionObjectId);
-									console.log("#### Id of element in objectId - " + newSessionList[i].id);
-                                    dictNewAndEdited[sessionObjectId] = newSessionList[i];
+									var editedSessionObjectId = results[i].id;
+									var newSessionObjectId = newSessionList[i].id;
+									console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
+									console.log("#### Id of element in objectId - " + newSessionObjectId);
+                                    dictNewAndEdited[editedSessionObjectId] = newSessionList[i];
                                 }
                                 console.log("#### Succesfully created dictionary...");
 								
