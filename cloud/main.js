@@ -242,6 +242,8 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 
+    var newRecurringSessionsArray = [];
+    var edittedRecurringSessionsArray = [];
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
     then.setHours(then.getHours() - 1);
@@ -253,8 +255,6 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     pushQuery.find({
         success: function(results) {
             console.log("#### Sessions to Reoccurre " + results.length);
-            var newRecurringSessionsArray = new Array(results.length);
-            var edittedRecurringSessionsArray = new Array(results.length);
 
             //var sum = 0;
             for (var i = 0; i < results.length; ++i) {
