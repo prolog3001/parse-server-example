@@ -313,10 +313,9 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 for (var i = 0; i < results.length; i++) {
 									var newSessionForPlan = newRecurringSessionsArray[i];
 									var editedSessionObjectId = results[i].id;
-									var newSessionObjectId = newSessionForPlan.id;
 									console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
 									console.log("#### Title of new session - " + newSessionForPlan.get("title"));
-									console.log("#### Id of element in objectId - " + newSessionObjectId);
+									console.log("#### Id of new session - " + newSessionForPlan.id);
                                     dictNewAndEdited[String(editedSessionObjectId)] = newSessionForPlan;
                                 }
                                 console.log("#### Succesfully created dictionary...");
@@ -330,8 +329,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 											console.log("#### Plan Sessions Array  " + planSessions.length);
 											for (var i = 0; i < planSessions.length; i++) {
 												var sessionToReplaceObjectId = newRecurringSessionsArray[i].id;
-												var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
 												console.log("#### Session to replace in plan - " + sessionToReplaceObjectId);
+												var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
 												console.log("#### Session to be replaced in plan - " + sessionToBeReplacedObjectId);
 												planSessions[i].set("session",dictNewAndEdited[String(sessionToBeReplacedObjectId)]);
 												console.log("#### Session added to plan");
