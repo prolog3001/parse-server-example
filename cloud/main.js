@@ -324,9 +324,13 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                     success: function(planSessions) {
 										if(planSessions != null){
 											console.log("#### Plan Sessions Array  " + planSessions.length);
-											for (var i = 0; i < planSessions.length; ++i) {
-												planSessions.set("session",dictNewAndEdited[planSessions[i].get("session").id]);
-												console.log("#### Session ObjectId to Save in Plan - " + planSessions[i].get("session").id);
+											for (var i = 0; i < planSessions.length; i++) {
+												var session = new Parse.Object({
+													id: planSessions[i].get("session").id
+												});
+												//var plan = Object.create(ParseObject, planSessions[i]);
+												console.log("#### Session objectId to save in plan - " + session.id);
+												planSessions.set("session",dictNewAndEdited[session.id]);
 											}
 											Parse.Object.saveAll(planSessions, {
 												success: function(list) {
