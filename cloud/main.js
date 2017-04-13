@@ -333,7 +333,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 												var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
 												console.log("#### Session to replace in plan - " + sessionToReplaceObjectId);
 												console.log("#### Session to be replaced in plan - " + sessionToBeReplacedObjectId);
-												planSessions[i].set("session",dictNewAndEdited[String(sessionToBeReplacedObjectId]));
+												planSessions[i].set("session",dictNewAndEdited[String(sessionToBeReplacedObjectId)]);
 												console.log("#### Session added to plan");
 											}
 
