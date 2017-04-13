@@ -306,7 +306,6 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
                     success: function(newSessionList) {
                         console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
-						console.log("#### Id of first element is newSessionList - " + newSessionList[0].id);
                         Parse.Object.saveAll(results, {
                             success: function(editedSessionList) {
 								
