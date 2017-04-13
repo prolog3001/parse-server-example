@@ -242,8 +242,6 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 
-    var newRecurringSessionsArray = [];
-    var edittedRecurringSessionsArray = [];
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
     then.setHours(then.getHours() - 1);
@@ -255,6 +253,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     pushQuery.find({
         success: function(results) {
             console.log("#### Sessions to Reoccurre " + results.length);
+            var newRecurringSessionsArray = new Array(results.length);
 
             //var sum = 0;
             for (var i = 0; i < results.length; ++i) {
@@ -300,21 +299,15 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 results[i].set("occurrence", -1 * results[i].get("occurrence"));
 
                 newRecurringSessionsArray.push(newSession);
-                edittedRecurringSessionsArray.push(results[i]);
             }
-            if (newRecurringSessionsArray.length > 0 && edittedRecurringSessionsArray.length > 0) {
+            if (newRecurringSessionsArray.length > 0 && results.length > 0) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
                     success: function(newSessionList) {
                         console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
-                        Parse.Object.saveAll(edittedRecurringSessionsArray, {
+                        Parse.Object.saveAll(results, {
                             success: function(editedSessionList) {
-                                console.log("#### Saving Edited Recurring Sessions Array  " + edittedRecurringSessionsArray.length);
+                                console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
 								
-								/* var sessionObject = results[0];
-								var sessionObjectId = sessionObject.id;
-								console.log("#### Check first object type - " + typeof sessionObject);
-								console.log("#### Check first objectId - " + sessionObjectId.id);
-                                
                                 var dictNewAndEdited = {}; // create an empty dictionary
                                 console.log("#### Succesfully created empty dictionary...");
                                 for (var i = 0; i < results.length; i++) {
@@ -332,8 +325,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 										if(planSessions != null){
 											console.log("#### Plan Sessions Array  " + planSessions.length);
 											for (var i = 0; i < planSessions.length; ++i) {
-												planSessions.set("session",dictNewAndEdited[planSessions[i].id]);
-												console.log("#### ObjectId  - " + planSessions[i].id);
+												planSessions.set("session",dictNewAndEdited[planSessions[i].get("session").id]);
+												console.log("#### Session ObjectId to Save in Plan - " + planSessions[i].get("session").id);
 											}
 											Parse.Object.saveAll(planSessions, {
 												success: function(list) {
@@ -353,7 +346,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                       console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
                                       response.error('wasnt able to find PlanSessionRelation Table');
                                     }
-                                }); */
+                                });
                             },
                             error: function(error) {
                                 console.log("wasnt able to save  " + error.code);
