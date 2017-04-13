@@ -243,6 +243,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     Parse.Cloud.useMasterKey();
 
+	var newRecurringSessionsArray = [];
     var dictNewAndEdited = {}; // create an empty dictionary for use in planSession replacepent
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
@@ -255,7 +256,6 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     pushQuery.find({
         success: function(results) {
             console.log("#### Sessions to Reoccurre " + results.length);
-            var newRecurringSessionsArray = new Array(results.length);
 
             //var sum = 0;
             for (var i = 0; i < results.length; ++i) {
@@ -305,13 +305,11 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             if (newRecurringSessionsArray.length > 0 && results.length > 0) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
                     success: function(newSessionList) {
-                        console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                         Parse.Object.saveAll(results, {
                             success: function(editedSessionList) {
-								
+								console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
 								
-                                console.log("#### Succesfully created empty dictionary...");
                                 for (var i = 0; i < results.length; i++) {
 									var newSessionForPlan = newRecurringSessionsArray[i];
 									var editedSessionObjectId = results[i].id;
