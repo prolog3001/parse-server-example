@@ -242,7 +242,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     Parse.Cloud.useMasterKey();
 
-    var newRecurringSessionsArray = [];
+	var newRecurringSessionsArray = [];
     var dictNewAndEdited = {}; // create an empty dictionary for use in planSession replacepent
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
@@ -306,58 +306,59 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                     success: function(newSessionList) {
                         Parse.Object.saveAll(results, {
                             success: function(editedSessionList) {
-                                console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
+								console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
-
-                                for (var i = 0; i < results.length; i++) {
-                                    var newSessionForPlan = newRecurringSessionsArray[i];
-                                    var editedSessionObjectId = results[i].id;
-                                    console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
-                                    console.log("#### Title of new session - " + newSessionForPlan.get("title"));
-                                    console.log("#### Id of new session - " + newSessionForPlan.id);
-                                    dictNewAndEdited[String(editedSessionObjectId)] = newSessionForPlan;
-                                }
-                                console.log("#### Succesfully created dictionary...");
-
+								
                                 var planSessionQuery = new Parse.Query("PlanSessionRelation");
                                 planSessionQuery.containedIn("session", results);
-                                planSessionQuery.include("session");
+								planSessionQuery.include("session");
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
                                     success: function(planSessions) {
-                                        if (planSessions != null) {
-                                            console.log("#### Plan Sessions Array  " + planSessions.length);
-                                            for (var i = 0; i < planSessions.length; i++) {
-                                                var sessionToBeReplaced = new Parse.Object({
-                                                    id: planSessions[i].get("session").id
-                                                });
-                                                var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
-                                                console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
+										if(planSessions != null && planSessions.length > 0){
+								
+											for (var i = 0; i < results.length; i++) {
+												var newSessionForPlan = newRecurringSessionsArray[i];
+												var editedSessionObjectId = results[i].id;
+												console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
+												console.log("#### Title of new session - " + newSessionForPlan.get("title"));
+												console.log("#### Id of new session - " + newSessionForPlan.id);
+												dictNewAndEdited[String(editedSessionObjectId)] = newSessionForPlan;
+											}
+											console.log("#### Succesfully created dictionary...");
+								
+											console.log("#### Plan Sessions Array  " + planSessions.length);
+											for (var i = 0; i < planSessions.length; i++) {
+												var sessionToBeReplaced = new Parse.Object({
+													id: planSessions[i].get("session").id
+												});
+												var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
+												console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
+												
+												var sessionToReplaceObject = dictNewAndEdited[String(sessionToBeReplacedObjectId)];
+												console.log("#### Session ObjectId to replace in plan - " + sessionToReplaceObject.id);
+												
+												planSessions[i].set("session",sessionToReplaceObject);
+												console.log("#### Session added to plan");
+											}
 
-                                                var sessionToReplaceObject = dictNewAndEdited[String(sessionToBeReplacedObjectId)];
-                                                console.log("#### Session ObjectId to replace in plan - " + sessionToReplaceObject.id);
-
-                                                planSessions[i].set("session", sessionToReplaceObject);
-                                                console.log("#### Session added to plan");
-                                            }
-
-                                            Parse.Object.saveAll(planSessions, {
-                                                success: function(list) {
-                                                    console.log("#### planSessions Saved");
-                                                    response.success('success');
-                                                },
-                                                error: function(error) {
-                                                    console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
-                                                    response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
-                                                }
-                                            });
-                                        } else {
-                                            response.success('No plans to update');
-                                        }
-                                    },
+											Parse.Object.saveAll(planSessions, {
+												success: function(list) {
+													console.log("#### planSessions Saved");
+													response.success('success');
+												},
+												error: function(error) {
+													console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
+													response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
+												}
+											});
+										}else{
+											response.success('No plans to update');
+										}
+                                      },
                                     error: function(error) {
-                                        console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
-                                        response.error('wasnt able to find PlanSessionRelation Table');
+                                      console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
+                                      response.error('wasnt able to find PlanSessionRelation Table');
                                     }
                                 });
                             },
@@ -372,10 +373,10 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                         response.error('Wasnt able to save New Recurring Sessions');
                     }
                 });
-            } else {
-                console.log("#### NO New Recurring Sessions to Re-Occure");
-                response.success('success');
-            }
+            }else{
+				console.log("#### NO New Recurring Sessions to Re-Occure");
+				response.success('success');
+			}
         },
         error: function() {
             response.error('Wasnt able to find Recurring Sessions');
