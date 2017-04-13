@@ -322,6 +322,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 								
                                 var planSessionQuery = new Parse.Query("PlanSessionRelation");
                                 planSessionQuery.containedIn("session", results);
+								planSessionQuery.include("session");
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
                                     success: function(planSessions) {
@@ -330,8 +331,10 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 											for (var i = 0; i < planSessions.length; i++) {
 												var sessionToReplaceObjectId = newRecurringSessionsArray[i].id;
 												console.log("#### Session to replace in plan - " + sessionToReplaceObjectId);
+												var sessionToBeReplacedTitle = planSessions[j].get("session").get("title");
+												console.log("#### Session Title to be replaced in plan - " + sessionToBeReplacedTitle);
 												var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
-												console.log("#### Session to be replaced in plan - " + sessionToBeReplacedObjectId);
+												console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
 												planSessions[i].set("session",dictNewAndEdited[String(sessionToBeReplacedObjectId)]);
 												console.log("#### Session added to plan");
 											}
