@@ -242,6 +242,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 
+    var dictNewAndEdited = {}; // create an empty dictionary for use in planSession replacepent
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
     then.setHours(then.getHours() - 1);
@@ -308,7 +309,6 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                             success: function(editedSessionList) {
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
 								
-                                var dictNewAndEdited = {}; // create an empty dictionary
                                 console.log("#### Succesfully created empty dictionary...");
                                 for (var i = 0; i < results.length; i++) {
 									var sessionObjectId = results[i].id;
@@ -328,9 +328,9 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 												var session = new Parse.Object({
 													id: planSessions[i].get("session").id
 												});
-												//var plan = Object.create(ParseObject, planSessions[i]);
 												console.log("#### Session objectId to save in plan - " + session.id);
 												planSessions.set("session",dictNewAndEdited[session.id]);
+												console.log("#### Session added to plan");
 											}
 											Parse.Object.saveAll(planSessions, {
 												success: function(list) {
