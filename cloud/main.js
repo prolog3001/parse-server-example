@@ -244,6 +244,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     Parse.Cloud.useMasterKey();
 
 	var newRecurringSessionsArray = [];
+    var dictNewAndEdited = {}; // create an empty dictionary for use in planSession replacepent
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
     then.setHours(then.getHours() - 1);
@@ -316,6 +317,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 									console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
 									console.log("#### Title of new session - " + newSessionForPlan.get("title"));
 									console.log("#### Id of element in objectId - " + newSessionObjectId);
+                                    dictNewAndEdited[String(editedSessionObjectId)] = newSessionForPlan;
                                 }
                                 console.log("#### Succesfully created dictionary...");
 								
@@ -326,20 +328,15 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                     success: function(planSessions) {
 										if(planSessions != null){
 											console.log("#### Plan Sessions Array  " + planSessions.length);
-											for (var i = 0; i < newRecurringSessionsArray.length; i++) {
-												for (var j = 0; j < planSessions.length; j++) {
-													var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
-													var sessionToReplaceObjectId = newRecurringSessionsArray[i].id;
-													if(sessionToReplaceObjectId == sessionToBeReplacedObjectId){
-														console.log("#### Session to be replaced in plan - " + sessionToBeReplacedObjectId);
-														console.log("#### Session to replace in plan - " + sessionToReplaceObjectId);
-														planSessions[i].set("session",newRecurringSessionsArray[i]);
-														console.log("#### Session added to plan");
-														break;
-													}
-												}
+											for (var i = 0; i < planSessions.length; i++) {
+												var sessionToReplaceObjectId = newRecurringSessionsArray[i].id;
+												var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
+												console.log("#### Session to replace in plan - " + sessionToReplaceObjectId);
+												console.log("#### Session to be replaced in plan - " + sessionToBeReplacedObjectId);
+												planSessions[i].set("session",dictNewAndEdited[String(sessionToBeReplacedObjectId]));
+												console.log("#### Session added to plan");
 											}
-											
+
 											Parse.Object.saveAll(planSessions, {
 												success: function(list) {
 													console.log("#### planSessions Saved");
