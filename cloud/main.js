@@ -329,13 +329,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 										if(planSessions != null){
 											console.log("#### Plan Sessions Array  " + planSessions.length);
 											for (var i = 0; i < planSessions.length; i++) {
-												var sessionToReplaceObjectId = newRecurringSessionsArray[i].id;
-												console.log("#### Session to replace in plan - " + sessionToReplaceObjectId);
-												var sessionToBeReplacedTitle = planSessions[j].get("session").get("title");
-												console.log("#### Session Title to be replaced in plan - " + sessionToBeReplacedTitle);
-												var sessionToBeReplacedObjectId = planSessions[j].get("session").id;
+												var sessionToBeReplaced = new Parse.Object({
+													id: planSessions[j].get("session").id
+												});
+												var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
 												console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
-												planSessions[i].set("session",dictNewAndEdited[String(sessionToBeReplacedObjectId)]);
+												
+												var sessionToReplaceObject = dictNewAndEdited[String(sessionToBeReplacedObjectId)];
+												console.log("#### Session ObjectId to replace in plan - " + sessionToReplaceObject.id);
+												
+												planSessions[i].set("session",sessionToReplaceObject);
 												console.log("#### Session added to plan");
 											}
 
