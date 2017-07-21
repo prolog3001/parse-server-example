@@ -655,6 +655,15 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Teacher Payment Received");
             break;
+        case 15:
+            data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+            console.log("#### Email: Teacher Payment Received");
+            break;
         default:
             console.log("#### NO TYPE");
             return;
