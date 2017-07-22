@@ -426,6 +426,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 
     var toEmail = request.params.toEmail;
     var toName = request.params.toName;
+    var toId = request.params.toId;
 
     var sessionDate = request.params.sessionDate;
     var sessionTitle = request.params.sessionTitle;
@@ -655,6 +656,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Teacher Payment Received");
             break;
+            //Send User an Email About New Message in his Private Box
         case 15:
             data = {
                 from: fromString,
@@ -662,7 +664,23 @@ Parse.Cloud.define("sendEmail", function(request, response) {
                 subject: emailSubject,
                 html: emailBody
             };
-            console.log("#### Email: Teacher Payment Received");
+	    var query = new Parse.Query(Parse.User);
+		query.get(toId, {
+		    success: function (user) {
+			user.save(null, {
+			    success: function (savedUserObject) {
+            			console.log("#### Email:Sending message to user and updating user");
+			    },
+			    error: function(error) {
+				console.log('Failed to save user: ' + error.message);
+			    }
+			});
+		    },
+		    error: function (error) {
+			console.log(error);
+		    }
+		});
+            console.log("#### Email: User had no interaction with Medidate for over a week");
             break;
         default:
             console.log("#### NO TYPE");
