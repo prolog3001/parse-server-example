@@ -270,12 +270,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 console.log("This Daily has sessions days and   " + dailyDaysArray);
                                 do {
                                     date.setDate(date.getDate() + 1);
+				    date.setHours(then.getHours());
+				    date.setMinutes(then.getMinutes);
                                     var dayNumber = date.getDay() + 1;
                                     console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
                                 } while (dailyDaysArray.indexOf(dayNumber) === -1)
                             } else {
                                 console.log("NO DAYS DEFINED OR WEEKLY");
                                 date.setDate(date.getDate() + 1);
+				date.setHours(then.getHours());
+				date.setMinutes(then.getMinutes);
                             }
                             //date.setDate(date.getDate() + 1);
                         } while (date <= then);
@@ -285,12 +289,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                         do {
                             //  date.setHours(then.getHours() + 7 * 24);
                             date.setDate(date.getDate() + 7);
+                            date.setHours(then.getHours());
+                            date.setMinutes(then.getMinutes);
                         } while (date <= then);
                         break;
 
                     case 3:
                         //  date.setHours(then.getHours() + 4 * 7 * 24);
                         date.addMonths(1);
+		    	date.setHours(then.getHours());
+		    	date.setMinutes(then.getMinutes);
                         break;
                     default:
                         ;
