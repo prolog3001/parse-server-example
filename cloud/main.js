@@ -242,7 +242,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     Parse.Cloud.useMasterKey();
 
-	var newRecurringSessionsArray = [];
+    var newRecurringSessionsArray = [];
     var dictNewAndEdited = {}; // create an empty dictionary for use in planSession replacepent
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
@@ -270,12 +270,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 console.log("This Daily has sessions days and   " + dailyDaysArray);
                                 do {
                                     date.setDate(date.getDate() + 1);
+//                                  date.setHours(then.getHours() + 1);
+//                                  date.setMinutes(then.getMinutes());
                                     var dayNumber = date.getDay() + 1;
                                     console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
                                 } while (dailyDaysArray.indexOf(dayNumber) === -1)
                             } else {
                                 console.log("NO DAYS DEFINED OR WEEKLY");
                                 date.setDate(date.getDate() + 1);
+//                              date.setHours(then.getHours() + 1);
+//                              date.setMinutes(then.getMinutes());
                             }
                             //date.setDate(date.getDate() + 1);
                         } while (date <= then);
@@ -285,12 +289,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                         do {
                             //  date.setHours(then.getHours() + 7 * 24);
                             date.setDate(date.getDate() + 7);
+// 			    date.setHours(then.getHours() + 1);
+// 			    date.setMinutes(then.getMinutes());
                         } while (date <= then);
                         break;
 
                     case 3:
                         //  date.setHours(then.getHours() + 4 * 7 * 24);
-                        date.addMonths(1);
+                        date.addMonths(1);			    
+// 			date.setHours(then.getHours() + 1);
+// 			date.setMinutes(then.getMinutes());
                         break;
                     default:
                         ;
