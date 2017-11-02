@@ -257,12 +257,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             console.log("#### Sessions to Reoccurre " + results.length);
 
             //var sum = 0;
-            for (var i = 0; i < results.length; ++i) {
+            for (var i = 0; i < 5; ++i) {
+//             for (var i = 0; i < results.length; ++i) {
                 var newSession = results[i].clone();
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
 
                 var date = new Date(newSession.get("date").getTime());
+                var previousDate = new Date(newSession.get("date").getTime());
+		console.log("Old Date - " + formatDate(previousDate));
+		    
                 switch (newSession.get("occurrence")) {
                     case 1:
                         do {
@@ -270,35 +274,38 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 console.log("This Daily has sessions days and   " + dailyDaysArray);
                                 do {
                                     date.setDate(date.getDate() + 1);
-//                                  date.setHours(then.getHours() + 1);
-//                                  date.setMinutes(then.getMinutes());
+//                                     date.setHours(previousDate.getHours());
+//                                     date.setMinutes(previousDate.getMinutes());
                                     var dayNumber = date.getDay() + 1;
                                     console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
                                 } while (dailyDaysArray.indexOf(dayNumber) === -1)
                             } else {
                                 console.log("NO DAYS DEFINED OR WEEKLY");
                                 date.setDate(date.getDate() + 1);
-//                              date.setHours(then.getHours() + 1);
-//                              date.setMinutes(then.getMinutes());
+//                              	date.setHours(previousDate.getHours());
+//                              	date.setMinutes(previousDate.getMinutes());
                             }
-                            //date.setDate(date.getDate() + 1);
+                            //date.setDate(previousDate.getDate() + 1);
                         } while (date <= then);
+			console.log("New Date - " + formatDate(date));
                         break;
 
                     case 2:
                         do {
-                            //  date.setHours(then.getHours() + 7 * 24);
+                            //  date.setHours(previousDate.getHours() + 7 * 24);
                             date.setDate(date.getDate() + 7);
-// 			    date.setHours(then.getHours() + 1);
-// 			    date.setMinutes(then.getMinutes());
+// 			    date.setHours(previousDate.getHours());
+// 			    date.setMinutes(previousDate.getMinutes());
                         } while (date <= then);
+			console.log("New Date - " + formatDate(date));
                         break;
 
                     case 3:
-                        //  date.setHours(then.getHours() + 4 * 7 * 24);
+                        //  date.setHours(previousDate.getHours() + 4 * 7 * 24);
                         date.addMonths(1);			    
-// 			date.setHours(then.getHours() + 1);
-// 			date.setMinutes(then.getMinutes());
+// 			date.setHours(previousDate.getHours());
+// 			date.setMinutes(previousDate.getMinutes());
+			console.log("New Date - " + formatDate(date));
                         break;
                     default:
                         ;
