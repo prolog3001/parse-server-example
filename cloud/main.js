@@ -319,10 +319,10 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             }
             if (newRecurringSessionsArray.length > 0 && results.length > 0) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
-		    useMasterKey: true,
+// 		    useMasterKey: true,
                     success: function(newSessionList) {
                         Parse.Object.saveAll(results, {
-			    useMasterKey: true,
+// 			    useMasterKey: true,
                             success: function(editedSessionList) {
 				console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
@@ -332,7 +332,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 								planSessionQuery.include("session");
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
-				    useMasterKey: true,
+// 				    useMasterKey: true,
                                     success: function(planSessions) {
 					if(planSessions != null && planSessions.length > 0){
 
@@ -362,7 +362,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 						}
 
 						Parse.Object.saveAll(planSessions, {
-							useMasterKey: true,
+// 							useMasterKey: true,
 							success: function(list) {
 								console.log("#### planSessions Saved");
 								response.success('success');
