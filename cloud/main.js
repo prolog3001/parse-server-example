@@ -182,7 +182,7 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
 });
 
 Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
-    Parse.Cloud.useMasterKey();
+//     Parse.Cloud.useMasterKey();
     var params = request.params;
     var user = request.user;
     var token = params.token; //GCM TOKEN
@@ -211,12 +211,13 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
         error: function(error) {
             console.log("#### Error: " + error.code + " " + error.message);
             response.error(error);
-        }
+        },
+        useMasterKey: true
     });
 });
 
 Parse.Cloud.define('saveUserRate', function(request, response) {
-    Parse.Cloud.useMasterKey();
+//     Parse.Cloud.useMasterKey();
 
     var params = request.params;
     var userId = params.userId;
@@ -235,7 +236,8 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
         error: function(error) {
             alert("Error: " + error.code + " " + error.message);
             response.error("Error");
-        }
+        },
+        useMasterKey: true
     });
 });
 
@@ -319,10 +321,10 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             }
             if (newRecurringSessionsArray.length > 0 && results.length > 0) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
-// 		    useMasterKey: true,
+		    useMasterKey: true,
                     success: function(newSessionList) {
                         Parse.Object.saveAll(results, {
-// 			    useMasterKey: true,
+			    useMasterKey: true,
                             success: function(editedSessionList) {
 				console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
@@ -332,7 +334,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 								planSessionQuery.include("session");
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
-// 				    useMasterKey: true,
+				    useMasterKey: true,
                                     success: function(planSessions) {
 					if(planSessions != null && planSessions.length > 0){
 
@@ -362,7 +364,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 						}
 
 						Parse.Object.saveAll(planSessions, {
-// 							useMasterKey: true,
+							useMasterKey: true,
 							success: function(list) {
 								console.log("#### planSessions Saved");
 								response.success('success');
@@ -765,7 +767,7 @@ Parse.Cloud.define("userJoinedFromSiteMail", function(request, response) {
 });
 
 Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
-    Parse.Cloud.useMasterKey();
+//     Parse.Cloud.useMasterKey();
     console.log("saveQualificationsToIndex");
 
     var qualifications = ['', 'Practitioner', 'Instructor', 'Teacher', 'Master', 'Studio'];
@@ -791,18 +793,20 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
                 error: function(error) {
                     console.log("Error saving all users and qualifications..");
                 },
+       		 useMasterKey: true
             });
             response.success("Success");
         },
 
         error: function(error) {
             response.error(error);
-        }
+        },
+        useMasterKey: true
     });
 });
 
 Parse.Cloud.define('saveGenderToIndex', function(request, response) {
-    Parse.Cloud.useMasterKey();
+//     Parse.Cloud.useMasterKey();
     console.log("saveGenderToIndex");
 
     var genders = ['Male', 'Female'];
@@ -828,12 +832,14 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
                 error: function(error) {
                     console.log("Error saving all users and genders..");
                 },
+        	useMasterKey: true
             });
             response.success("Success");
         },
 
         error: function(error) {
             response.error(error);
-        }
+        },
+        useMasterKey: true
     });
 });
