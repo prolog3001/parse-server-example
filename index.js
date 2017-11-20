@@ -12,11 +12,11 @@ if (!databaseUri) {
 }
 
 //Mailgun - reset password
-var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
-  apiKey: process.env.MAILGUN_KEY || '',
-  domain: process.env.DOMAIN || 'medidatewith.me',
-  fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
-});
+// var simpleMailgunAdapter = require('parse-server/lib/Adapters/Email/SimpleMailgunAdapter')({
+//   apiKey: process.env.MAILGUN_KEY || '',
+//   domain: process.env.DOMAIN || 'medidatewith.me',
+//   fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me'
+// });
 
 //Push Adapter
 var OneSignalPushAdapter = require('parse-server/lib/Adapters/Push/OneSignalPushAdapter');
@@ -34,7 +34,14 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || process.env.ALT_SERVER_URL,  // Don't forget to change to https if needed
   publicServerURL: process.env.PUBLIC_SERVER_URL || process.env.ALT_PUBLIC_SERVER_URL,
   verifyUserEmails: true,
-  emailAdapter: simpleMailgunAdapter,
+  emailAdapter: {
+      module: 'parse-server-simple-mailgun-adapter',
+      options: {
+      fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me',
+      apiKey: process.env.MAILGUN_KEY || '',
+      domain: process.env.DOMAIN || 'medidatewith.me'
+      }
+      },
   push: {
      adapter: oneSignalPushAdapter
   },
