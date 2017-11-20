@@ -39,7 +39,7 @@ var api = new ParseServer({
       options: {
       fromAddress: process.env.MAILGUN_FROM_ADDRESS || 'no-reply@medidatewith.me',
       apiKey: process.env.MAILGUN_KEY || '',
-      domain: process.env.DOMAIN || 'medidatewith.me'
+      domain: process.env.DOMAIN || 'medidatewith.me',
       }
       },
   push: {
