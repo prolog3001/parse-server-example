@@ -346,7 +346,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 						for (var i = 0; i < planSessions.length; i++) {
 							var sessionToBeReplaced = new Parse.Object({
 								id: planSessions[i].get("session").id
-							});
+							},useMasterKey : true);
 							var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
 							console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
 
@@ -393,9 +393,9 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 		   useMasterKey: true
                 });
             }else{
-				console.log("#### NO New Recurring Sessions to Re-Occure");
-				response.success('success');
-			}
+		console.log("#### NO New Recurring Sessions to Re-Occure");
+		response.success('success');
+		}
         },
         error: function() {
             response.error('Wasnt able to find Recurring Sessions');
