@@ -253,6 +253,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
     pushQuery.limit(1000);
     pushQuery.find({
+	useMasterKey: true,
         success: function(results) {
             console.log("#### Sessions to Reoccurre " + results.length);
 
@@ -318,8 +319,10 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             }
             if (newRecurringSessionsArray.length > 0 && results.length > 0) {
                 Parse.Object.saveAll(newRecurringSessionsArray, {
+		    useMasterKey: true,
                     success: function(newSessionList) {
                         Parse.Object.saveAll(results, {
+			    useMasterKey: true,
                             success: function(editedSessionList) {
 				console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
@@ -329,6 +332,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 								planSessionQuery.include("session");
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
+				    useMasterKey: true,
                                     success: function(planSessions) {
 					if(planSessions != null && planSessions.length > 0){
 
@@ -358,6 +362,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 						}
 
 						Parse.Object.saveAll(planSessions, {
+							useMasterKey: true,
 							success: function(list) {
 								console.log("#### planSessions Saved");
 								response.success('success');
@@ -365,8 +370,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 							error: function(error) {
 								console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
 								response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
-							},
-							useMasterKey: true
+							}
 						});
 					}else{
 						response.success('No plans to update');
@@ -375,22 +379,19 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                     error: function(error) {
                                       console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
                                       response.error('wasnt able to find PlanSessionRelation Table');
-                                    },
-			    	    useMasterKey: true
+                                    }
                                 });
                             },
                             error: function(error) {
                                 console.log("wasnt able to save  " + error.code);
                                 response.error('Wasnt able to save Old Recurring Sessions');
-                            },
-			    useMasterKey: true
+                            }
                         });
                     },
                     error: function(error) {
                         console.log("wasnt able to save  " + error.code);
                         response.error('Wasnt able to save New Recurring Sessions');
-                    },
-		   useMasterKey: true
+                    }
                 });
             }else{
 		console.log("#### NO New Recurring Sessions to Re-Occure");
@@ -399,8 +400,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
         },
         error: function() {
             response.error('Wasnt able to find Recurring Sessions');
-        },
-        useMasterKey: true
+        }
     });
 
     Date.isLeapYear = function(year) {
