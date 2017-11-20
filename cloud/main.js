@@ -375,7 +375,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                     error: function(error) {
                                       console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
                                       response.error('wasnt able to find PlanSessionRelation Table');
-                                    }
+                                    },
+			    	    useMasterKey: true
                                 });
                             },
                             error: function(error) {
