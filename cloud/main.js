@@ -263,6 +263,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             for (var i = 0; i < results.length; ++i) {
 		console.log("Entered Loop");
                 var newSession = results[i].clone();
+		console.log("Cloned Session for Editing");
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
 	    	if (dailyDaysArray !== null){
