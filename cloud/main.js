@@ -257,8 +257,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
             console.log("#### Sessions to Reoccurre " + results.length);
 
             //var sum = 0;
-            for (var i = 0; i < 5; ++i) {
-//             for (var i = 0; i < results.length; ++i) {
+            for (var i = 0; i < results.length; ++i) {
                 var newSession = results[i].clone();
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
