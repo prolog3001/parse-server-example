@@ -267,7 +267,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
 		console.log("Got dailyDaysArray");
-	    	if (dailyDaysArray !== null){
+	    	if (dailyDaysArray != null){
 			console.log("dailyDaysArray - " + dailyDaysArray.length);
 		}else{
 			console.log("No dailyDaysArray");  
