@@ -257,14 +257,20 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     pushQuery.find({
 	useMasterKey: true,
         success: function(results) {
-            console.log("#### Sessions to Reoccurre " + results.length);
+            //console.log("#### Sessions to Reoccurre " + results.length);
 
             //var sum = 0;
             for (var i = 0; i < results.length; ++i) {
+		console.log("Entered Loop");
                 var newSession = results[i].clone();
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
-
+	    	if (dailyDaysArray !== null){
+			console.log("dailyDaysArray - " + dailyDaysArray.length);
+		}else{
+			console.log("No dailyDaysArray");  
+		}
+		    
                 var date = new Date(newSession.get("date").getTime());
                 var previousDate = new Date(newSession.get("date").getTime());
 		console.log("Old Date - " + formatDate(previousDate));
