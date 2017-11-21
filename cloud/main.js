@@ -275,7 +275,6 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 var date = new Date(newSession.get("date").getTime());
                 var previousDate = new Date(newSession.get("date").getTime());
 		console.log("Got Old Date - " + previousDate);
-		console.log("Old Date - " + formatDate(previousDate));
 		    
                 switch (newSession.get("occurrence")) {
                     case 1:
@@ -297,7 +296,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                             }
                             //date.setDate(previousDate.getDate() + 1);
                         } while (date <= then);
-			console.log("New Date - " + formatDate(date));
+			console.log("New Date - " + date);
                         break;
 
                     case 2:
@@ -307,7 +306,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 // 			    date.setHours(previousDate.getHours());
 // 			    date.setMinutes(previousDate.getMinutes());
                         } while (date <= then);
-			console.log("New Date - " + formatDate(date));
+			console.log("New Date - " + date);
                         break;
 
                     case 3:
@@ -315,7 +314,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                         date.addMonths(1);			    
 // 			date.setHours(previousDate.getHours());
 // 			date.setMinutes(previousDate.getMinutes());
-			console.log("New Date - " + formatDate(date));
+			console.log("New Date - " + date);
                         break;
                     default:
                         ;
