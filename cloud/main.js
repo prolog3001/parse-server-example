@@ -318,11 +318,14 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 results[i].set("occurrence", -1 * results[i].get("occurrence"));
 
                 newRecurringSessionsArray.push(newSession);
+		console.log("Changed a Session - " + i);
             }
             if (newRecurringSessionsArray.length > 0 && results.length > 0) {
+	    	console.log("Try to save all - " + newRecurringSessionsArray.length);
                 Parse.Object.saveAll(newRecurringSessionsArray, {
 		    useMasterKey: true,
                     success: function(newSessionList) {
+		    	console.log("Saved newRecurringSessionsArray");
                         Parse.Object.saveAll(results, {
 			    useMasterKey: true,
                             success: function(editedSessionList) {
