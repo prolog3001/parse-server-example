@@ -266,15 +266,15 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 		console.log("Cloned Session for Editing");
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
-		console.log("Got dailyDaysArray");
 	    	if (dailyDaysArray != null){
 			console.log("dailyDaysArray - " + dailyDaysArray.length);
-		}else{
+		} else{
 			console.log("No dailyDaysArray");  
 		}
 		    
                 var date = new Date(newSession.get("date").getTime());
                 var previousDate = new Date(newSession.get("date").getTime());
+		console.log("Got Old Date");
 		console.log("Old Date - " + formatDate(previousDate));
 		    
                 switch (newSession.get("occurrence")) {
