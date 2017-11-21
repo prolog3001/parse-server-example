@@ -285,8 +285,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                     date.setDate(date.getDate() + 1);
 					console.log("Got Old Date Hours - " + previousDate.getHours());
 					console.log("Got Old Date Minutes - " + previousDate.getMinutes());
-//                                     date.setHours(previousDate.getHours());
-//                                     date.setMinutes(previousDate.getMinutes());
+                                    date.setHours(previousDate.getHours());
+                                    date.setMinutes(previousDate.getMinutes());
                                     var dayNumber = date.getDay() + 1;
                                     console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
                                 } while (dailyDaysArray.indexOf(dayNumber) === -1)
