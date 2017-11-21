@@ -280,7 +280,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                 switch (newSession.get("occurrence")) {
                     case 1:
                         do {
-                            if (dailyDaysArray !== null && dailyDaysArray !== undefined && dailyDaysArray[0] !== 0) {
+                            if (dailyDaysArray != null && dailyDaysArray != undefined && dailyDaysArray[0] !== 0) {
                                 console.log("This Daily has sessions days and   " + dailyDaysArray);
                                 do {
                                     date.setDate(date.getDate() + 1);
