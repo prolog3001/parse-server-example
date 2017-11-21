@@ -274,7 +274,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 		    
                 var date = new Date(newSession.get("date").getTime());
                 var previousDate = new Date(newSession.get("date").getTime());
-		console.log("Got Old Date");
+		console.log("Got Old Date - " + previousDate);
 		console.log("Old Date - " + formatDate(previousDate));
 		    
                 switch (newSession.get("occurrence")) {
