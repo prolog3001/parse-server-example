@@ -11,7 +11,7 @@ Parse.Cloud.define('removeTeacherFromStudio', function(request, response) {
     var relation = studio.relation("associated_teachers");
     relation.remove(teacher);
 
-    studio.save(null, {
+    studio.save(null, {useMasterKey: true,
         success: function() {
             response.success("Teacher was removed from studio");
         },
@@ -33,7 +33,7 @@ Parse.Cloud.define('addStudentToRequestedUserRelation', function(request, respon
     var relation = teacher.relation("requested_students");
     relation.add(student);
 
-    teacher.save(null, {
+    teacher.save(null, {useMasterKey: true,
         success: function() {
             response.success("Student was saved to relation");
         },
@@ -55,7 +55,7 @@ Parse.Cloud.define('addMessageToUserRelationMessages', function(request, respons
     var relation = chatOwner.relation("messages");
     relation.add(message);
 
-    chatOwner.save(null, {
+    chatOwner.save(null, {useMasterKey: true,
         success: function() {
             response.success("Message was saved to relation");
         },
@@ -198,7 +198,7 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
             console.log("#### Successfully retrieved Installation" + installations.length);
             var userInstallation = installations[0];
             userInstallation.set("deviceToken", token);
-            userInstallation.save(null, {
+            userInstallation.save(null, {useMasterKey: true,
                 success: function(listing) {
                     console.log("#### Saved Token");
                     response.success('success');
@@ -231,7 +231,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
 	useMasterKey: true,
         success: function(object) {
             object.set("rate", rate);
-            object.save();
+            object.save(null,{useMasterKey: true});
             response.success("Success");
         },
         error: function(error) {
@@ -699,7 +699,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
 	    var query = new Parse.Query(Parse.User);
 		query.get(toId, {
 		    success: function (user) {
-			user.save(null, {
+			user.save(null, {useMasterKey: true,
 			    success: function (savedUserObject) {
             			console.log("#### Email:Sending message to user and updating user");
 			    },
@@ -786,7 +786,6 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     query.exists('qualification');
     query.limit(1000);
     query.find({
-	useMasterKey: true,
         success: function(users) {
             console.log("Found..." + users.length);
             for (var i = 0; i < users.length; i++) {
@@ -825,7 +824,6 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
     query.exists('sex');
     query.limit(1000);
     query.find({
-	useMasterKey: true,
         success: function(users) {
             console.log("Found..." + users.length);
             for (var i = 0; i < users.length; i++) {
