@@ -153,6 +153,7 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
 
     // Note that useMasterKey is necessary for Push notifications to succeed.
     Parse.Push.send({
+	useMasterKey: true,
         where: pushQuery,
         data: {
             alert: alert,
@@ -175,7 +176,6 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
         error: function(error) {
             console.log("#### PUSH ERROR" + error.message);
         },
-        useMasterKey: true
     });
 
     response.success('success');
@@ -193,6 +193,7 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
     var installationQuery = new Parse.Query(Parse.Installation);
     installationQuery.equalTo('objectId', installation[0]);
     installationQuery.find({
+	useMasterKey: true,
         success: function(installations) {
             console.log("#### Successfully retrieved Installation" + installations.length);
             var userInstallation = installations[0];
@@ -212,7 +213,6 @@ Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
             console.log("#### Error: " + error.code + " " + error.message);
             response.error(error);
         },
-        useMasterKey: true
     });
 });
 
@@ -228,6 +228,7 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
     var query = new Parse.Query(Parse.User);
     query.equalTo('objectId', userId);
     query.first({
+	useMasterKey: true,
         success: function(object) {
             object.set("rate", rate);
             object.save();
@@ -237,7 +238,6 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
             alert("Error: " + error.code + " " + error.message);
             response.error("Error");
         },
-        useMasterKey: true
     });
 });
 
@@ -786,6 +786,7 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
     query.exists('qualification');
     query.limit(1000);
     query.find({
+	useMasterKey: true,
         success: function(users) {
             console.log("Found..." + users.length);
             for (var i = 0; i < users.length; i++) {
@@ -798,13 +799,13 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
                 }
             }
             Parse.Object.saveAll(users, {
+		useMasterKey: true,
                 success: function(list) {
                     console.log("Saved all users and qualifications - " + users.length);
                 },
                 error: function(error) {
                     console.log("Error saving all users and qualifications..");
                 },
-       		 useMasterKey: true
             });
             response.success("Success");
         },
@@ -812,7 +813,6 @@ Parse.Cloud.define('saveQualificationsToIndex', function(request, response) {
         error: function(error) {
             response.error(error);
         },
-        useMasterKey: true
     });
 });
 
@@ -825,6 +825,7 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
     query.exists('sex');
     query.limit(1000);
     query.find({
+	useMasterKey: true,
         success: function(users) {
             console.log("Found..." + users.length);
             for (var i = 0; i < users.length; i++) {
@@ -837,13 +838,13 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
                 }
             }
             Parse.Object.saveAll(users, {
+		useMasterKey: true,
                 success: function(list) {
                     console.log("Saved all users and genders - " + users.length);
                 },
                 error: function(error) {
                     console.log("Error saving all users and genders..");
                 },
-        	useMasterKey: true
             });
             response.success("Success");
         },
@@ -851,6 +852,5 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
         error: function(error) {
             response.error(error);
         },
-        useMasterKey: true
     });
 });
