@@ -153,7 +153,6 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
 
     // Note that useMasterKey is necessary for Push notifications to succeed.
     Parse.Push.send({
-	useMasterKey: true,
         where: pushQuery,
         data: {
             alert: alert,
@@ -170,6 +169,7 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
             custom: custom
         }
     }, {
+	useMasterKey: true,
         success: function() {
             console.log("#### PUSH OK");
         },
