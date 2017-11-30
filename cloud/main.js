@@ -688,7 +688,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
             console.log("#### Email: Teacher Payment Received");
             break;
-            //Send User an Email About New Message in his Private Box
+        //Send User an Email About New Message in his Private Box
         case 15:
             data = {
                 from: fromString,
@@ -698,6 +698,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
             };
 	    var query = new Parse.Query(Parse.User);
 		query.get(toId, {
+		    useMasterKey: true,
 		    success: function (user) {
 			user.save(null, {useMasterKey: true,
 			    success: function (savedUserObject) {
@@ -734,8 +735,6 @@ Parse.Cloud.define("sendEmail", function(request, response) {
         }
     });
 });
-
-
 
 Parse.Cloud.define("userJoinedFromSiteMail", function(request, response) {
 
