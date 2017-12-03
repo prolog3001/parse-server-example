@@ -273,16 +273,16 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                                 console.log("This Daily has sessions days and   " + dailyDaysArray);
                                 do {
                                     date.setDate(date.getDate() + 1);
-//                                     date.setHours(previousDate.getHours());
-//                                     date.setMinutes(previousDate.getMinutes());
+                                    date.setHours(previousDate.getHours());
+                                    date.setMinutes(previousDate.getMinutes());
                                     var dayNumber = date.getDay() + 1;
                                     console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
                                 } while (dailyDaysArray.indexOf(dayNumber) === -1)
                             } else {
                                 console.log("NO DAYS DEFINED OR WEEKLY");
                                 date.setDate(date.getDate() + 1);
-//                              	date.setHours(previousDate.getHours());
-//                              	date.setMinutes(previousDate.getMinutes());
+                             	date.setHours(previousDate.getHours());
+                             	date.setMinutes(previousDate.getMinutes());
                             }
                             //date.setDate(previousDate.getDate() + 1);
                         } while (date <= then);
@@ -293,8 +293,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                         do {
                             //  date.setHours(previousDate.getHours() + 7 * 24);
                             date.setDate(date.getDate() + 7);
-// 			    date.setHours(previousDate.getHours());
-// 			    date.setMinutes(previousDate.getMinutes());
+			    date.setHours(previousDate.getHours());
+			    date.setMinutes(previousDate.getMinutes());
                         } while (date <= then);
 			console.log("New Date - " + date);
                         break;
@@ -302,8 +302,8 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
                     case 3:
                         //  date.setHours(previousDate.getHours() + 4 * 7 * 24);
                         date.addMonths(1);			    
-// 			date.setHours(previousDate.getHours());
-// 			date.setMinutes(previousDate.getMinutes());
+			date.setHours(previousDate.getHours());
+			date.setMinutes(previousDate.getMinutes());
 			console.log("New Date - " + date);
                         break;
                     default:
