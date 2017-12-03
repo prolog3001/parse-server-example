@@ -884,3 +884,35 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
         },
     });
 });
+
+Parse.Cloud.define('getUsersEmailFromIds', function(request, response) {
+    //Parse.Cloud.useMasterKey(); //This is for the old server
+    // request has 2 parameters: params passed by the client and the authorized user
+    var params = request.params;
+
+    var users = params.userIds; //ids of relevant users
+
+    //Filter only users with thier ids in it
+    var userQuery = new Parse.Query(Parse.User);
+    userQuery.containedIn("objectId", users);
+    for (var i = 0; i < users.length; i++) {
+        console.log("#### User Id Before Filtering " + users[i]);
+    }
+    userQuery.find({
+	useMasterKey: true,//This is for the new version
+        success: function(users) {
+            console.log("Found..." + users.length);
+	    var emailsArray = []; 
+            for (var i = 0; i < users.length; i++) {
+		emailsArray[i] = users[i].get("email");
+	    }
+            response.success(users);
+            //response.success(emailsArray);
+        },
+
+        error: function(error) {
+            response.error(error);
+        }
+    });
+    response.success('success');
+});
