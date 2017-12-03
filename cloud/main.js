@@ -916,3 +916,26 @@ Parse.Cloud.define('getFullUsersFromIds', function(request, response) {
         }
     });
 });
+
+Parse.Cloud.define('getFullUserInstallationsFromIds', function(request, response) {
+    //Parse.Cloud.useMasterKey();
+
+    var params = request.params;
+    var users = params.userIds; //ids of relevant users
+
+    var query = new Parse.Query(Parse.Installation);
+    query.containedIn("user", users);
+    query.find({
+        useMasterKey: true, //This is for the new version
+        success: function(users) {
+            for (var i = 0; i < results.length; ++i) {
+                console.log("iterating over Installations");
+            }
+            console.log("Finished iterating over Installations");
+            response.success(users);
+        },
+        error: function(error) {
+            response.error(error);
+        }
+    });
+});
