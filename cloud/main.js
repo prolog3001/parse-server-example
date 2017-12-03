@@ -885,7 +885,7 @@ Parse.Cloud.define('saveGenderToIndex', function(request, response) {
     });
 });
 
-Parse.Cloud.define('getUsersEmailFromIds', function(request, response) {
+Parse.Cloud.define('getFullUsersFromIds', function(request, response) {
     //Parse.Cloud.useMasterKey(); //This is for the old server
     // request has 2 parameters: params passed by the client and the authorized user
     var params = request.params;
