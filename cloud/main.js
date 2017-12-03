@@ -924,7 +924,7 @@ Parse.Cloud.define('getFullUserInstallationsFromIds', function(request, response
     var users = params.userIds; //ids of relevant users
 
     var query = new Parse.Query(Parse.Installation);
-    query.containedIn("userId", users);
+    query.containedIn("user", users);
     query.descending('updatedAt')
     query.find({
         useMasterKey: true, //This is for the new version
