@@ -914,5 +914,4 @@ Parse.Cloud.define('getUsersEmailFromIds', function(request, response) {
             response.error(error);
         }
     });
-    response.success('success');
 });
