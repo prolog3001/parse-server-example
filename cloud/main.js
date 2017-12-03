@@ -924,11 +924,11 @@ Parse.Cloud.define('getFullUserInstallationsFromIds', function(request, response
     var users = params.userIds; //ids of relevant users
 
     var query = new Parse.Query(Parse.Installation);
-    query.containedIn("objectId", users);
+    query.containedIn("user", users);
     query.find({
         useMasterKey: true, //This is for the new version
         success: function(results) {
-            for (var i = 0; i < results.length; ++i) {
+            for (var i = 0; i < results.length; i++) {
                 console.log("iterating over Installations");
             }
             console.log("Finished iterating over Installations");
