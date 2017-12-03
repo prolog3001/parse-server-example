@@ -932,7 +932,7 @@ Parse.Cloud.define('getFullUserInstallationsFromIds', function(request, response
                 console.log("iterating over Installations");
             }
             console.log("Finished iterating over Installations");
-            response.success(users);
+            response.success(results);
         },
         error: function(error) {
             response.error(error);
