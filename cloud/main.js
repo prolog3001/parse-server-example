@@ -175,7 +175,7 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
             console.log("#### session_location_invitation_push");
             break;
         case 14:
-            pushQuery.equalTo("session_location_invitation_push", true);
+//             pushQuery.equalTo("session_location_invitation_push", true);
             console.log("#### session_location_invitation_push");
             break;
 	case 15:
