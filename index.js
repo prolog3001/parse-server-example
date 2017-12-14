@@ -44,9 +44,6 @@ var api = new ParseServer({
       },
   push: {
      adapter: oneSignalPushAdapter
-  },
-  liveQuery: {
-    classNames: ["Message"] // List of classes to support for query subscriptions
   }
 //    customPages: {
 //      invalidLink: process.env.HOST_URL + 'invalid_link.html',
