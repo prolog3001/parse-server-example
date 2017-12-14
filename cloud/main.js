@@ -219,164 +219,164 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
     response.success('success');
 });
 
-Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) {
+// Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) {
 
-    // request has 2 parameters: params passed by the client and the authorized user
-    var params = request.params;
-    var user = request.user;
+//     // request has 2 parameters: params passed by the client and the authorized user
+//     var params = request.params;
+//     var user = request.user;
 
-    //Parsing Json for iOS Platforms
-    var alert = "Class Reminder - ";
-    var push_titleDate = "Tomorrow, the ";
-    var push_titleTime = " at ";
-    var push_titleTitle = " is Happening";
-    var push_type = 1;
-    var message_object_id = "";
-    var push_notification_id = -1;
+//     //Parsing Json for iOS Platforms
+//     var alert = "Class Reminder - ";
+//     var push_titleDate = "Tomorrow, the ";
+//     var push_titleTime = " at ";
+//     var push_titleTitle = " is Happening";
+//     var push_type = 1;
+//     var message_object_id = "";
+//     var push_notification_id = -1;
 
-    var sessionIds = [];
-    var dictUsersToSessions = {};
-    var dictJsonToSessions = {};
+//     var sessionIds = [];
+//     var dictUsersToSessions = {};
+//     var dictJsonToSessions = {};
 
-    var monthNames = [
-        "January", "February", "March",
-        "April", "May", "June", "July",
-        "August", "September", "October",
-        "November", "December"
-    ];
+//     var monthNames = [
+//         "January", "February", "March",
+//         "April", "May", "June", "July",
+//         "August", "September", "October",
+//         "November", "December"
+//     ];
 
-    var maxToLoop = 5;
+//     var maxToLoop = 5;
 
-    console.log("#### Send alert notifications to users who asked for it");
+//     console.log("#### Send alert notifications to users who asked for it");
 
-    //Filter only users with thier ids in it
-    var alertQuery = new Parse.Query("Alert");
-    alertQuery.include("session")
-    alertQuery.equalTo("notified", false);
-    query.find({
-        success: function(alerts) {
-            if (maxToLoop > alerts.length)
-                maxToLoop = alerts.length;
+//     //Filter only users with thier ids in it
+//     var alertQuery = new Parse.Query("Alert");
+//     alertQuery.include("session")
+//     alertQuery.equalTo("notified", false);
+//     query.find({
+//         success: function(alerts) {
+//             if (maxToLoop > alerts.length)
+//                 maxToLoop = alerts.length;
 
-            var alertsClone = alerts.slice(0);
-            console.log("Found Alerts - " + alerts.length);
-            //             for (var i = 0; i < alerts.length; i++) {
-            for (var i = 0; i < maxToLoop; i++) {
-		var daysDiff = dateDiffInDays(Date.now(), alerts[i].get("date");
-		console.log("#### difference between session and now - " + daysDiff);
-		if(daysDiff > 1){
-			continue;
-		}
+//             var alertsClone = alerts.slice(0);
+//             console.log("Found Alerts - " + alerts.length);
+//             //             for (var i = 0; i < alerts.length; i++) {
+//             for (var i = 0; i < maxToLoop; i++) {
+// 		var daysDiff = dateDiffInDays(Date.now(), alerts[i].get("date");
+// 		console.log("#### difference between session and now - " + daysDiff);
+// 		if(daysDiff > 1){
+// 			continue;
+// 		}
 		    
-                var sessionId = alerts[i].get("session").id;
-                var userIdsWithThatSession = [];
-                for (var j = 0; j < alertsClone.length; j++) {
-                    if (sessionId == alertsClone[j].get("session").id) {
-                        userIdsWithThatSession[userIdsWithThatSession.length - 1] = alertsClone[j].get("user").id;
-                        console.log("#### Session Id of Session with Related Users " + sessionId);
-                        console.log("#### User Id of User Related to Session " + alertsClone[j].get("user").id);
-                    }
-                }
-                dictUsersToSessions[String(sessionId)] = userIdsWithThatSession;
-                console.log("#### Session Id of Session in Alert " + sessionId);
-                console.log("#### User Ids of Related Users " + userIdsWithThatSession.length);
+//                 var sessionId = alerts[i].get("session").id;
+//                 var userIdsWithThatSession = [];
+//                 for (var j = 0; j < alertsClone.length; j++) {
+//                     if (sessionId == alertsClone[j].get("session").id) {
+//                         userIdsWithThatSession[userIdsWithThatSession.length - 1] = alertsClone[j].get("user").id;
+//                         console.log("#### Session Id of Session with Related Users " + sessionId);
+//                         console.log("#### User Id of User Related to Session " + alertsClone[j].get("user").id);
+//                     }
+//                 }
+//                 dictUsersToSessions[String(sessionId)] = userIdsWithThatSession;
+//                 console.log("#### Session Id of Session in Alert " + sessionId);
+//                 console.log("#### User Ids of Related Users " + userIdsWithThatSession.length);
 
-                var date = alerts[i].get("session").get("date");
-                var day = date.getDate();
-                var monthIndex = date.getMonth();
-                var year = date.getFullYear();
+//                 var date = alerts[i].get("session").get("date");
+//                 var day = date.getDate();
+//                 var monthIndex = date.getMonth();
+//                 var year = date.getFullYear();
 
-                var pushTitle = push_titleDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
-                    push_titleTime + date.getHours() + ":" + date.getMinutes() +
-                    alerts[i].get("session").get("title") + push_titleTitle;
+//                 var pushTitle = push_titleDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
+//                     push_titleTime + date.getHours() + ":" + date.getMinutes() +
+//                     alerts[i].get("session").get("title") + push_titleTitle;
 
-                var pushAlert = alert + alerts[i].get("session").get("title");
+//                 var pushAlert = alert + alerts[i].get("session").get("title");
 
-                var customJsonOfSession = {
-                    alert: pushAlert,
-                    session_alert: pushAlert,
-                    push_title: pushTitle,
-                    push_type: push_type,
-                    message_object_id: message_object_id,
-                    push_notification_id: push_notification_id,
-                    push_object_id: sessionId,
-                    push_badge: "Increment"
-                };
+//                 var customJsonOfSession = {
+//                     alert: pushAlert,
+//                     session_alert: pushAlert,
+//                     push_title: pushTitle,
+//                     push_type: push_type,
+//                     message_object_id: message_object_id,
+//                     push_notification_id: push_notification_id,
+//                     push_object_id: sessionId,
+//                     push_badge: "Increment"
+//                 };
 
-                var jsonOfSession = {
-                    alert: pushAlert,
-                    session_alert: pushAlert,
-                    push_title: pushTitle,
-                    push_type: push_type,
-                    headings: {
-                        en: pushTitle,
-                    },
-                    message_object_id: message_object_id,
-                    push_notification_id: push_notification_id,
-                    push_object_id: sessionId,
-                    badge: 1,
-                    custom: customJsonOfSession
-                };
-                dictJsonToSessions[String(sessionId)] = jsonOfSession;
-                console.log("#### Session Json " + jsonOfSession);
+//                 var jsonOfSession = {
+//                     alert: pushAlert,
+//                     session_alert: pushAlert,
+//                     push_title: pushTitle,
+//                     push_type: push_type,
+//                     headings: {
+//                         en: pushTitle,
+//                     },
+//                     message_object_id: message_object_id,
+//                     push_notification_id: push_notification_id,
+//                     push_object_id: sessionId,
+//                     badge: 1,
+//                     custom: customJsonOfSession
+//                 };
+//                 dictJsonToSessions[String(sessionId)] = jsonOfSession;
+//                 console.log("#### Session Json " + jsonOfSession);
 
-                var userQuery = new Parse.Query(Parse.User);
-                userQuery.containedIn("objectId", dictUsersToSessions[String(sessionId)]);
+//                 var userQuery = new Parse.Query(Parse.User);
+//                 userQuery.containedIn("objectId", dictUsersToSessions[String(sessionId)]);
 
-                var pushQuery = new Parse.Query(Parse.Installation);
-                pushQuery.matchesQuery('user', userQuery);
+//                 var pushQuery = new Parse.Query(Parse.Installation);
+//                 pushQuery.matchesQuery('user', userQuery);
 
-                // Note that useMasterKey is necessary for Push notifications to succeed.
-                Parse.Push.send({
-                    where: pushQuery,
-                    data: dictJsonToSessions[String(sessionId)]
-                }, {
-                    useMasterKey: true,
-                    success: function() {
-                        console.log("#### PUSH OK");
-                    },
-                    error: function(error) {
-                        console.log("#### PUSH ERROR" + error.message);
-                    },
-                });
-            }
+//                 // Note that useMasterKey is necessary for Push notifications to succeed.
+//                 Parse.Push.send({
+//                     where: pushQuery,
+//                     data: dictJsonToSessions[String(sessionId)]
+//                 }, {
+//                     useMasterKey: true,
+//                     success: function() {
+//                         console.log("#### PUSH OK");
+//                     },
+//                     error: function(error) {
+//                         console.log("#### PUSH ERROR" + error.message);
+//                     },
+//                 });
+//             }
 
-            //             for (var i = 0; i < alerts.length; i++) {
-            for (var i = 0; i < maxToLoop; i++) {
-		    
-		    
-	    	//TODO check if this alert has relevant sessions and users that got notified
+//             //             for (var i = 0; i < alerts.length; i++) {
+//             for (var i = 0; i < maxToLoop; i++) {
 		    
 		    
-                alerts.put("notified", true);
-            }
+// 	    	//TODO check if this alert has relevant sessions and users that got notified
+		    
+		    
+//                 alerts.put("notified", true);
+//             }
 
-            Parse.Object.saveAll(alerts, {
-                useMasterKey: true,
-                success: function(list) {
-                    console.log("#### alerts Saved");
-                    response.success('success');
-                },
-                error: function(error) {
-                    console.log("wasnt able to save Alert Objects Table because  " + error.code);
-                    response.error('wasnt able to save Alert Objects Table');
-                }
-            });
+//             Parse.Object.saveAll(alerts, {
+//                 useMasterKey: true,
+//                 success: function(list) {
+//                     console.log("#### alerts Saved");
+//                     response.success('success');
+//                 },
+//                 error: function(error) {
+//                     console.log("wasnt able to save Alert Objects Table because  " + error.code);
+//                     response.error('wasnt able to save Alert Objects Table');
+//                 }
+//             });
 
-        },
-        error: function(error) {
-            response.error(error);
-        },
-    });
+//         },
+//         error: function(error) {
+//             response.error(error);
+//         },
+//     });
 	
-	function dateDiffInDays(a, b) {
-	  // Discard the time and time-zone information.
-	  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-	  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+// 	function dateDiffInDays(a, b) {
+// 	  // Discard the time and time-zone information.
+// 	  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+// 	  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-	  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-	}
-});
+// 	  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+// 	}
+// });
 
 Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
 //     Parse.Cloud.useMasterKey();
