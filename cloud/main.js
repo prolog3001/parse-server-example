@@ -259,7 +259,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             var alertsClone = alerts.slice(0);
             console.log("Found Alerts - " + alerts.length);
             for (var i = 0; i < alerts.length; i++) {
-                var daysDiff = dateDiffInDays(Date.now(), alerts[i].get("date"));
+                var daysDiff = dateDiffInDays(new Date(), alerts[i].get("date"));
                 console.log("#### difference between session and now - " + daysDiff);
                 if (daysDiff > 1) {
                     continue;
