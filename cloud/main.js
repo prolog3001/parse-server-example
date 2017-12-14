@@ -41,7 +41,6 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
     var alert = "Reminder - ";
     var push_titleDate = "Tomorrow, the ";
     var push_titleTime = " at ";
-    var push_titleTitle = " is Happening";
     var push_type = 1;
     var message_object_id = "";
     var push_notification_id = -1;
@@ -111,8 +110,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                 var year = date.getFullYear();
 
                 var pushTitle = push_titleDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
-                    push_titleTime + date.getHours() + ":" + date.getMinutes() +
-                    alerts[i].get("session").get("title") + push_titleTitle;
+                    push_titleTime + date.getHours() + ":" + date.getMinutes();
 
                 var pushAlert = alert + alerts[i].get("session").get("title");
 
