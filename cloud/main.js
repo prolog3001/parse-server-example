@@ -581,7 +581,7 @@ Parse.Cloud.define('refreshRecurringSessions', function (request, response) {
                                                                 console.log("#### Alerts Array  " + alerts.length);
                                                                 for (var i = 0; i < alerts.length; i++) {
                                                                     var sessionToBeReplaced = new Parse.Object({
-                                                                        id: planSessions[i].get("session").id
+                                                                        id: alerts[i].get("session").id
                                                                     });
                                                                     var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
                                                                     console.log("#### Session ObjectId to be replaced in alert - " + sessionToBeReplacedObjectId);
@@ -647,7 +647,7 @@ Parse.Cloud.define('refreshRecurringSessions', function (request, response) {
                                                         console.log("#### Alerts Array  " + alerts.length);
                                                         for (var i = 0; i < alerts.length; i++) {
                                                             var sessionToBeReplaced = new Parse.Object({
-                                                                id: planSessions[i].get("session").id
+                                                                id: alerts[i].get("session").id
                                                             });
                                                             var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
                                                             console.log("#### Session ObjectId to be replaced in alert - " + sessionToBeReplacedObjectId);
