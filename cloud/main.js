@@ -38,7 +38,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
     var user = request.user;
 
     //Parsing Json for iOS Platforms
-    var alert = "Class Reminder - ";
+    var alert = "Reminder - ";
     var push_titleDate = "Tomorrow, the ";
     var push_titleTime = " at ";
     var push_titleTitle = " is Happening";
@@ -48,7 +48,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
 
     var dictUsersToSessions = {};
     var dictJsonToSessions = {};
-    var promiseArray = [];
+//     var promiseArray = [];
 
     var monthNames = [
         "January", "February", "March",
@@ -82,7 +82,14 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                     continue;
                 }
 
+		var keysOfDictUsersToSessions = Object.keys(dictUsersToSessions);
                 var sessionId = alerts[i].get("session").id;
+		var indexOfSessionId = keysOfDictUsersToSessions.indexOf(sessionId);
+                console.log("#### Index of sessionId - " + indexOfSessionId);
+		if(indexOfSessionId >= 0) {
+                    continue;
+                }    
+		
                 var userIdsWithThatSession = [];
 		var count = 0;
                 for (var j = 0; j < alertsClone.length; j++) {
@@ -143,7 +150,29 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                 var pushQuery = new Parse.Query(Parse.Installation);
                 pushQuery.matchesQuery('user', userQuery);
 
-                var promise = new Parse.Promise();
+//                 var promise = new Parse.Promise();
+//                 Parse.Push.send({
+//                     where: pushQuery,
+//                     data: dictJsonToSessions[String(sessionId)]
+//                 }, {
+//                     useMasterKey: true,
+//                     success: function() {
+//                         console.log("#### PUSH OK");
+//                     },
+//                     error: function(error) {
+//                         console.log("#### PUSH ERROR" + error.message);
+//                     }
+//                 }).then(function(result) {
+//                     //Marks this promise as fulfilled, 
+//                     //firing any callbacks waiting on it.
+//                     promise.resolve(result);
+//                 }, function(error) {
+//                     //Marks this promise as fulfilled, 
+//                     //firing any callbacks waiting on it.
+//                     promise.reject(error);
+//                 });
+//                 promiseArray.push(promise);
+//             }
                 Parse.Push.send({
                     where: pushQuery,
                     data: dictJsonToSessions[String(sessionId)]
@@ -154,21 +183,28 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                     },
                     error: function(error) {
                         console.log("#### PUSH ERROR" + error.message);
-                    }
-                }).then(function(result) {
-                    //Marks this promise as fulfilled, 
-                    //firing any callbacks waiting on it.
-                    promise.resolve(result);
-                }, function(error) {
-                    //Marks this promise as fulfilled, 
-                    //firing any callbacks waiting on it.
-                    promise.reject(error);
-                });
-                promiseArray.push(promise);
+	    	});
             }
 
-            Parse.Promise.when(promiseArray).then(function(result) {
-                console.log("success promise!!")
+//             Parse.Promise.when(promiseArray).then(function(result) {
+//                 console.log("success promise!!")
+//                 Parse.Object.saveAll(alerts, {
+//                     useMasterKey: true,
+//                     success: function(list) {
+//                         console.log("#### Alerts Saved");
+//                         status.success("success promise!!");
+//                         response.success('Alerts Saved');
+//                     },
+//                     error: function(error) {
+//                         console.log("wasnt able to save Alert Objects Table because  " + error.code);
+//                         response.error('wasnt able to save Alert Objects Table');
+//                     }
+//                 });
+//             }, function(error) {
+//                 console.error("Promise Error: " + error.message);
+//                 status.error(error);
+//             });
+
                 Parse.Object.saveAll(alerts, {
                     useMasterKey: true,
                     success: function(list) {
@@ -181,10 +217,6 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                         response.error('wasnt able to save Alert Objects Table');
                     }
                 });
-            }, function(error) {
-                console.error("Promise Error: " + error.message);
-                status.error(error);
-            });
 
         },
         error: function(error) {
