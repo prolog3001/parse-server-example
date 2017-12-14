@@ -261,7 +261,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             var alertsClone = alerts.slice(0);
             console.log("Found Alerts - " + alerts.length);
             //             for (var i = 0; i < alerts.length; i++) {
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < maxToLoop; i++) {
                 var sessionId = alerts[i].get("session").id;
                 var userIdsWithThatSession = [];
                 for (var j = 0; j < alertsClone.length; j++) {
@@ -336,7 +336,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             }
 
             //             for (var i = 0; i < alerts.length; i++) {
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < maxToLoop; i++) {
                 alerts.put("notified", true);
             }
 
