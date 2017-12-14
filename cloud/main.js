@@ -84,9 +84,11 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
 
                 var sessionId = alerts[i].get("session").id;
                 var userIdsWithThatSession = [];
+		var count = 0;
                 for (var j = 0; j < alertsClone.length; j++) {
                     if (sessionId == alertsClone[j].get("session").id) {
-                        userIdsWithThatSession[userIdsWithThatSession.length - 1] = alertsClone[j].get("user").id;
+                        userIdsWithThatSession[count] = alertsClone[j].get("user").id;
+			count++;
                         console.log("#### Session Id of Session with Related Users " + sessionId);
                         console.log("#### User Id of User Related to Session " + alertsClone[j].get("user").id);
                     }
