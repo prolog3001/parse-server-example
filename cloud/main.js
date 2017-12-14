@@ -183,6 +183,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                     },
                     error: function(error) {
                         console.log("#### PUSH ERROR" + error.message);
+		    }
 	    	});
             }
 
