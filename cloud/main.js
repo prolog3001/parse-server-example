@@ -250,7 +250,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
     var alertQuery = new Parse.Query("Alert");
     alertQuery.include("session")
     alertQuery.equalTo("notified", false);
-    query.find({
+    alertQuery.find({
         success: function(alerts) {
             if (alerts.length == 0) {
                 response.success('No aLerts to notify..');
