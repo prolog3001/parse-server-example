@@ -33,6 +33,9 @@ var api = new ParseServer({
   masterKey: process.env.MASTER_KEY || '', //Add your master key here. Keep it secret!
   serverURL: process.env.SERVER_URL || process.env.ALT_SERVER_URL,  // Don't forget to change to https if needed
   publicServerURL: process.env.PUBLIC_SERVER_URL || process.env.ALT_PUBLIC_SERVER_URL,
+  liveQuery: {
+    classNames: ["Message"] // List of classes to support for query subscriptions
+  },
   verifyUserEmails: true,
   emailAdapter: {
       module: 'parse-server-simple-mailgun-adapter',
@@ -68,12 +71,13 @@ app.get('/', function(req, res) {
 });
 
 var port = process.env.PORT || 1337;
+var httpServer = require('http').createServer(app);
 app.listen(port, function() {
     console.log('parse-server-example running on port ' + port + '.');
 });
 
 // This will enable the Live Query real-time server
-ParseServer.createLiveQueryServer(app);
+ParseServer.createLiveQueryServer(httpServer);
 
 //-----------------REAL CODE-------------------//
 
