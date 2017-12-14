@@ -262,6 +262,12 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             console.log("Found Alerts - " + alerts.length);
             //             for (var i = 0; i < alerts.length; i++) {
             for (var i = 0; i < maxToLoop; i++) {
+		var daysDiff = dateDiffInDays(Date.now(), alerts[i].get("date");
+		console.log("#### difference between session and now - " + daysDiff);
+		if(daysDiff > 1){
+			continue;
+		}
+		    
                 var sessionId = alerts[i].get("session").id;
                 var userIdsWithThatSession = [];
                 for (var j = 0; j < alertsClone.length; j++) {
@@ -337,6 +343,11 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
 
             //             for (var i = 0; i < alerts.length; i++) {
             for (var i = 0; i < maxToLoop; i++) {
+		    
+		    
+	    	//TODO check if this alert has relevant sessions and users that got notified
+		    
+		    
                 alerts.put("notified", true);
             }
 
@@ -357,6 +368,14 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             response.error(error);
         },
     });
+	
+	function dateDiffInDays(a, b) {
+	  // Discard the time and time-zone information.
+	  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+	  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+	  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	}
 });
 
 Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
