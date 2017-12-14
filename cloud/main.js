@@ -278,7 +278,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                         console.log("#### User Id of User Related to Session " + alertsClone[j].get("user").id);
                     }
                 }
-                alert[i].put("notified", true);
+                alert[i].set("notified", true);
                 dictUsersToSessions[String(sessionId)] = userIdsWithThatSession;
                 console.log("#### Session Id of Session in Alert " + sessionId);
                 console.log("#### User Ids of Related Users " + userIdsWithThatSession.length);
