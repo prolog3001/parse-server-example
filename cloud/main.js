@@ -264,12 +264,11 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
 		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
 		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
 //                 var daysDiff = dateDiffInDays(new Date(), alerts[i].get("session").get("date"));
-                console.log("#### difference between session and now - " + daysDiff);
-                if (daysDiff > 1) {
+                console.log("#### difference between session and now - " + diffDays);
+                if (diffDays > 1) {
                     continue;
                 }
 
-                alert[i].put("notified", true);
                 var sessionId = alerts[i].get("session").id;
                 var userIdsWithThatSession = [];
                 for (var j = 0; j < alertsClone.length; j++) {
@@ -279,6 +278,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                         console.log("#### User Id of User Related to Session " + alertsClone[j].get("user").id);
                     }
                 }
+                alert[i].put("notified", true);
                 dictUsersToSessions[String(sessionId)] = userIdsWithThatSession;
                 console.log("#### Session Id of Session in Alert " + sessionId);
                 console.log("#### User Ids of Related Users " + userIdsWithThatSession.length);
