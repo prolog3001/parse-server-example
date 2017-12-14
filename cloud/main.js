@@ -219,6 +219,146 @@ Parse.Cloud.define('pushChannelMedidate', function(request, response) {
     response.success('success');
 });
 
+Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) {
+
+    // request has 2 parameters: params passed by the client and the authorized user
+    var params = request.params;
+    var user = request.user;
+
+    //Parsing Json for iOS Platforms
+    var alert = "Class Reminder - ";
+    var push_titleDate = "Tomorrow, the ";
+    var push_titleTime = " at ";
+    var push_titleTitle = " is Happening";
+    var push_type = 1;
+    var message_object_id = "";
+    var push_notification_id = -1;
+
+    var sessionIds = [];
+    var dictUsersToSessions = {};
+    var dictJsonToSessions = {};
+
+    var monthNames = [
+        "January", "February", "March",
+        "April", "May", "June", "July",
+        "August", "September", "October",
+        "November", "December"
+    ];
+
+    var maxToLoop = 5;
+
+    console.log("#### Send alert notifications to users who asked for it");
+
+    //Filter only users with thier ids in it
+    var alertQuery = new Parse.Query("Alert");
+    alertQuery.include("session")
+    alertQuery.equalTo("notified", false);
+    query.find({
+        success: function(alerts) {
+            if (maxToLoop > alerts.length)
+                maxToLoop = alerts.length;
+
+            var alertsClone = alerts.slice(0);
+            console.log("Found Alerts - " + alerts.length);
+            //             for (var i = 0; i < alerts.length; i++) {
+            for (var i = 0; i < 5; i++) {
+                var sessionId = alerts[i].get("session").id;
+                var userIdsWithThatSession = [];
+                for (var j = 0; j < alertsClone.length; j++) {
+                    if (sessionId == alertsClone[j].get("session").id) {
+                        userIdsWithThatSession[userIdsWithThatSession.length - 1] = alertsClone[j].get("user").id;
+                        console.log("#### Session Id of Session with Related Users " + sessionId);
+                        console.log("#### User Id of User Related to Session " + alertsClone[j].get("user").id);
+                    }
+                }
+                dictUsersToSessions[String(sessionId)] = userIdsWithThatSession;
+                console.log("#### Session Id of Session in Alert " + sessionId);
+                console.log("#### User Ids of Related Users " + userIdsWithThatSession.length);
+
+                var date = alerts[i].get("session").get("date");
+                var day = date.getDate();
+                var monthIndex = date.getMonth();
+                var year = date.getFullYear();
+
+                var pushTitle = push_titleDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
+                    push_titleTime + date.getHours() + ":" + date.getMinutes() +
+                    alerts[i].get("session").get("title") + push_titleTitle;
+
+                var pushAlert = alert + alerts[i].get("session").get("title");
+
+                var customJsonOfSession = {
+                    alert: pushAlert,
+                    session_alert: pushAlert,
+                    push_title: pushTitle,
+                    push_type: push_type,
+                    message_object_id: message_object_id,
+                    push_notification_id: push_notification_id,
+                    push_object_id: sessionId,
+                    push_badge: "Increment"
+                };
+
+                var jsonOfSession = {
+                    alert: pushAlert,
+                    session_alert: pushAlert,
+                    push_title: pushTitle,
+                    push_type: push_type,
+                    headings: {
+                        en: pushTitle,
+                    },
+                    message_object_id: message_object_id,
+                    push_notification_id: push_notification_id,
+                    push_object_id: sessionId,
+                    badge: 1,
+                    custom: customJsonOfSession
+                };
+                dictJsonToSessions[String(sessionId)] = jsonOfSession;
+                console.log("#### Session Json " + jsonOfSession);
+
+                var userQuery = new Parse.Query(Parse.User);
+                userQuery.containedIn("objectId", dictUsersToSessions[String(sessionId)]);
+
+                var pushQuery = new Parse.Query(Parse.Installation);
+                pushQuery.matchesQuery('user', userQuery);
+
+                // Note that useMasterKey is necessary for Push notifications to succeed.
+                Parse.Push.send({
+                    where: pushQuery,
+                    data: dictJsonToSessions[String(sessionId)]
+                }, {
+                    useMasterKey: true,
+                    success: function() {
+                        console.log("#### PUSH OK");
+                    },
+                    error: function(error) {
+                        console.log("#### PUSH ERROR" + error.message);
+                    },
+                });
+            }
+
+            //             for (var i = 0; i < alerts.length; i++) {
+            for (var i = 0; i < 5; i++) {
+                alerts.put("notified", true);
+            }
+
+            Parse.Object.saveAll(alerts, {
+                useMasterKey: true,
+                success: function(list) {
+                    console.log("#### alerts Saved");
+                    response.success('success');
+                },
+                error: function(error) {
+                    console.log("wasnt able to save Alert Objects Table because  " + error.code);
+                    response.error('wasnt able to save Alert Objects Table');
+                }
+            });
+
+        },
+        error: function(error) {
+            response.error(error);
+        },
+    });
+});
+
 Parse.Cloud.define('saveAndroidUserDeviceToken', function(request, response) {
 //     Parse.Cloud.useMasterKey();
     var params = request.params;
@@ -279,11 +419,12 @@ Parse.Cloud.define('saveUserRate', function(request, response) {
     });
 });
 
-Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
-//     Parse.Cloud.useMasterKey();
+Parse.Cloud.define('refreshRecurringSessions', function (request, response) {
+    //     Parse.Cloud.useMasterKey();
 
     var newRecurringSessionsArray = [];
-    var dictNewAndEdited = {}; // create an empty dictionary for use in planSession replacepent
+    var dictNewAndEditedPlan = {}; // create an empty dictionary for use in planSession and alert replacepent
+    var dictNewAndEditedAlert = {}; // create an empty dictionary for use in alert replacepent
     var excludeMinusOccurences = [0, -1, -2, -3];
     var then = new Date();
     then.setHours(then.getHours() - 1);
@@ -293,184 +434,298 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
     pushQuery.notContainedIn("occurrence", excludeMinusOccurences);
     pushQuery.limit(1000);
     pushQuery.find({
-	useMasterKey: true,
-        success: function(results) {
+        useMasterKey: true,
+        success: function (results) {
             //console.log("#### Sessions to Reoccurre " + results.length);
 
             //var sum = 0;
             for (var i = 0; i < results.length; ++i) {
-		console.log("Entered Loop");
+                console.log("Entered Loop");
                 var newSession = results[i].clone();
-		console.log("Cloned Session for Editing");
+                console.log("Cloned Session for Editing");
                 newSession.set("attenders_count", 0);
                 var dailyDaysArray = newSession.get("session_occurrence_days");
-	    	if (dailyDaysArray != null){
-			console.log("dailyDaysArray - " + dailyDaysArray.length);
-		} else{
-			console.log("No dailyDaysArray");  
-		}
-		    
+                if (dailyDaysArray != null) {
+                    console.log("dailyDaysArray - " + dailyDaysArray.length);
+                } else {
+                    console.log("No dailyDaysArray");
+                }
+
                 var date = new Date(newSession.get("date").getTime());
                 var previousDate = new Date(newSession.get("date").getTime());
-		console.log("Got Old Date - " + previousDate);
-		    
+                console.log("Got Old Date - " + previousDate);
+
                 switch (newSession.get("occurrence")) {
-                    case 1:
-                        do {
-                            if (dailyDaysArray != null && dailyDaysArray != undefined && dailyDaysArray[0] !== 0) {
-                                console.log("This Daily has sessions days and   " + dailyDaysArray);
-                                do {
-                                    date.setDate(date.getDate() + 1);
-					console.log("Got Old Date Hours - " + previousDate.getHours());
-					console.log("Got Old Date Minutes - " + previousDate.getMinutes());
-                                    date.setHours(previousDate.getHours());
-                                    date.setMinutes(previousDate.getMinutes());
-                                    var dayNumber = date.getDay() + 1;
-                                    console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
-                                } while (dailyDaysArray.indexOf(dayNumber) === -1)
-                            } else {
-                                console.log("NO DAYS DEFINED OR WEEKLY");
+                case 1:
+                    do {
+                        if (dailyDaysArray != null && dailyDaysArray != undefined && dailyDaysArray[0] !== 0) {
+                            console.log("This Daily has sessions days and   " + dailyDaysArray);
+                            do {
                                 date.setDate(date.getDate() + 1);
-//                              	date.setHours(previousDate.getHours());
-//                              	date.setMinutes(previousDate.getMinutes());
-                            }
-                            //date.setDate(previousDate.getDate() + 1);
-                        } while (date <= then);
-			console.log("New Date - " + date);
-                        break;
+                                console.log("Got Old Date Hours - " + previousDate.getHours());
+                                console.log("Got Old Date Minutes - " + previousDate.getMinutes());
+                                date.setHours(previousDate.getHours());
+                                date.setMinutes(previousDate.getMinutes());
+                                var dayNumber = date.getDay() + 1;
+                                console.log("does day exists:   " + dailyDaysArray.indexOf(dayNumber));
+                            } while (dailyDaysArray.indexOf(dayNumber) === -1)
+                        } else {
+                            console.log("NO DAYS DEFINED OR WEEKLY");
+                            date.setDate(date.getDate() + 1);
+                            date.setHours(previousDate.getHours());
+                            date.setMinutes(previousDate.getMinutes());
+                        }
+                        //date.setDate(previousDate.getDate() + 1);
+                    } while (date <= then);
+                    console.log("New Date - " + date);
+                    break;
 
-                    case 2:
-                        do {
-                            //  date.setHours(previousDate.getHours() + 7 * 24);
-                            date.setDate(date.getDate() + 7);
-// 			    date.setHours(previousDate.getHours());
-// 			    date.setMinutes(previousDate.getMinutes());
-                        } while (date <= then);
-			console.log("New Date - " + date);
-                        break;
+                case 2:
+                    do {
+                        //  date.setHours(previousDate.getHours() + 7 * 24);
+                        date.setDate(date.getDate() + 7);
+                        date.setHours(previousDate.getHours());
+                        date.setMinutes(previousDate.getMinutes());
+                    } while (date <= then);
+                    console.log("New Date - " + date);
+                    break;
 
-                    case 3:
-                        //  date.setHours(previousDate.getHours() + 4 * 7 * 24);
-                        date.addMonths(1);			    
-// 			date.setHours(previousDate.getHours());
-// 			date.setMinutes(previousDate.getMinutes());
-			console.log("New Date - " + date);
-                        break;
-                    default:
-                        ;
+                case 3:
+                    //  date.setHours(previousDate.getHours() + 4 * 7 * 24);
+                    date.addMonths(1);
+                    date.setHours(previousDate.getHours());
+                    date.setMinutes(previousDate.getMinutes());
+                    console.log("New Date - " + date);
+                    break;
+                default:
+                    ;
                 }
                 newSession.set("date", date);
                 newSession.set("day", date.getDay() + 1);
                 results[i].set("occurrence", -1 * results[i].get("occurrence"));
 
                 newRecurringSessionsArray.push(newSession);
-		console.log("Changed a Session - " + i);
+                console.log("Changed a Session - " + i);
             }
             if (newRecurringSessionsArray.length > 0 && results.length > 0) {
-	    	console.log("Try to save all - " + newRecurringSessionsArray.length);
+                console.log("Try to save all - " + newRecurringSessionsArray.length);
                 Parse.Object.saveAll(newRecurringSessionsArray, {
-		    useMasterKey: true,
-                    success: function(newSessionList) {
-		    	console.log("Saved newRecurringSessionsArray");
+                    useMasterKey: true,
+                    success: function (newSessionList) {
+                        console.log("Saved newRecurringSessionsArray");
                         Parse.Object.saveAll(results, {
-			    useMasterKey: true,
-                            success: function(editedSessionList) {
-				console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
+                            useMasterKey: true,
+                            success: function (editedSessionList) {
+                                console.log("#### Saving New Recurring Sessions Array  " + newRecurringSessionsArray.length);
                                 console.log("#### Saving Edited Recurring Sessions Array  " + results.length);
-								
+
                                 var planSessionQuery = new Parse.Query("PlanSessionRelation");
                                 planSessionQuery.containedIn("session", results);
-								planSessionQuery.include("session");
+                                planSessionQuery.include("session");
                                 planSessionQuery.limit(1000);
                                 planSessionQuery.find({
-				    useMasterKey: true,
-                                    success: function(planSessions) {
-					if(planSessions != null && planSessions.length > 0){
+                                    useMasterKey: true,
+                                    success: function (planSessions) {
+                                        if (planSessions != null && planSessions.length > 0) {
+                                            for (var i = 0; i < results.length; i++) {
+                                                var newSessionForPlan = newRecurringSessionsArray[i];
+                                                var editedSessionObjectId = results[i].id;
+                                                console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
+                                                console.log("#### Title of new session - " + newSessionForPlan.get("title"));
+                                                console.log("#### Id of new session - " + newSessionForPlan.id);
+                                                dictNewAndEditedPlan[String(editedSessionObjectId)] = newSessionForPlan;
+                                            }
+                                            console.log("#### Succesfully created dictionary...");
 
-						for (var i = 0; i < results.length; i++) {
-							var newSessionForPlan = newRecurringSessionsArray[i];
-							var editedSessionObjectId = results[i].id;
-							console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
-							console.log("#### Title of new session - " + newSessionForPlan.get("title"));
-							console.log("#### Id of new session - " + newSessionForPlan.id);
-							dictNewAndEdited[String(editedSessionObjectId)] = newSessionForPlan;
-						}
-						console.log("#### Succesfully created dictionary...");
+                                            console.log("#### Plan Sessions Array  " + planSessions.length);
+                                            for (var i = 0; i < planSessions.length; i++) {
+                                                var sessionToBeReplaced = new Parse.Object({
+                                                    id: planSessions[i].get("session").id
+                                                });
+                                                var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
+                                                console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
 
-						console.log("#### Plan Sessions Array  " + planSessions.length);
-						for (var i = 0; i < planSessions.length; i++) {
-							var sessionToBeReplaced = new Parse.Object({
-								id: planSessions[i].get("session").id
-							});
-							var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
-							console.log("#### Session ObjectId to be replaced in plan - " + sessionToBeReplacedObjectId);
+                                                var sessionToReplaceObject = dictNewAndEditedPlan[String(sessionToBeReplacedObjectId)];
+                                                console.log("#### Session ObjectId to replace in plan - " + sessionToReplaceObject.id);
 
-							var sessionToReplaceObject = dictNewAndEdited[String(sessionToBeReplacedObjectId)];
-							console.log("#### Session ObjectId to replace in plan - " + sessionToReplaceObject.id);
+                                                planSessions[i].set("session", sessionToReplaceObject);
+                                                console.log("#### Session added to plan");
+                                            }
 
-							planSessions[i].set("session",sessionToReplaceObject);
-							console.log("#### Session added to plan");
-						}
+                                            Parse.Object.saveAll(planSessions, {
+                                                useMasterKey: true,
+                                                success: function (list) {
+                                                    console.log("#### planSessions Saved");
+                                                    //response.success('success');
 
-						Parse.Object.saveAll(planSessions, {
-							useMasterKey: true,
-							success: function(list) {
-								console.log("#### planSessions Saved");
-								response.success('success');
-							},
-							error: function(error) {
-								console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
-								response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
-							}
-						});
-					}else{
-						response.success('No plans to update');
-					}
-                                      },
-                                    error: function(error) {
-                                      console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
-                                      response.error('wasnt able to find PlanSessionRelation Table');
+
+                                                    console.log("#### Start alert query");
+                                                    var alertQuery = new Parse.Query("Alert");
+                                                    alertQuery.containedIn("session", results);
+                                                    alertQuery.include("session");
+                                                    alertQuery.limit(1000);
+                                                    alertQuery.find({
+                                                        useMasterKey: true,
+                                                        success: function (alerts) {
+                                                            if (alerts != null && alerts.length > 0) {
+                                                                for (var i = 0; i < results.length; i++) {
+                                                                    var newSessionForAlert = newRecurringSessionsArray[i];
+                                                                    var editedSessionObjectId = results[i].id;
+                                                                    console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
+                                                                    console.log("#### Title of new session - " + newSessionForAlert.get("title"));
+                                                                    console.log("#### Id of new session - " + newSessionForAlert.id);
+                                                                    dictNewAndEditedAlert[String(editedSessionObjectId)] = newSessionForAlert;
+                                                                }
+                                                                console.log("#### Succesfully created dictionary...");
+
+                                                                console.log("#### Alerts Array  " + alerts.length);
+                                                                for (var i = 0; i < alerts.length; i++) {
+                                                                    var sessionToBeReplaced = new Parse.Object({
+                                                                        id: planSessions[i].get("session").id
+                                                                    });
+                                                                    var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
+                                                                    console.log("#### Session ObjectId to be replaced in alert - " + sessionToBeReplacedObjectId);
+
+                                                                    var sessionToReplaceObject = dictNewAndEditedAlert[String(sessionToBeReplacedObjectId)];
+                                                                    console.log("#### Session ObjectId to replace in alert - " + sessionToReplaceObject.id);
+
+                                                                    alerts[i].set("session", sessionToReplaceObject);
+                                                                    alerts[i].set("notified", false);
+                                                                    console.log("#### Session added to plan");
+                                                                }
+
+                                                                Parse.Object.saveAll(alerts, {
+                                                                    useMasterKey: true,
+                                                                    success: function (list) {
+                                                                        console.log("#### alerts Saved");
+                                                                        response.success('success');
+                                                                    },
+                                                                    error: function (error) {
+                                                                        console.log("wasnt able to save Alert Objects Table because  " + error.code);
+                                                                        response.error('wasnt able to save Alert Objects Table');
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                response.success('No alerts to update');
+                                                            }
+                                                        },
+                                                        error: function (error) {
+                                                            console.log("wasnt able to find Alert Objects Table because  " + error.code);
+                                                            response.error('wasnt able to find Alert Objects Table');
+                                                        }
+                                                    });
+                                                },
+                                                error: function (error) {
+                                                    console.log("wasnt able to save new Sessions to PlanSessionRelation Table because  " + error.code);
+                                                    response.error('wasnt able to save new Sessions to PlanSessionRelation Table');
+                                                }
+                                            });
+                                        } else {
+                                            //response.success('success');
+                                            console.log('No plans to update');
+
+
+                                            console.log("#### Start alert query");
+                                            var alertQuery = new Parse.Query("Alert");
+                                            alertQuery.containedIn("session", results);
+                                            alertQuery.include("session");
+                                            alertQuery.limit(1000);
+                                            alertQuery.find({
+                                                useMasterKey: true,
+                                                success: function (alerts) {
+                                                    if (alerts != null && alerts.length > 0) {
+                                                        for (var i = 0; i < results.length; i++) {
+                                                            var newSessionForAlert = newRecurringSessionsArray[i];
+                                                            var editedSessionObjectId = results[i].id;
+                                                            console.log("#### Add Element to Dictionary - " + editedSessionObjectId);
+                                                            console.log("#### Title of new session - " + newSessionForAlert.get("title"));
+                                                            console.log("#### Id of new session - " + newSessionForAlert.id);
+                                                            dictNewAndEditedAlert[String(editedSessionObjectId)] = newSessionForAlert;
+                                                        }
+                                                        console.log("#### Succesfully created dictionary...");
+
+                                                        console.log("#### Alerts Array  " + alerts.length);
+                                                        for (var i = 0; i < alerts.length; i++) {
+                                                            var sessionToBeReplaced = new Parse.Object({
+                                                                id: planSessions[i].get("session").id
+                                                            });
+                                                            var sessionToBeReplacedObjectId = sessionToBeReplaced.id;
+                                                            console.log("#### Session ObjectId to be replaced in alert - " + sessionToBeReplacedObjectId);
+
+                                                            var sessionToReplaceObject = dictNewAndEditedAlert[String(sessionToBeReplacedObjectId)];
+                                                            console.log("#### Session ObjectId to replace in alert - " + sessionToReplaceObject.id);
+
+                                                            alerts[i].set("session", sessionToReplaceObject);
+                                                            alerts[i].set("notified", false);
+                                                            console.log("#### Session added to plan");
+                                                        }
+
+                                                        Parse.Object.saveAll(alerts, {
+                                                            useMasterKey: true,
+                                                            success: function (list) {
+                                                                console.log("#### alerts Saved");
+                                                                response.success('success');
+                                                            },
+                                                            error: function (error) {
+                                                                console.log("wasnt able to save Alert Objects Table because  " + error.code);
+                                                                response.error('wasnt able to save Alert Objects Table');
+                                                            }
+                                                        });
+                                                    } else {
+                                                        response.success('No alerts to update');
+                                                    }
+                                                },
+                                                error: function (error) {
+                                                    console.log("wasnt able to find Alert Objects Table because  " + error.code);
+                                                    response.error('wasnt able to find Alert Objects Table');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    error: function (error) {
+                                        console.log("wasnt able to find PlanSessionRelation Table because  " + error.code);
+                                        response.error('wasnt able to find PlanSessionRelation Table');
                                     }
                                 });
                             },
-                            error: function(error) {
+                            error: function (error) {
                                 console.log("wasnt able to save  " + error.code);
                                 response.error('Wasnt able to save Old Recurring Sessions');
                             }
                         });
                     },
-                    error: function(error) {
+                    error: function (error) {
                         console.log("wasnt able to save  " + error.code);
                         response.error('Wasnt able to save New Recurring Sessions');
                     }
                 });
-            }else{
-		console.log("#### NO New Recurring Sessions to Re-Occure");
-		response.success('success');
-		}
+            } else {
+                console.log("#### NO New Recurring Sessions to Re-Occure");
+                response.success('success');
+            }
         },
-        error: function() {
+        error: function () {
             response.error('Wasnt able to find Recurring Sessions');
         }
     });
 
-    Date.isLeapYear = function(year) {
+    Date.isLeapYear = function (year) {
         return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
     };
 
-    Date.getDaysInMonth = function(year, month) {
+    Date.getDaysInMonth = function (year, month) {
         return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
     };
 
-    Date.prototype.isLeapYear = function() {
+    Date.prototype.isLeapYear = function () {
         return Date.isLeapYear(this.getFullYear());
     };
 
-    Date.prototype.getDaysInMonth = function() {
+    Date.prototype.getDaysInMonth = function () {
         return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
     };
 
-    Date.prototype.addMonths = function(value) {
+    Date.prototype.addMonths = function (value) {
         var n = this.getDate();
         this.setDate(1);
         this.setMonth(this.getMonth() + value);
