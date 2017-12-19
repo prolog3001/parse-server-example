@@ -111,10 +111,11 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                 var pushTitle;
                 if (sameDay(date1, date2)) {
                     console.log("#### day is today");
-                    var pushTitle = push_titleTodayDate +
+                    pushTitle = push_titleTodayDate +
                         push_titleTime + date.getHours() + ":" + date.getMinutes();
                 } else {
-                    var pushTitle = push_titleFutureDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
+                    console.log("#### day is tomorrow");
+                    pushTitle = push_titleFutureDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
                         push_titleTime + date.getHours() + ":" + date.getMinutes();
                 }
 
