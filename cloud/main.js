@@ -821,6 +821,7 @@ Parse.Cloud.define('refreshRecurringSessions', function(request, response) {
 Parse.Cloud.define("sendEmail", function(request, response) {
 
     console.log("sendEmail " + new Date());
+    
     var mailTag = request.params.tag; //tag of email if needed (fro unsubscribers)
 
     var emailType = request.params.emailType;
@@ -851,6 +852,11 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     var fromString = fromName + " <" + fromEmail + ">";
     var fromStudentString = fromName + " <" + studentEmail + ">";
     var toString = toName + " <" + toEmail + ">"
+    
+    if((toEmail == null && studentEmail == null) || (toEmail.length == 0  && studentEmail.length == 0)){
+        console.log("#### To Email is missing...");
+        response.error("To Email is missing...");
+    }
 
     switch (emailType) {
         //Invite Friend
@@ -1105,7 +1111,7 @@ Parse.Cloud.define("sendEmail", function(request, response) {
     simpleMailgunAdapter.messages().send(data, function(error, body) {
         if (error) {
             console.log("got an error in sendEmail: " + error);
-            response.error(err);
+            response.error(error);
         } else {
             console.log("email sent to " + toEmail + " " + new Date());
             response.success("Email sent!");
