@@ -37,7 +37,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
 
     //Parsing Json for iOS Platforms
     var alert = "Reminder - ";
-    var push_titleFutureDate = "Tomorrow, the ";
+    var push_titleFutureDate = "Tomorrow, ";
     var push_titleTodayDate = "Today";
     var push_titleTime = " at ";
     var push_type = 1;
@@ -72,11 +72,10 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             for (var i = 0; i < alerts.length; i++) {
                 var date1 = new Date();
                 var date2 = new Date(alerts[i].get("session").get("date").getTime());
-                var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                //                 var daysDiff = dateDiffInDays(new Date(), alerts[i].get("session").get("date"));
-                console.log("#### difference between session and now - " + diffDays);
-                if (diffDays > 1) {
+                
+                var daysDiff = dateDiffInDays(date1, date2);
+                console.log("#### difference between session and now - " + daysDiff);
+                if (daysDiff > 1) {
                     continue;
                 }
 
@@ -107,16 +106,18 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                 var day = date.getDate();
                 var monthIndex = date.getMonth();
                 var year = date.getFullYear();
+                var hours = date.getHours();
+                var minutes = date.getMinutes(;
 
                 var pushTitle;
                 if (sameDay(date1, date2)) {
                     console.log("#### day is today");
                     pushTitle = push_titleTodayDate +
-                        push_titleTime + date.getHours() + ":" + date.getMinutes();
+                        push_titleTime + minTwoDigits(hours) + ":" + minTwoDigits(minutes);
                 } else {
                     console.log("#### day is tomorrow");
                     pushTitle = push_titleFutureDate + day + ' ' + monthNames[monthIndex] + ' ' + year +
-                        push_titleTime + date.getHours() + ":" + date.getMinutes();
+                        push_titleTime + minTwoDigits(hours) + ":" + minTwoDigits(minutes);
                 }
 
                 var pushAlert = alert + alerts[i].get("session").get("title");
@@ -229,13 +230,16 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
             response.error(error);
         },
     });
+    
+    function minTwoDigits(n) {
+      return (n < 10 ? '0' : '') + n;
+    }
+    
+    function dateDiffInDays(date1, date2) {
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-    function dateDiffInDays(a, b) {
-        // Discard the time and time-zone information.
-        var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-        var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-        return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+        return diffDays;
     }
 
     function sameDay(d1, d2) {
