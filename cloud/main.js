@@ -1267,7 +1267,7 @@ Parse.Cloud.define('getFullUsersFromIds', function(request, response) {
 });
 
 Parse.Cloud.define('getFullUserInstallationsFromIds', function(request, response) {
-    Parse.Cloud.useMasterKey();
+//     Parse.Cloud.useMasterKey();
 
     var params = request.params;
     var users = params.userIds; //ids of relevant users
