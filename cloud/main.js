@@ -107,7 +107,7 @@ Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) 
                 var monthIndex = date.getMonth();
                 var year = date.getFullYear();
                 var hours = date.getHours();
-                var minutes = date.getMinutes(;
+                var minutes = date.getMinutes();
 
                 var pushTitle;
                 if (sameDay(date1, date2)) {
