@@ -1303,13 +1303,16 @@ Parse.Cloud.define('createAndAttachStudioToUsers', function(request, response) {
         useMasterKey: true, //This is for the new version
         success: function(users) {
             console.log("Found..." + users.length);
+            var count = 0;
             for (var i = 0; i < users.length; i++) {
                 var studio = Parse.Object.extend("Studio");
                 var firstName = users[i].get("first_name");
                 var lastName = users[i].get("last_name");
                 var fullName = firstName + " " + lastName;
                 studio.set("owner", users[i]);
-                newStudioArray[i] = studio;
+                newStudioArray[count] = studio;
+                count++;
+                console.log("#### Created a studio for - " + fullName);
             }
             
             Parse.Object.saveAll(newStudioArray, {
