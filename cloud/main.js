@@ -1291,75 +1291,75 @@ Parse.Cloud.define('getFullUserInstallationsFromIds', function(request, response
 });
 
 
-Parse.Cloud.define('createAndAttachStudioToUsers', function(request, response) {
-    var params = request.params;
+// Parse.Cloud.define('createAndAttachStudioToUsers', function(request, response) {
+//     var params = request.params;
 
-    var newStudioArray = [];
+//     var newStudioArray = [];
     
-    var userQuery = new Parse.Query(Parse.User);
-    userQuery.equalTo("is_studio", true);
-    userQuery.doesNotExist('studio');
-    userQuery.find({
-        useMasterKey: true, //This is for the new version
-        success: function(users) {
-            console.log("Found..." + users.length);
-            var count = 0;
-            for (var i = 0; i < users.length; i++) {
-                var NewStudio = Parse.Object.extend("Studio");
-                var studio = new NewStudio();
-                var firstName = users[i].get("first_name");
-                var lastName = users[i].get("last_name");
-                var fullName = firstName + " " + lastName;
+//     var userQuery = new Parse.Query(Parse.User);
+//     userQuery.equalTo("is_studio", true);
+//     userQuery.doesNotExist('studio');
+//     userQuery.find({
+//         useMasterKey: true, //This is for the new version
+//         success: function(users) {
+//             console.log("Found..." + users.length);
+//             var count = 0;
+//             for (var i = 0; i < users.length; i++) {
+//                 var NewStudio = Parse.Object.extend("Studio");
+//                 var studio = new NewStudio();
+//                 var firstName = users[i].get("first_name");
+//                 var lastName = users[i].get("last_name");
+//                 var fullName = firstName + " " + lastName;
                 
-//                 var owner = new Parse.User({
-//                     id: users[i].id
-//                 });
-                studio.set("title", fullName);
-                studio.set("owner", users[i]);
-                newStudioArray[count] = studio;
-                count++;
-                console.log("#### Created a studio for - " + fullName);
-            }
+// //                 var owner = new Parse.User({
+// //                     id: users[i].id
+// //                 });
+//                 studio.set("title", fullName);
+//                 studio.set("owner", users[i]);
+//                 newStudioArray[count] = studio;
+//                 count++;
+//                 console.log("#### Created a studio for - " + fullName);
+//             }
             
-            Parse.Object.saveAll(newStudioArray, {
-                useMasterKey: true,
-                success: function(studios) {
-                    console.log("#### Studios Saved");
-                    for (var i = 0; i < users.length; i++) {
-                        var user = users[i];
-                        for (var j = 0; j < studios.length; j++) {
-                            var studio = studios[j];
-                            if(studio.get("owner").id == user.id){
-                                user.set("studio", studio);
-                                break;
-                            }
-                        }
-                    }
+//             Parse.Object.saveAll(newStudioArray, {
+//                 useMasterKey: true,
+//                 success: function(studios) {
+//                     console.log("#### Studios Saved");
+//                     for (var i = 0; i < users.length; i++) {
+//                         var user = users[i];
+//                         for (var j = 0; j < studios.length; j++) {
+//                             var studio = studios[j];
+//                             if(studio.get("owner").id == user.id){
+//                                 user.set("studio", studio);
+//                                 break;
+//                             }
+//                         }
+//                     }
                     
-                    Parse.Object.saveAll(users, {
-                        useMasterKey: true,
-                        success: function(savedUsers) {
-                            console.log("#### Users Saved - " + savedUsers.length);
-                            response.success('Users Saved');
-                        },
-                        error: function(error) {
-                            console.log("wasnt able to save users because  " + error.code);
-                            response.error('wasnt able to save users');
-                        }
-                    });
-                    //response.success('Studios Saved');
-                },
-                error: function(error) {
-                    console.log("wasnt able to save studios because  " + error.code);
-                    response.error('wasnt able to save studios Table');
-                }
-            });
-            //response.success(users);
-            //response.success(emailsArray);
-        },
+//                     Parse.Object.saveAll(users, {
+//                         useMasterKey: true,
+//                         success: function(savedUsers) {
+//                             console.log("#### Users Saved - " + savedUsers.length);
+//                             response.success('Users Saved');
+//                         },
+//                         error: function(error) {
+//                             console.log("wasnt able to save users because  " + error.code);
+//                             response.error('wasnt able to save users');
+//                         }
+//                     });
+//                     //response.success('Studios Saved');
+//                 },
+//                 error: function(error) {
+//                     console.log("wasnt able to save studios because  " + error.code);
+//                     response.error('wasnt able to save studios Table');
+//                 }
+//             });
+//             //response.success(users);
+//             //response.success(emailsArray);
+//         },
 
-        error: function(error) {
-            response.error(error);
-        }
-    });
-});
+//         error: function(error) {
+//             response.error(error);
+//         }
+//     });
+// });
