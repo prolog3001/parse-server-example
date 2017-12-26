@@ -1,7 +1,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
-// var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
-// var S3Adapter = require('parse-server-s3-adapter');
+var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
+var S3Adapter = require('parse-server-s3-adapter');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
@@ -16,17 +16,17 @@ if (!databaseUri) {
 // });
 
 //Files Adapter
-// var s3Adapter = new S3Adapter(
-//   process.env.S3_ACCESS_KEY, 
-//   process.env.S3_SECRET_KEY, 
-//   process.env.S3_BUCKET, {
-//   region: 'us-east-1',
-//   bucketPrefix: '',
-//   directAccess: false,
-//   baseUrl: '',
-//   signatureVersion: 'v4',
-//   globalCacheControl: 'public, max-age=86400'  // 24 hrs Cache-Control.
-// });
+var s3Adapter = new S3Adapter(
+  process.env.S3_ACCESS_KEY, 
+  process.env.S3_SECRET_KEY, 
+  process.env.S3_BUCKET, {
+  region: 'us-east-1',
+  bucketPrefix: '',
+  directAccess: false,
+  baseUrl: '',
+  signatureVersion: 'v4',
+  globalCacheControl: 'public, max-age=86400'  // 24 hrs Cache-Control.
+});
 
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
@@ -36,7 +36,7 @@ var api = new ParseServer({
   masterKey: process.env.MASTER_KEY,
   serverURL: process.env.SERVER_URL,  // Don't forget to change to https if needed
   publicServerURL: process.env.PUBLIC_SERVER_URL,
-//   filesAdapter: s3Adapter,
+  filesAdapter: s3Adapter,
   liveQuery: {
     classNames: ["User"] // List of classes to support for query subscriptions
   },
