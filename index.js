@@ -1,7 +1,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
-var S3Adapter = require('@parse/s3-files-adapter');
+// var S3Adapter = require('@parse/s3-files-adapter');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
@@ -10,10 +10,10 @@ if (!databaseUri) {
 }
 
 //Push Adapter
-var oneSignalPushAdapter = new OneSignalPushAdapter({
-  oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-  oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-});
+// var oneSignalPushAdapter = new OneSignalPushAdapter({
+//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
+//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
+// });
 
 //Files Adapter
 // var s3Adapter = new S3Adapter(
@@ -40,18 +40,18 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ["User"] // List of classes to support for query subscriptions
   },
-  verifyUserEmails: true,
-  emailAdapter: {
-      module: 'parse-server-simple-mailgun-adapter',
-      options: {
-      fromAddress: process.env.MAILGUN_FROM_ADDRESS,
-      apiKey: process.env.MAILGUN_KEY,
-      domain: process.env.DOMAIN
-      }
-      },
-  push: {
-     adapter: oneSignalPushAdapter
-  }
+  verifyUserEmails: true
+//   emailAdapter: {
+//       module: 'parse-server-simple-mailgun-adapter',
+//       options: {
+//       fromAddress: process.env.MAILGUN_FROM_ADDRESS,
+//       apiKey: process.env.MAILGUN_KEY,
+//       domain: process.env.DOMAIN
+//       }
+//       },
+//   push: {
+//      adapter: oneSignalPushAdapter
+//   }
 });
 
 var app = express();
