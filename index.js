@@ -23,7 +23,7 @@ var s3Adapter = new S3Adapter(
   region: 'us-east-1',
   bucketPrefix: '',
   directAccess: false,
-  baseUrl: 'http://images.example.com',
+  baseUrl: '',
   signatureVersion: 'v4',
   globalCacheControl: 'public, max-age=86400'  // 24 hrs Cache-Control.
 });
