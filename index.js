@@ -1,7 +1,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
-var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
-var S3Adapter = require('parse-server-s3-adapter');
+// var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
+// var S3Adapter = require('parse-server-s3-adapter');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
@@ -40,7 +40,6 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ["User"] // List of classes to support for query subscriptions
   },
-  verifyUserEmails: true
 //   emailAdapter: {
 //       module: 'parse-server-simple-mailgun-adapter',
 //       options: {
