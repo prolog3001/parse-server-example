@@ -10,10 +10,10 @@ if (!databaseUri) {
 }
 
 //Push Adapter
-var oneSignalPushAdapter = new OneSignalPushAdapter({
-  oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-  oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-});
+// var oneSignalPushAdapter = new OneSignalPushAdapter({
+//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
+//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
+// });
 
 //Files Adapter
 var s3Adapter = new S3Adapter(
