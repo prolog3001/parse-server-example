@@ -1,35 +1,22 @@
-// Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
-//     //Parse.Cloud.useMasterKey();
-//     var androidId = request.object.get("androidId");
-//     if (androidId == null || androidId == "") {
-//         console.warn("No androidId found, save and exit");
-//         response.success();
-//     }
-//     var query = new Parse.Query(Parse.Installation);
-//     query.equalTo("androidId", androidId);
-//     query.addAscending("createdAt");
-//     query.find({useMasterKey: true}).then(function(results) {
-//         for (var i = 0; i < results.length; ++i) {
-//             console.warn("iterating over Installations with androidId= "+ androidId);
-//             if (results[i].get("installationId") != request.object.get("installationId")) {
-//                 console.warn("Installation["+i+"] and the request have different installationId values. Try to delete. [installationId:" + results[i].get("installationId") + "]");
-//                 results[i].destroy().then(function() {
-//                     console.warn("Installation["+i+"] has been deleted");
-//                 },
-//                 function() {
-//                     console.warn("Error: Installation["+i+"] could not be deleted");
-//                 });
-//             } else {
-//                 console.warn("Installation["+i+"] and the request has the same installationId value. Ignore. [installationId:" + results[i].get("installationId") + "]");
-//             }
-//         }
-//         console.warn("Finished iterating over Installations. A new Installation will be saved now...");
-//         response.success();
-//     },
-//     function(error) {
-//         response.error("Error: Can't query for Installation objects.");
-//     });
-// });
+Parse.Cloud.define('blockUser', function(request, response) {
+
+    var params = request.params;
+    var user = new Parse.User({
+        id: params.userId
+    }); //id of user to block
+
+    user.set("blocked", true);
+    user.save(null, {
+        useMasterKey: true,
+        success: function() {
+            response.success("User was blocked from admin");
+        },
+        error: function(error) {
+            response.error("Error saving message" + error.code);
+        }
+    });
+});
+
 Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) {
     // request has 2 parameters: params passed by the client and the authorized user
     var params = request.params;
