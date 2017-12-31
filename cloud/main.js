@@ -17,6 +17,25 @@ Parse.Cloud.define('blockUser', function(request, response) {
     });
 });
 
+Parse.Cloud.define('unBlockUser', function(request, response) {
+
+    var params = request.params;
+    var user = new Parse.User({
+        id: params.userId
+    }); //id of user to block
+
+    user.set("blocked", false);
+    user.save(null, {
+        useMasterKey: true,
+        success: function() {
+            response.success("User was blocked from admin");
+        },
+        error: function(error) {
+            response.error("Error saving message" + error.code);
+        }
+    });
+});
+
 Parse.Cloud.define('sendAlertToSessionSubscribers', function(request, response) {
     // request has 2 parameters: params passed by the client and the authorized user
     var params = request.params;
