@@ -38,7 +38,7 @@ var api = new ParseServer({
   publicServerURL: process.env.PUBLIC_SERVER_URL,
   filesAdapter: s3Adapter,
   liveQuery: {
-    classNames: ["User"] // List of classes to support for query subscriptions
+    classNames: ["User", "Business", "Order"] // List of classes to support for query subscriptions
   },
 //   emailAdapter: {
 //       module: 'parse-server-simple-mailgun-adapter',
