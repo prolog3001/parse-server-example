@@ -40,14 +40,14 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ["User", "Business", "Order"] // List of classes to support for query subscriptions
   },
-//   emailAdapter: {
-//       module: 'parse-server-simple-mailgun-adapter',
-//       options: {
-//       fromAddress: process.env.MAILGUN_FROM_ADDRESS,
-//       apiKey: process.env.MAILGUN_KEY,
-//       domain: process.env.DOMAIN
-//       }
-//       },
+  emailAdapter: {
+      module: 'parse-server-simple-mailgun-adapter',
+      options: {
+      fromAddress: process.env.MAILGUN_FROM_ADDRESS,
+      apiKey: process.env.MAILGUN_KEY,
+      domain: process.env.DOMAIN
+      }
+      },
 //   push: {
 //      adapter: oneSignalPushAdapter
 //   }
