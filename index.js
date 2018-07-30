@@ -37,17 +37,17 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL,  // Don't forget to change to https if needed
   publicServerURL: process.env.PUBLIC_SERVER_URL,
   filesAdapter: {
-    "module": "@parse/s3-files-adapter",
-    "options": {
-      "bucket": process.env.S3_BUCKET,
-      "region": 'us-east-1', // default value
-      "bucketPrefix": '', // default value
-      "directAccess": false, // default value
-      "baseUrl": null, // default value
-      "baseUrlDirect": false, // default value
-      "signatureVersion": 'v4', // default value
-      "globalCacheControl": null, // default value. Or 'public, max-age=86400' for 24 hrs Cache-Control
-      "ServerSideEncryption": 'AES256|aws:kms' //AES256 or aws:kms, or if you do not pass this, encryption won't be done
+    module: "@parse/s3-files-adapter",
+    options: {
+      bucket: process.env.S3_BUCKET,
+      region: 'us-east-1', // default value
+      bucketPrefix: '', // default value
+      directAccess: false, // default value
+      baseUrl: null, // default value
+      baseUrlDirect: false, // default value
+      signatureVersion: 'v4', // default value
+      globalCacheControl: null, // default value. Or 'public, max-age=86400' for 24 hrs Cache-Control
+      ServerSideEncryption: 'AES256|aws:kms' //AES256 or aws:kms, or if you do not pass this, encryption won't be done
     },
   liveQuery: {
     classNames: ["User", "Business", "Order", 
