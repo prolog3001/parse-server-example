@@ -42,7 +42,7 @@ var api = new ParseServer({
                  "RestaurantOrderSummary", "Table", "UserWaiterRelation"] // List of classes to support for query subscriptions
   },
   emailAdapter: {
-      module: 'parse-server-simple-mailgun-adapter',
+      module: '@parse/simple-mailgun-adapter',
       options: {
       fromAddress: process.env.MAILGUN_FROM_ADDRESS,
       apiKey: process.env.MAILGUN_KEY,
