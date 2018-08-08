@@ -9,11 +9,15 @@
   },
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.211.0",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "date-util": "1.2.1",
     "express": "~4.11.x",
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
     "parse-server": "2.8.1",
-    "parse-server-onesignal-push-adapter": "^1.0.0"
+    "parse-server-onesignal-push-adapter": "^1.0.0",
   },
   "scripts": {
     "start": "node index.js"
