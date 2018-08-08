@@ -1,12 +1,6 @@
-var emails = require('./emails.js');
-var push = require('./push.js');
-var sessions = require('./sessions.js');
 var users = require('./users.js');
-var studios = require('./studios.js');
-var chats = require('./chats.js');
 var utils = require('./utils.js');
 var payme = require('./payme.js');
-var splash = require('./splash.js');
 
 Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);
 Parse.Cloud.define("getFullUserInstallationsFromIds", users.getFullUserInstallationsFromIds);
