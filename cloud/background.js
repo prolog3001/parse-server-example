@@ -46,7 +46,7 @@ function closeOpenedOrders(request, response) {
           }
         });
       } else {
-        console.log("####We have  NO opened orders from 12 hours back or more");
+        console.log("#### We have  NO opened orders from 12 hours back or more");
       }
     },
     error: function () {
