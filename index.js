@@ -9,25 +9,6 @@ if (!databaseUri) {
     console.log('DATABASE_URI not specified, falling back to localhost.');
 }
 
-//Push Adapter
-// var oneSignalPushAdapter = new OneSignalPushAdapter({
-//   oneSignalAppId:process.env.ONE_SIGNAL_APP_ID,
-//   oneSignalApiKey:process.env.ONE_SIGNAL_REST_API_KEY
-// });
-
-//Files Adapter
-// var s3Adapter = new S3Adapter(
-//   process.env.S3_ACCESS_KEY, 
-//   process.env.S3_SECRET_KEY, 
-//   process.env.S3_BUCKET, {
-//   region: 'us-east-1',
-//   bucketPrefix: '',
-//   directAccess: false,
-//   baseUrl: '',
-//   signatureVersion: 'v4',
-//   globalCacheControl: 'public, max-age=86400'  // 24 hrs Cache-Control.
-// });
-
 var api = new ParseServer({
     databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
     cloud: __dirname + '/cloud/main.js',
@@ -87,3 +68,8 @@ httpServer.listen(port, function() {
 
 // This will enable the Live Query real-time server
 ParseServer.createLiveQueryServer(httpServer);
+
+// Re-Occuring of sessions
+setInterval(function() {
+    Parse.Cloud.run('refreshRecurringSessions', {});
+}, 300000); //5 * 60000)
