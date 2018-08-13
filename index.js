@@ -71,5 +71,5 @@ ParseServer.createLiveQueryServer(httpServer);
 
 // Re-Occuring of sessions
 setInterval(function() {
-    Parse.Cloud.run('refreshRecurringSessions', {});
+    Parse.Cloud.run('closeOpenedOrders', {});
 }, 300000); //5 * 60000)
