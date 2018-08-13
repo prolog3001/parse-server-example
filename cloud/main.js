@@ -1,6 +1,7 @@
 var users = require('./users.js');
 var utils = require('./utils.js');
 var payme = require('./payme.js');
+var background = require('./background.js');
 
 Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);
 Parse.Cloud.define("getFullUserInstallationsFromIds", users.getFullUserInstallationsFromIds);
@@ -28,3 +29,5 @@ Parse.Cloud.define("replaceAll", utils.replaceAll);
 Parse.Cloud.define("payme.updateSellerFiles", payme.updateSellerFiles);
 Parse.Cloud.define("payme.getSeller", payme.getSeller);
 Parse.Cloud.define("payme.registerTeacher", payme.registerTeacher);
+
+Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
