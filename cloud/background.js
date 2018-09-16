@@ -6,11 +6,10 @@ module.exports = {
 
 function closeOpenedOrders(request, response) {
   var then = new Date();
-  then.setHours(then.getHours() - 12);
+  then.setHours(then.getHours() - 24);
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.lessThanOrEqualTo("updatedAt", then);
-  openedOrdersQuery.notEqualTo("paid", true);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
