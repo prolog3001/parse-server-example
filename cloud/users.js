@@ -1,5 +1,11 @@
 module.exports = {
-  getFullUsersFromIds: function (request, response) {
+  blockUser: function (request, response) {
+    blockUser(request, response);
+  },
+  unBlockUser: function (request, response) {
+    getFullUsersFromIds(request, response);
+  },
+  unBlockUser: function (request, response) {
     getFullUsersFromIds(request, response);
   },
   getFullUserInstallationsFromIds: function (request, response) {
