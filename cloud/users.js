@@ -3,9 +3,9 @@ module.exports = {
     blockUser(request, response);
   },
   unBlockUser: function (request, response) {
-    getFullUsersFromIds(request, response);
+    unBlockUser(request, response);
   },
-  unBlockUser: function (request, response) {
+  getFullUsersFromIds: function (request, response) {
     getFullUsersFromIds(request, response);
   },
   getFullUserInstallationsFromIds: function (request, response) {
