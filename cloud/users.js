@@ -22,6 +22,40 @@ module.exports = {
   }
 };
 
+function blockUser(request, response) {
+  var params = request.params;
+  var user = new Parse.User({
+    id: params.userId
+  }); //id of user to block
+  user.set("blocked", true);
+  user.save(null, {
+    useMasterKey: true,
+    success: function() {
+      response.success("User was blocked from admin");
+    },
+    error: function(error) {
+      response.error("Error saving message" + error.code);
+    }
+  });
+}
+
+function unBlockUser(request, response) {
+  var params = request.params;
+  var user = new Parse.User({
+    id: params.userId
+  }); //id of user to block
+  user.set("blocked", false);
+  user.save(null, {
+    useMasterKey: true,
+    success: function() {
+      response.success("User was unblocked from admin");
+    },
+    error: function(error) {
+      response.error("Error saving message" + error.code);
+    }
+  });
+}
+
 function getFullUsersFromIds(request, response) {
   //Parse.Cloud.useMasterKey(); //This is for the old server
   // request has 2 parameters: params passed by the client and the authorized user
