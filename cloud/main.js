@@ -3,6 +3,7 @@ var utils = require('./utils.js');
 var payme = require('./payme.js');
 var background = require('./background.js');
 
+Parse.Cloud.define("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.define("blockUser", users.blockUser);
 Parse.Cloud.define("unBlockUser", users.unBlockUser);
 Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);

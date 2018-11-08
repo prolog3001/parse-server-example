@@ -1,4 +1,9 @@
+// var twilio = require('twilio')('AC086829ceac7f22890d88dd553860b529', 'cda23fe1665fbbe70d024c990e4e30d5');
+
 module.exports = {
+  sendVerificationCode: function (request, response) {
+    sendVerificationCode(request, response);
+  },
   blockUser: function (request, response) {
     blockUser(request, response);
   },
@@ -27,6 +32,65 @@ module.exports = {
     paymentRequestSettled(request, response);
   }
 };
+
+function sendVerificationCode(request, response) {
+  var verificationCode = Math.floor(Math.random()*999999);
+  const Nexmo = require('nexmo')
+  const nexmo = new Nexmo({
+    apiKey: '0d809a59',
+    apiSecret: '8beb9f6d5f3f1637'
+  })
+
+  const from = 'DigiDine'
+  const to = request.params.phoneNumber
+  const text = "Your verification code is " + verificationCode
+
+  nexmo.message.sendSms(
+    from, to, text,
+    (err, responseData) => {
+      if (err) {
+        response.error(err);
+      } else {
+        response.success(verificationCode);
+      }
+    }
+  );
+  // twilio.sendSms({
+  //   From: "<Your Twilio phone number>",
+  //   To: request.params.phoneNumber,
+  //   Body: "Your verification code is " + verificationCode + "."
+  // }, function(err, responseData) {
+  //   if (err) {
+  //     response.error(err);
+  //   } else {
+  //     response.success(verificationCode);
+  //   }
+  // });
+}
+
+function verifyViaSMS(request, response) {
+  // Requiring the values to send
+  var getMessage = request.params.message,
+  var getPhoneTo = '+Target test Phone number',
+  var getPhoneFrom = "+Your first Phone number",
+  var accountSid = 'AC086829ceac7f22890d88dd553860b529',
+  var authToken  = 'cda23fe1665fbbe70d024c990e4e30d5';
+
+  //require the Twilio module and create a REST client
+  var client = require('twilio')(accountSid, authToken);
+
+  client.messages.create({
+    body: getMessage, // Any number Twilio can deliver to
+    from: getPhoneFrom, // A number you bought from Twilio and can use for outbound communication
+    to: getPhoneTo // body of the SMS message
+  })
+  .then(function(results) {
+    response.success(results.sid);
+  })
+  .catch(function(error) {
+    response.error(error);
+  })
+}
 
 function blockUser(request, response) {
   var params = request.params;
