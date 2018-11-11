@@ -40,8 +40,8 @@ function closeOpenedOrders(request, response) {
             console.log("#### Saved Order Summary Array  " + orderSummaries.length);
           },
           error: function (error) {
-            console.log("wasnt able to save  " + error.code);
-              response.error('Wasnt able to find opened orders');
+            console.log("wasnt able to save  " + error);
+            response.error('Wasnt able to find opened orders');
           }
         });
       } else {
