@@ -34,7 +34,8 @@ module.exports = {
 };
 
 function sendVerificationCode(request, response) {
-  var verificationCode = Math.floor(Math.random()*999999);
+  var verificationCode = Math.floor(Math.random() * 899999 + 100000);
+
   const Nexmo = require('nexmo')
   const nexmo = new Nexmo({
     apiKey: '0d809a59',
