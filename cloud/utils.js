@@ -271,7 +271,7 @@ function calculateStudentNetPayment(count, price, teacherGotPaid) {
     var isInDollars = checkIfSplashSeller(teacherGotPaid);
 
     try {
-      if (teacherGotPaid.exists("preferences") && teacherGotPaid.get("preferences") &&
+      if (teacherGotPaid.get("preferences") &&
       teacherGotPaid.get("preferences") !== null) {
         merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
         serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
@@ -351,7 +351,7 @@ function getRegaxCurrencySign(seller, objectToPay) {
 
     var currencySign;
 
-    if (objectToPay && objectToPay !== null && objectToPay.exists("currency")) {
+    if (objectToPay && objectToPay !== null && objectToPay.get("currency")) {
       if (objectToPay.get("currency") === "USD") {
         currencySign = "\\" + "$";
       } else {
