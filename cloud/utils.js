@@ -189,7 +189,10 @@ function calculateTeacherNetPrice(count, price, teacherGotPaid) {
 
     try {
       if (teacherGotPaid.get("preferences") &&
-      teacherGotPaid.get("preferences") !== null) {
+        teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
+        teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
+        teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
+
         merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
         serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
         serviceFeeCents = teacherGotPaid.get("preferences").get("payment_service_fee_cents") / 100;//1.2 ₪  or 0.3$
@@ -272,7 +275,9 @@ function calculateStudentNetPayment(count, price, teacherGotPaid) {
 
     try {
       if (teacherGotPaid.get("preferences") &&
-      teacherGotPaid.get("preferences") !== null) {
+        teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
+        teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
+        teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
         merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
         serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
         serviceFeeCents = teacherGotPaid.get("preferences").get("payment_service_fee_cents") / 100;//1.2 ₪  or 0.3$
