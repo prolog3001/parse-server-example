@@ -16,7 +16,9 @@ function closeOpenedOrders(request, response) {
     useMasterKey: true,
     success: function (orderSummaries) {
       console.log("#### Orders to Close " + orderSummaries.length);
-      console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
+      // console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
+
+      var clonedOrderSummary = [];
 
       for (var i = 0; i < orderSummaries.length; i++) {
         try {
@@ -31,21 +33,23 @@ function closeOpenedOrders(request, response) {
           orderSummaries[i].remove("item_orders_delivered");
           orderSummaries[i].set("item_orders_delivered", itemOrders);
           orderSummaries[i].set("paid", true);
+
+          clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
           console.error(error);
         }
       }
 
-      if (orderSummaries.length > 0) {
-        console.log("Try to save all - " + orderSummaries.length);
-        for(var i=0 ; i<orderSummaries.length ; i++){
-          console.log("Try to save - " + JSON.stringify(orderSummaries[i]));
-        }
+      if (clonedOrderSummary.length > 0) {
+        console.log("Try to save all - " + clonedOrderSummary.length);
+        // for(var i=0 ; i<orderSummaries.length ; i++){
+        //   console.log("Try to save - " + JSON.stringify(orderSummaries[i]));
+        // }
 
-        Parse.Object.saveAll(orderSummaries, {
+        Parse.Object.saveAll(clonedOrderSummary, {
           useMasterKey: true,
-          success: function (editedOrderSummaries) {
-            console.log("#### Saved Order Summary Array  " + orderSummaries.length);
+          success: function (clonedOrderSummary) {
+            console.log("#### Saved Order Summary Array  " + clonedOrderSummary.length);
           },
           error: function (error) {
             console.log("wasnt able to save  " + error);
