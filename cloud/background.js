@@ -16,7 +16,9 @@ function closeOpenedOrders(request, response) {
     useMasterKey: true,
     success: function (orderSummaries) {
       console.log("#### Orders to Close " + orderSummaries.length);
-      for (var i = 0; i < orderSummaries.length; ++i) {
+      console.log("#### Orders to Close " + orderSummaries);
+
+      for (var i = 0; i < orderSummaries.length; ן++) {
         try {
           if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
             console.log("orderSummary is null..");
