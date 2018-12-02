@@ -10,6 +10,7 @@ function closeOpenedOrders(request, response) {
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.lessThanOrEqualTo("updatedAt", then);
+  openedOrdersQuery.include("item_orders");
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
