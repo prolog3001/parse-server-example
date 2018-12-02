@@ -16,9 +16,9 @@ function closeOpenedOrders(request, response) {
     useMasterKey: true,
     success: function (orderSummaries) {
       console.log("#### Orders to Close " + orderSummaries.length);
-      console.log("#### Orders to Close " + orderSummaries);
+      console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
 
-      for (var i = 0; i < orderSummaries.length; ן++) {
+      for (var i = 0; i < orderSummaries.length; i++) {
         try {
           if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
             console.log("orderSummary is null..");
@@ -39,7 +39,7 @@ function closeOpenedOrders(request, response) {
       if (orderSummaries.length > 0) {
         console.log("Try to save all - " + orderSummaries.length);
         for(var i=0 ; i<orderSummaries.length ; i++){
-          console.log("Try to save - " + orderSummaries[i]);
+          console.log("Try to save - " + JSON.stringify(orderSummaries[i]));
         }
 
         Parse.Object.saveAll(orderSummaries, {
