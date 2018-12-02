@@ -10,6 +10,7 @@ function closeOpenedOrders(request, response) {
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.lessThanOrEqualTo("updatedAt", then);
+  openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.find({
     useMasterKey: true,
@@ -35,6 +36,10 @@ function closeOpenedOrders(request, response) {
 
       if (orderSummaries.length > 0) {
         console.log("Try to save all - " + orderSummaries.length);
+        for(var i=0 ; i<orderSummaries.length ; i++){
+          console.log("Try to save - " + orderSummaries[i]);
+        }
+
         Parse.Object.saveAll(orderSummaries, {
           useMasterKey: true,
           success: function (editedOrderSummaries) {
