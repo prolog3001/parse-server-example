@@ -34,3 +34,4 @@ Parse.Cloud.define("payme.getSeller", payme.getSeller);
 Parse.Cloud.define("payme.registerTeacher", payme.registerTeacher);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
+Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
