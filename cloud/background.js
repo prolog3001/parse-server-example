@@ -32,7 +32,7 @@ function closeOpenedOrders(request, response) {
         }
       }
 
-      if (orderSummaries.length > 0 && orderSummaries.length > 0) {
+      if (orderSummaries.length > 0) {
         console.log("Try to save all - " + orderSummaries.length);
         Parse.Object.saveAll(orderSummaries, {
           useMasterKey: true,
