@@ -43,7 +43,7 @@ function sendVerificationCode(request, response) {
   })
 
   const from = 'DigiDine'
-  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "0526677877"
+  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "0526677877" : "0526677877"
   const text = "Your verification code is " + verificationCode
 
   nexmo.message.sendSms(
