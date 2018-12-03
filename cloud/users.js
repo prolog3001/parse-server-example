@@ -45,13 +45,18 @@ function sendVerificationCode(request, response) {
   const from = 'DigiDine'
   const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "0526677877" : "0526677877"
   const text = "Your verification code is " + verificationCode
+  console.log("Send verification to" + to);
+  console.log("Send verification from" + from);
+  console.log("Send verification text" + text);
 
   nexmo.message.sendSms(
     from, to, text,
     (err, responseData) => {
       if (err) {
+        console.log(err);
         response.error(err);
       } else {
+        console.log("Sent verification");
         response.success(verificationCode);
       }
     }
