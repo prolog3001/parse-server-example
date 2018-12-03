@@ -43,7 +43,7 @@ function sendVerificationCode(request, response) {
   })
 
   const from = 'DigiDine'
-  const to = request.params.phoneNumber
+  const to = request.params.phoneNumber || "0526677877"
   const text = "Your verification code is " + verificationCode
 
   nexmo.message.sendSms(
@@ -56,17 +56,7 @@ function sendVerificationCode(request, response) {
       }
     }
   );
-  // twilio.sendSms({
-  //   From: "<Your Twilio phone number>",
-  //   To: request.params.phoneNumber,
-  //   Body: "Your verification code is " + verificationCode + "."
-  // }, function(err, responseData) {
-  //   if (err) {
-  //     response.error(err);
-  //   } else {
-  //     response.success(verificationCode);
-  //   }
-  // });
+  return;
 }
 
 function blockUser(request, response) {
