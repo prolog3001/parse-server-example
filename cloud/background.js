@@ -28,7 +28,7 @@ function closeOpenedOrders(request, response) {
           }
 
           var itemOrders = orderSummaries[i].get("item_orders");
-          if(!itemOrders){
+          if(itemOrders && itemOrders.length){
             orderSummaries[i].set("item_orders_in_progress", itemOrders);
             orderSummaries[i].set("item_orders_ready", itemOrders);
             orderSummaries[i].set("item_orders_delivered", itemOrders);
