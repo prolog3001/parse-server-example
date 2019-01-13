@@ -33,10 +33,10 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_ready", itemOrders);
             orderSummaries[i].set("item_orders_delivered", itemOrders);
           } else{
-            orderSummaries[i].remove("item_orders", itemOrders);
-            orderSummaries[i].remove("item_orders_in_progress", itemOrders);
-            orderSummaries[i].remove("item_orders_ready", itemOrders);
-            orderSummaries[i].remove("item_orders_delivered", itemOrders);
+            orderSummaries[i].remove("item_orders");
+            orderSummaries[i].remove("item_orders_in_progress");
+            orderSummaries[i].remove("item_orders_ready");
+            orderSummaries[i].remove("item_orders_delivered");
             orderSummaries[i].set("item_orders", []);
             orderSummaries[i].set("item_orders_delivered", []);
           }
