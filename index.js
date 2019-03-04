@@ -44,6 +44,7 @@ var api = new ParseServer({
             domain: process.env.DOMAIN
         }
     },
+    enableSingleSchemaCache: true
     //   push: {
     //      adapter: oneSignalPushAdapter
     //   }
