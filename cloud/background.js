@@ -29,8 +29,8 @@ function closeOpenedOrders(request, response) {
 
           var itemOrders = orderSummaries[i].get("item_orders");
           if(itemOrders && itemOrders.length){
-            orderSummaries[i].set("item_orders_in_progress", itemOrders);
-            orderSummaries[i].set("item_orders_ready", itemOrders);
+            orderSummaries[i].set("item_orders_in_progress", []);
+            orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", itemOrders);
           } else{
             orderSummaries[i].unset("item_orders");
@@ -38,6 +38,8 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].unset("item_orders_ready");
             orderSummaries[i].unset("item_orders_delivered");
             orderSummaries[i].set("item_orders", []);
+            orderSummaries[i].set("item_orders_in_progress", []);
+            orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", []);
           }
           orderSummaries[i].set("paid", true);
