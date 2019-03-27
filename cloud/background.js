@@ -28,7 +28,20 @@ function closeOpenedOrders(request, response) {
           }
 
           var itemOrders = orderSummaries[i].get("item_orders");
+
           if(itemOrders && itemOrders.length){
+
+            for(var j=0 ; j<itemOrders.length ; j++){
+              var specificOrderDish = itemOrders[j];
+              if(!specificOrderDish.get("started"))
+              specificOrderDish.set("started", new Date());
+
+              if(!specificOrderDish.get("ready"))
+              specificOrderDish.set("ready", new Date());
+
+              specificOrderDish.set("delivered", new Date());
+            }
+
             orderSummaries[i].set("item_orders_in_progress", []);
             orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", itemOrders);
