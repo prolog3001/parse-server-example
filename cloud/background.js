@@ -73,7 +73,7 @@ function closeOpenedOrders(request, response) {
           useMasterKey: true,
           success: function (clonedOrderSummary) {
             console.log("#### Saved Order Summary Array  " + clonedOrderSummary.length);
-            response.success("Saved Order Summary Array  " + clonedOrderSummary.length');
+            response.success("Saved Order Summary Array  " + clonedOrderSummary.length);
           },
           error: function (error) {
             console.log("Wasnt able to save  " + error);
