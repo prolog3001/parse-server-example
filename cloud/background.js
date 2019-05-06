@@ -56,6 +56,7 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
           orderSummaries[i].set("paid", true);
+          orderSummaries[i].set("rated", true);
 
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
