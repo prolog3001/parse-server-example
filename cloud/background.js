@@ -13,7 +13,7 @@ function closeOpenedOrders(request, response) {
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.find({useMasterKey: true})
-  .then((results) => {
+  .then((orderSummaries) => {
     console.log("#### Orders to Close " + orderSummaries.length);
     // console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
 
