@@ -31,6 +31,6 @@
     "start": "node index.js"
   },
   "engines": {
-    "node": "8.11.3"
+    "node": ">=4.3"
   }
 }
