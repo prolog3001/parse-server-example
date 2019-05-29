@@ -11,11 +11,9 @@ Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);
 Parse.Cloud.define("getFullUserInstallationsFromIds", users.getFullUserInstallationsFromIds);
 Parse.Cloud.define("createNewUser", users.createNewUser);
 Parse.Cloud.define("saveUserSellerIdByEmail", users.saveUserSellerIdByEmail);
-Parse.Cloud.define("saveAndroidUserDeviceToken", users.saveAndroidUserDeviceToken);
-Parse.Cloud.define("createPaymentRequest", users.createPaymentRequest);
-Parse.Cloud.define("paymentRequestSettled", users.paymentRequestSettled);
-Parse.Cloud.define("blockUser", users.blockUser);
-Parse.Cloud.define("unBlockUser", users.unBlockUser);
+// Parse.Cloud.define("saveAndroidUserDeviceToken", users.saveAndroidUserDeviceToken);
+// Parse.Cloud.define("createPaymentRequest", users.createPaymentRequest);
+// Parse.Cloud.define("paymentRequestSettled", users.paymentRequestSettled);
 
 Parse.Cloud.define("dateDSTPresenter", utils.dateDSTPresenter);
 Parse.Cloud.define("dateDSTBeforeSessionSave", utils.dateDSTBeforeSessionSave);
@@ -29,9 +27,9 @@ Parse.Cloud.define("getRegaxCurrencySign", utils.getRegaxCurrencySign);
 Parse.Cloud.define("checkIfNotDollar", utils.checkIfNotDollar);
 Parse.Cloud.define("replaceAll", utils.replaceAll);
 
-Parse.Cloud.define("payme.updateSellerFiles", payme.updateSellerFiles);
-Parse.Cloud.define("payme.getSeller", payme.getSeller);
-Parse.Cloud.define("payme.registerTeacher", payme.registerTeacher);
+// Parse.Cloud.define("payme.updateSellerFiles", payme.updateSellerFiles);
+// Parse.Cloud.define("payme.getSeller", payme.getSeller);
+// Parse.Cloud.define("payme.registerTeacher", payme.registerTeacher);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
