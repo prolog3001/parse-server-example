@@ -70,21 +70,26 @@ function closeOpenedOrders(request, response) {
       // }
 
       Parse.Object.saveAll(clonedOrderSummary, {useMasterKey: true})
-      .then((results) => {
+      .then((clonedOrderSummary) => {
         console.log("#### Saved Order Summary Array  " + clonedOrderSummary.length);
-        response.success("Saved Order Summary Array  " + clonedOrderSummary.length);
+        if(response)
+          response.success("Saved Order Summary Array  " + clonedOrderSummary.length);
       })
       .catch((error) => {
         console.log("Wasnt able to save  " + error);
-        response.error('Wasnt able to find opened orders');
+        if(response)
+          response.error('Wasnt able to find opened orders');
       });
     } else {
       console.log("#### We have NO opened orders from 12 hours back or more");
-      response.error('We have NO opened orders from 12 hours back or more');
+      if(response)
+        response.error('We have NO opened orders from 12 hours back or more');
     }
   })
   .catch((error) => {
     console.log("####Wasnt able to find opened orders");
-    response.error('Wasnt able to find opened orders');
+
+    if(response)
+      response.error('Wasnt able to find opened orders');
   });
 }
