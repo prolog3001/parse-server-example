@@ -5,10 +5,8 @@ const moment = require('moment-timezone');
 const geoTz = require('geo-tz');
 
 module.exports = {
-  uploadImage,
   dateDSTPresenter,
   dateDSTBeforeSessionSave,
-  decodeBase64Image,
   getPricesAccordingToCommission,
   getNetPriceAfterCommission,
   calculateTeacherNetPrice,
@@ -18,104 +16,6 @@ module.exports = {
   getRegaxCurrencySign,
   checkIfDollar,
   replaceAll
-}
-
-function uploadImage(request, response) {
-  AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_ID, // this needs to move somewhere else!
-  });
-  var params = request.params;
-  var {
-    fileDataBase64,
-    imageType
-  } = params;
-  //var imageBuffer = new Buffer(fileDataBase64, 'base64');
-  var imageBufferData = decodeBase64Image(fileDataBase64);
-
-  if (imageType < 3) {
-    console.log("Resizing Image...");
-    // 		imageBuffer = sharp(imageBuffer).resize(400, 400).max();
-    imageBufferData.data = sharp(imageBufferData.data).resize(400, 400).max();
-  } else {
-    imageBufferData.data = sharp(imageBufferData.data).resize(600, 600).max();
-  }
-
-  var d = new Date();
-  var imageName = d.getFullYear() + '_' + (d.getMonth() + 1) + '_' + d.getDate() + '_' + d.getHours() + '_' + d.getMinutes() + '_' + d.getSeconds();
-  var bucketName
-  var fileSuffix;
-  switch (imageType) {
-    case 0: //Profile
-    bucketName = "medidate.profile.images";
-    fileSuffix = "_medidate_profile";
-    break;
-    case 1: //Certificate
-    bucketName = "medidate.certificate.images";
-    fileSuffix = "_medidate_certificate";
-    break; //imageType
-    case 2: //Session Image
-    bucketName = "medidate.session.images";
-    fileSuffix = "_medidate_session";
-    break;
-    case 3: //Social ID
-    bucketName = "medidate.documents.sellers";
-    fileSuffix = "_medidate_social_id";
-    break;
-    case 4: //Bank Proof - Canceled Check
-    bucketName = "medidate.documents.sellers";
-    fileSuffix = "_medidate_bank_proof";
-    break;
-    case 5:
-    bucketName = "medidate.documents.sellers";
-    fileSuffix = "_medidate_incorporation";
-    break;
-    default:
-    console.log("#### Bucket Type is missing");
-    bucketName = "medidate.profile.images";
-    fileSuffix = "_medidate_default";
-    break;
-  }
-  var awsParams = {
-    ACL: "public-read",
-    Body: imageBufferData.data,
-    Bucket: bucketName,
-    Key: imageName + fileSuffix + ".jpg",
-    ContentType: imageBufferData.type,
-    ServerSideEncryption: "AES256",
-  };
-
-
-  new AWS.S3().upload(awsParams, function (err, data) {
-    // console.log(data);
-    if (err) {
-      response.error(err)
-      return;
-    } else
-    response.success(data.Location);
-
-  });
-}
-
-function decodeBase64Image(dataString) {
-  //   console.log("THE IMAGE DATA: " + dataString);
-  var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-  response = {};
-
-  if (matches === null || matches === undefined) {
-    response.type = "image/jpeg";
-    response.data = new Buffer(dataString, 'base64');
-    return response;
-  }
-
-  if (matches.length !== 3) {
-    return new Error('Invalid input string');
-  }
-
-  response.type = matches[1];
-  response.data = new Buffer(matches[2], 'base64');
-
-  return response;
 }
 
 function getPricesAccordingToCommission(request, response) {

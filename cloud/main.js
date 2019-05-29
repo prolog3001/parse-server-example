@@ -17,7 +17,6 @@ Parse.Cloud.define("paymentRequestSettled", users.paymentRequestSettled);
 Parse.Cloud.define("blockUser", users.blockUser);
 Parse.Cloud.define("unBlockUser", users.unBlockUser);
 
-Parse.Cloud.define("uploadImage", utils.uploadImage);
 Parse.Cloud.define("dateDSTPresenter", utils.dateDSTPresenter);
 Parse.Cloud.define("dateDSTBeforeSessionSave", utils.dateDSTBeforeSessionSave);
 Parse.Cloud.define("getPricesAccordingToCommission", utils.getPricesAccordingToCommission);
