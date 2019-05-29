@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const sharp = require('sharp');
 const Buffer = require('buffer').Buffer;
 const moment = require('moment-timezone');
 const geoTz = require('geo-tz');
