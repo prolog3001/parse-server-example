@@ -1,6 +1,5 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
-var OneSignalPushAdapter = require('parse-server-onesignal-push-adapter');
 // var S3Adapter = require('@parse/s3-files-adapter');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
