@@ -84,7 +84,7 @@ function sendVerificationCode(request, response) {
   })
   .then(function(result) {
     console.log("result :" + JSON.stringify(result))
-    response.success(result);
+    response.success(verificationCode);
   }, function(error) {
     response.error(error);
   });
