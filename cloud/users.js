@@ -37,7 +37,7 @@ module.exports = {
 };
 
 function sendSMS(request, response) {
-  let {to, from, text} = request;
+  let {to, from, text} = request.params;
   console.log("Send SMS:" + text);
   console.log("Send SMS to:" + to);
   console.log("Send SMS from:" + from);
