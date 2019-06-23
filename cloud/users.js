@@ -59,7 +59,7 @@ function sendSMS(request, response) {
         response.error(err);
       } else {
         console.log("Sent SMS to:" + to);
-        response.success(verificationCode);
+        response.success("Sent SMS to:" + to);
       }
     }
   );
