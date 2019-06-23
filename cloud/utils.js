@@ -17,7 +17,8 @@ module.exports = {
   checkIfSplashSeller,
   getRegaxCurrencySign,
   checkIfDollar,
-  replaceAll
+  replaceAll,
+  removeDuplicatesByKey
 }
 
 function uploadImage(request, response) {
@@ -189,9 +190,9 @@ function calculateTeacherNetPrice(count, price, teacherGotPaid) {
 
     try {
       if (teacherGotPaid.get("preferences") &&
-        teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
-        teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
-        teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
+      teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
+      teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
+      teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
 
         merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
         serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
@@ -275,9 +276,9 @@ function calculateStudentNetPayment(count, price, teacherGotPaid) {
 
     try {
       if (teacherGotPaid.get("preferences") &&
-        teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
-        teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
-        teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
+      teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
+      teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
+      teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
         merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
         serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
         serviceFeeCents = teacherGotPaid.get("preferences").get("payment_service_fee_cents") / 100;//1.2 ₪  or 0.3$
@@ -506,3 +507,12 @@ function convertDateAccordingToLatLong(date,lat,long) {
   var timezone = geoTz(lat, long);
   return date = moment.tz(date, timezone).toDate();
 }
+
+function removeDuplicatesByKey(keyToRemove, array) {
+  var values = {};
+  return array.filter(function(item){
+    var val = item[keyToRemove];
+    var exists = values[val];
+    values[val] = true;
+    return !exists;
+  });

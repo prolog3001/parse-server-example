@@ -1,6 +1,9 @@
 // var twilio = require('twilio')('AC086829ceac7f22890d88dd553860b529', 'cda23fe1665fbbe70d024c990e4e30d5');
 
 module.exports = {
+  sendSMS: function (request, response) {
+    sendSMS(request, response);
+  },
   sendVerificationCode: function (request, response) {
     sendVerificationCode(request, response);
   },
@@ -33,8 +36,11 @@ module.exports = {
   }
 };
 
-function sendVerificationCode(request, response) {
-  var verificationCode = Math.floor(Math.random() * 899999 + 100000);
+function sendSMS(request, response) {
+  let {to, from, text} = request;
+  console.log("Send SMS:" + text);
+  console.log("Send SMS to:" + to);
+  console.log("Send SMS from:" + from);
 
   const Nexmo = require('nexmo')
   const nexmo = new Nexmo({
@@ -42,12 +48,8 @@ function sendVerificationCode(request, response) {
     apiSecret: '8beb9f6d5f3f1637'
   })
 
-  const from = 'DigiDine'
-  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
-  const text = "Your verification code is " + verificationCode
-  console.log("Send verification to", to);
-  console.log("Send verification from", from);
-  console.log("Send verification text", text);
+  if(!from || from == null || from.length == 0)
+  from = 'DigiDine'
 
   nexmo.message.sendSms(
     from, to, text,
@@ -56,11 +58,36 @@ function sendVerificationCode(request, response) {
         console.log(err);
         response.error(err);
       } else {
-        console.log("Sent verification");
+        console.log("Sent SMS to:" + to);
         response.success(verificationCode);
       }
     }
   );
+  return;
+}
+
+function sendVerificationCode(request, response) {
+  var verificationCode = Math.floor(Math.random() * 899999 + 100000);
+
+  const from = 'DigiDine'
+  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
+  const text = "Your verification code is " + verificationCode
+
+  console.log("Send verification to", to);
+  console.log("Send verification from", from);
+  console.log("Send verification text", text);
+
+  Parse.Cloud.run("sendSMS", {
+    to,
+    from,
+    text
+  })
+  .then(function(result) {
+    console.log("result :" + JSON.stringify(result))
+    response.success(result);
+  }, function(error) {
+    response.error(error);
+  });
   return;
 }
 
