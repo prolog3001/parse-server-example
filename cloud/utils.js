@@ -5,6 +5,7 @@ const moment = require('moment-timezone');
 const geoTz = require('geo-tz');
 
 module.exports = {
+  sendSMS,
   uploadImage,
   dateDSTPresenter,
   dateDSTBeforeSessionSave,
@@ -19,6 +20,37 @@ module.exports = {
   checkIfDollar,
   replaceAll,
   removeDuplicatesByKey
+}
+
+function sendSMS(request, response) {
+  let {to, from, text} = request.params;
+  console.log("Send SMS:" + text);
+  console.log("Send SMS to:" + to);
+  console.log("Send SMS from:" + from);
+
+  const Nexmo = require('nexmo')
+  const nexmo = new Nexmo({
+    apiKey: '0d809a59',
+    apiSecret: '8beb9f6d5f3f1637',
+    type:"unicode"
+  })
+
+  if(!from || from == null || from.length == 0)
+  from = 'DigiDine'
+
+  nexmo.message.sendSms(
+    from, to, text,
+    (err, responseData) => {
+      if (err) {
+        console.log(err);
+        response.error(err);
+      } else {
+        console.log("Sent SMS to:" + to);
+        response.success("Sent SMS to:" + to);
+      }
+    }
+  );
+  return;
 }
 
 function uploadImage(request, response) {

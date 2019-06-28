@@ -1,9 +1,9 @@
 var users = require('./users.js');
 var utils = require('./utils.js');
 var payme = require('./payme.js');
+var tables = require('./tables.js');
 var background = require('./background.js');
 
-Parse.Cloud.define("sendSMS", users.sendSMS);
 Parse.Cloud.define("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.job("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.define("blockUser", users.blockUser);
@@ -18,6 +18,7 @@ Parse.Cloud.define("paymentRequestSettled", users.paymentRequestSettled);
 Parse.Cloud.define("blockUser", users.blockUser);
 Parse.Cloud.define("unBlockUser", users.unBlockUser);
 
+Parse.Cloud.define("sendSMS", utils.sendSMS);
 Parse.Cloud.define("uploadImage", utils.uploadImage);
 Parse.Cloud.define("dateDSTPresenter", utils.dateDSTPresenter);
 Parse.Cloud.define("dateDSTBeforeSessionSave", utils.dateDSTBeforeSessionSave);
@@ -34,6 +35,8 @@ Parse.Cloud.define("replaceAll", utils.replaceAll);
 Parse.Cloud.define("payme.updateSellerFiles", payme.updateSellerFiles);
 Parse.Cloud.define("payme.getSeller", payme.getSeller);
 Parse.Cloud.define("payme.registerTeacher", payme.registerTeacher);
+
+Parse.Cloud.define("tables", tables.updateSellerFiles);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);

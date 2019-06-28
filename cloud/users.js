@@ -1,9 +1,6 @@
 // var twilio = require('twilio')('AC086829ceac7f22890d88dd553860b529', 'cda23fe1665fbbe70d024c990e4e30d5');
 
 module.exports = {
-  sendSMS: function (request, response) {
-    sendSMS(request, response);
-  },
   sendVerificationCode: function (request, response) {
     sendVerificationCode(request, response);
   },
@@ -35,36 +32,6 @@ module.exports = {
     paymentRequestSettled(request, response);
   }
 };
-
-function sendSMS(request, response) {
-  let {to, from, text} = request.params;
-  console.log("Send SMS:" + text);
-  console.log("Send SMS to:" + to);
-  console.log("Send SMS from:" + from);
-
-  const Nexmo = require('nexmo')
-  const nexmo = new Nexmo({
-    apiKey: '0d809a59',
-    apiSecret: '8beb9f6d5f3f1637'
-  })
-
-  if(!from || from == null || from.length == 0)
-  from = 'DigiDine'
-
-  nexmo.message.sendSms(
-    from, to, text,
-    (err, responseData) => {
-      if (err) {
-        console.log(err);
-        response.error(err);
-      } else {
-        console.log("Sent SMS to:" + to);
-        response.success("Sent SMS to:" + to);
-      }
-    }
-  );
-  return;
-}
 
 function sendVerificationCode(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
