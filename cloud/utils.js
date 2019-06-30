@@ -38,7 +38,7 @@ function sendSMS(request, response) {
   from = 'DigiDine'
 
   nexmo.message.sendSms(
-    from, to, text, type:"unicode",
+    from, to, text, {type: 'unicode'},
     (err, responseData) => {
       if (err) {
         console.log(err);
