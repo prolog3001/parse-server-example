@@ -31,15 +31,14 @@ function sendSMS(request, response) {
   const Nexmo = require('nexmo')
   const nexmo = new Nexmo({
     apiKey: '0d809a59',
-    apiSecret: '8beb9f6d5f3f1637',
-    type:"unicode"
+    apiSecret: '8beb9f6d5f3f1637'
   })
 
   if(!from || from == null || from.length == 0)
   from = 'DigiDine'
 
   nexmo.message.sendSms(
-    from, to, text,
+    from, to, text, type:"unicode"
     (err, responseData) => {
       if (err) {
         console.log(err);
