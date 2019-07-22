@@ -58,6 +58,60 @@ function sendVerificationCode(request, response) {
   return;
 }
 
+function sendTableOrderSMS(request, response) {
+  const from = 'DigiDine'
+  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
+  const text = "Your verification code is " + verificationCode
+  const business = request.params.business;
+
+  console.log("Send verification to", to);
+  console.log("Send verification from", from);
+  console.log("Send verification text", text);
+  console.log("Send verification business", business);
+
+  var businessQuery = new Parse.Query("Business");
+  userQuery.equalTo("objectId", business);
+  userQuery.find({
+    useMasterKey: true, //This is for the new version
+    success: function(businesses) {
+      var thisBusiness = businesses.get(0);
+      console.log("Found..." + businesses.length);
+      console.log("SMS left to business..." + thisBusiness.get("sms_accumulate"));
+
+      if(thisBusiness.get("sms_accumulate") > 0){
+        thisBusiness.increment("sms_accumulate", -1)
+        thisBusiness.save(null, {
+          useMasterKey: true,
+          success: function() {
+            Parse.Cloud.run("sendSMS", {
+              to,
+              from,
+              text
+            })
+            .then(function(result) {
+              console.log("result :" + JSON.stringify(result))
+              response.success(thisBusiness.get("sms_accumulate"));
+            }, function(error) {
+              console.log("Error saving message" + error.code);
+              response.error(-1);
+            });
+          },
+          error: function(error) {
+            console.log("Error saving message" + error.code);
+            response.error(-1);
+          }
+        });
+      } else{
+        console.log("Error no SMS left");
+        response.error(-1);
+      }
+    },
+    error: function(error) {
+      response.error(error);
+    }
+  });
+}
+
 function blockUser(request, response) {
   var params = request.params;
   var user = new Parse.User({
