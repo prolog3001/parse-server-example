@@ -67,14 +67,14 @@ function sendTableOrderSMS(request, response) {
   const text = request.params.text
   const business = request.params.business;
 
-  console.log("Send verification to", to);
-  console.log("Send verification from", from);
-  console.log("Send verification text", text);
-  console.log("Send verification business", business);
+  console.log("Send SMS to", to);
+  console.log("Send SMS from", from);
+  console.log("Send SMS text", text);
+  console.log("Send SMS business", business);
 
   var businessQuery = new Parse.Query("Business");
-  userQuery.equalTo("objectId", business);
-  userQuery.find({
+  businessQuery.equalTo("objectId", business);
+  businessQuery.find({
     useMasterKey: true, //This is for the new version
     success: function(businesses) {
       var thisBusiness = businesses.get(0);
