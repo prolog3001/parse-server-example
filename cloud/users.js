@@ -64,7 +64,7 @@ function sendVerificationCode(request, response) {
 function sendTableOrderSMS(request, response) {
   const from = 'DigiDine'
   const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
-  const text = "Your verification code is " + verificationCode
+  const text = request.params.text
   const business = request.params.business;
 
   console.log("Send verification to", to);
