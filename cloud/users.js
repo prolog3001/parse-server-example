@@ -77,8 +77,8 @@ function sendTableOrderSMS(request, response) {
   businessQuery.find({
     useMasterKey: true, //This is for the new version
     success: function(businesses) {
-      var thisBusiness = businesses.get(0);
       console.log("Found..." + businesses.length);
+      var thisBusiness = businesses[0];
       console.log("SMS left to business..." + thisBusiness.get("sms_accumulate"));
 
       if(thisBusiness.get("sms_accumulate") > 0){
@@ -95,12 +95,12 @@ function sendTableOrderSMS(request, response) {
               console.log("result :" + JSON.stringify(result))
               response.success(thisBusiness.get("sms_accumulate"));
             }, function(error) {
-              console.log("Error saving message" + error.code);
+              console.log("Error saving message" + error);
               response.error(-1);
             });
           },
           error: function(error) {
-            console.log("Error saving message" + error.code);
+            console.log("Error saving message" + error);
             response.error(-1);
           }
         });
@@ -110,6 +110,7 @@ function sendTableOrderSMS(request, response) {
       }
     },
     error: function(error) {
+      console.log("error" + error);
       response.error(error);
     }
   });
