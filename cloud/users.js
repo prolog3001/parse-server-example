@@ -4,6 +4,9 @@ module.exports = {
   sendVerificationCode: function (request, response) {
     sendVerificationCode(request, response);
   },
+  sendTableOrderSMS: function (request, response) {
+    sendTableOrderSMS(request, response);
+  },
   blockUser: function (request, response) {
     blockUser(request, response);
   },
