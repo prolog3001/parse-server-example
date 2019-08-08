@@ -49,7 +49,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
     var orderSummaryObject = request.object;
     if (orderSummaryObject.className == "RestaurantOrderSummary" &&
         orderSummaryObject.get("table") &&
-        orderSummaryObject.get("table").get("objectId") == null) {
+        !orderSummaryObject.get("table").get("objectId")) {
 
         orderSummaryObject.unset("table");
         if (orderSummaryObject.get("table")) {
@@ -59,7 +59,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
 
         orderSummaryObject.save(null, { useMasterKey: true })
             .then(function (result) {
-                console.log("Success", result);
+                console.log("Success saving after table removal", result);
             },
                 function (error) {
                     console.log("Error", error);
