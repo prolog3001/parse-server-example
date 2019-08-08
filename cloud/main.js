@@ -49,7 +49,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
     var orderSummaryObject = request.object;
     if (orderSummaryObject.className == "RestaurantOrderSummary" &&
         orderSummaryObject.get("table") &&
-        !orderSummaryObject.get("table").id) {
+        (!orderSummaryObject.get("table").id || orderSummaryObject.get("table").get("title") == "TA")) {
 
         orderSummaryObject.unset("table");
         if (orderSummaryObject.get("table")) {
