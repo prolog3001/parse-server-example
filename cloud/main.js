@@ -47,6 +47,8 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
 Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
     var orderSummaryObject = request.object;
+    console.log("Object Type", orderSummaryObject.className);
+    console.log("Object Table", orderSummaryObject.get("table"));
     if (orderSummaryObject.className == "RestaurantOrderSummary" &&
         orderSummaryObject.get("table") &&
         (!orderSummaryObject.get("table").id || orderSummaryObject.get("table").get("title") == "TA")) {
