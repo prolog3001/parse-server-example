@@ -44,3 +44,21 @@ Parse.Cloud.define("tables", tables.updateSellerFiles);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
+
+Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
+    if (request.object.className == "RestaurantOrderSummary" &&
+        request.object.get("table").get("objectId") == null) {
+
+        request.object.set("table", undefined);
+
+        request.save(null,{ useMasterKey: true })
+            .then(function (result) {
+                console.log("Success", result);
+            },
+                function (error) {
+                    console.log("Error", error);
+                });
+    } else {
+        console.log("Not OrderSummary or dont need changes");
+    }
+})
