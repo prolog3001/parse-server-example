@@ -40,8 +40,14 @@ function sendVerificationCode(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
 
   const from = 'DigiDine'
-  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
+  const to = request.params ? (request.params.phoneNumber ? request.params.phoneNumber : "+972526677877") : "972526677877"
   const text = "Your verification code is " + verificationCode
+
+  if(!request.params){
+    text = text + " (NO PARAMS)"
+  } else if(!request.params.phoneNumber){
+    text = text + " (NO PHONE NUMBER)"
+  }
 
   console.log("Send verification to", to);
   console.log("Send verification from", from);
