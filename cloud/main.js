@@ -51,7 +51,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
         orderSummaryObject.get("table") &&
         orderSummaryObject.get("table").get("objectId") == null) {
 
-        delete orderSummaryObject.table;
+        orderSummaryObject.unset("table");
         if (orderSummaryObject.get("table")) {
             console.log("Fail, cant delete order table");
             return;
