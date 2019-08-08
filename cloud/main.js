@@ -45,48 +45,48 @@ Parse.Cloud.define("tables", tables.updateSellerFiles);
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
-Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
-    var orderSummaryPointer = request.object;
-    console.log("Object Type", orderSummaryPointer.className);
-    console.log("Object Table", orderSummaryPointer.get("table"));
+// Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
+//     var orderSummaryPointer = request.object;
+//     console.log("Object Type", orderSummaryPointer.className);
+//     console.log("Object Table", orderSummaryPointer.get("table"));
 
-    var userQuery = new Parse.Query("RestaurantOrderSummary");
-    userQuery.containedIn("objectId", orderSummaryPointer.id);
-    userQuery.include("table");
+//     var userQuery = new Parse.Query("RestaurantOrderSummary");
+//     userQuery.containedIn("objectId", orderSummaryPointer.id);
+//     userQuery.include("table");
 
-    userQuery.find({
-        useMasterKey: true, //This is for the new version
-        success: function (orderSummaries) {
-            console.log("Found..." + orderSummaries.length);
-            orderSummaryObject = orderSummaries[0];
+//     userQuery.find({
+//         useMasterKey: true, //This is for the new version
+//         success: function (orderSummaries) {
+//             console.log("Found..." + orderSummaries.length);
+//             orderSummaryObject = orderSummaries[0];
 
-            if (orderSummaryObject && orderSummaryObject.className == "RestaurantOrderSummary" &&
-                orderSummaryObject.get("table") &&
-                (!orderSummaryObject.get("table").id || orderSummaryObject.get("table").get("title") == "TA")) {
+//             if (orderSummaryObject && orderSummaryObject.className == "RestaurantOrderSummary" &&
+//                 orderSummaryObject.get("table") &&
+//                 (!orderSummaryObject.get("table").id || orderSummaryObject.get("table").get("title") == "TA")) {
 
-                orderSummaryObject.unset("table");
-                if (orderSummaryObject.get("table")) {
-                    console.log("Fail, cant delete order table");
-                    return;
-                }
+//                 orderSummaryObject.unset("table");
+//                 if (orderSummaryObject.get("table")) {
+//                     console.log("Fail, cant delete order table");
+//                     return;
+//                 }
 
-                orderSummaryObject.save(null, { useMasterKey: true })
-                    .then(function (result) {
-                        console.log("Success saving after table removal", result);
-                    },
-                        function (error) {
-                            console.log("Error", error);
-                        });
-            } else {
-                console.log("Not OrderSummary or dont need changes");
-            }
-        },
+//                 orderSummaryObject.save(null, { useMasterKey: true })
+//                     .then(function (result) {
+//                         console.log("Success saving after table removal", result);
+//                     },
+//                         function (error) {
+//                             console.log("Error", error);
+//                         });
+//             } else {
+//                 console.log("Not OrderSummary or dont need changes");
+//             }
+//         },
 
-        error: function (error) {
-            console.log("Query Error", error);
-        }
-    });
-})
+//         error: function (error) {
+//             console.log("Query Error", error);
+//         }
+//     });
+// })
 
 Parse.Cloud.afterSave("Table", function (request) {
     if (request.object.existed() === false) {
