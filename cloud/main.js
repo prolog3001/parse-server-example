@@ -47,11 +47,12 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
 Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
     if (request.object.className == "RestaurantOrderSummary" &&
+        request.object.get("table") &&
         request.object.get("table").get("objectId") == null) {
 
         request.object.set("table", undefined);
 
-        request.save(null,{ useMasterKey: true })
+        request.save(null, { useMasterKey: true })
             .then(function (result) {
                 console.log("Success", result);
             },
