@@ -69,7 +69,7 @@ function sendVerificationCode(request, response) {
 
 function sendTableOrderSMS(request, response) {
   const from = 'DigiDine'
-  const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
+  const to = request.params ? request.params.to ? request.params.to : "+972526677877" : "972526677877"
   const text = request.params.text
   const business = request.params.business;
 
