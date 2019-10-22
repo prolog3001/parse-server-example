@@ -88,27 +88,27 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 //     });
 // })
 
-Parse.Cloud.afterSave("Table", function (request) {
-    if (request.object.existed() === false) {
-        // It's a new object 
-        var table = request.object;
-        console.log("Object Type", table.className);
-        console.log("Object Title", table.get("title"));
+// Parse.Cloud.afterSave("Table", function (request) {
+//     if (request.object.existed() === false) {
+//         // It's a new object 
+//         var table = request.object;
+//         console.log("Object Type", table.className);
+//         console.log("Object Title", table.get("title"));
 
-        if (table && table.className == "Table" &&
-            table.get("title") == "TA") {
-            table.destroy({
-                success: function(res) {
-                    log('success destroy', res)
-                },
-                error: function(error) {
-                    log('Failed to destroy object, with error code: ' + error.message);
-                }
-            });
-        } else {
-            console.log("Not Table or dont need changes");
-        }
-    } else {
-        // It's an existing object
-    }
-})
+//         if (table && table.className == "Table" &&
+//             table.get("title") == "TA") {
+//             table.destroy({
+//                 success: function(res) {
+//                     log('success destroy', res)
+//                 },
+//                 error: function(error) {
+//                     log('Failed to destroy object, with error code: ' + error.message);
+//                 }
+//             });
+//         } else {
+//             console.log("Not Table or dont need changes");
+//         }
+//     } else {
+//         // It's an existing object
+//     }
+// })
