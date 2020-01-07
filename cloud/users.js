@@ -39,8 +39,8 @@ module.exports = {
 function sendVerificationCode(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
 
-  const from = 'DigiDine'
-  const to = request.params ? (request.params.phoneNumber ? request.params.phoneNumber : "+972526677877") : "972526677877"
+  const from = request.params ? request.params.from ? request.params.from : 'DigiDine' : 'DigiDine'
+  const to = request.params ? (request.params.phoneNumber ? request.params.phoneNumber : undefined) : undefined
   const text = "Your verification code is " + verificationCode
 
   if(!request.params){
@@ -52,6 +52,9 @@ function sendVerificationCode(request, response) {
   console.log("Send verification to", to);
   console.log("Send verification from", from);
   console.log("Send verification text", text);
+
+  if(!to)
+  return
 
   Parse.Cloud.run("sendSMS", {
     to,
@@ -68,8 +71,8 @@ function sendVerificationCode(request, response) {
 }
 
 function sendTableOrderSMS(request, response) {
-  const from = 'DigiDine'
-  const to = request.params ? request.params.to ? request.params.to : "+972526677877" : "972526677877"
+  const from = request.params ? request.params.from ? request.params.from : 'DigiDine' : 'DigiDine'
+  const to = request.params ? request.params.to ? request.params.to : undefined : undefined
   const text = request.params.text
   const business = request.params.business;
 
@@ -77,6 +80,9 @@ function sendTableOrderSMS(request, response) {
   console.log("Send SMS from", from);
   console.log("Send SMS text", text);
   console.log("Send SMS business", business);
+
+  if(!to)
+  return
 
   var businessQuery = new Parse.Query("Business");
   businessQuery.equalTo("objectId", business);
