@@ -9,7 +9,7 @@ function closeOpenedOrders(request, response) {
   then.setHours(then.getHours() - 24);
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
-  openedOrdersQuery.lessThanOrEqualTo("updatedAt", then);
+  openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.find({
@@ -29,15 +29,15 @@ function closeOpenedOrders(request, response) {
 
           var itemOrders = orderSummaries[i].get("item_orders");
 
-          if(itemOrders && itemOrders.length){
+          if (itemOrders && itemOrders.length) {
 
-            for(var j=0 ; j<itemOrders.length ; j++){
+            for (var j = 0; j < itemOrders.length; j++) {
               var specificOrderDish = itemOrders[j];
-              if(!specificOrderDish.get("started"))
-              specificOrderDish.set("started", new Date());
+              if (!specificOrderDish.get("started"))
+                specificOrderDish.set("started", new Date());
 
-              if(!specificOrderDish.get("ready"))
-              specificOrderDish.set("ready", new Date());
+              if (!specificOrderDish.get("ready"))
+                specificOrderDish.set("ready", new Date());
 
               specificOrderDish.set("delivered", new Date());
             }
@@ -45,7 +45,7 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_in_progress", []);
             orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", itemOrders);
-          } else{
+          } else {
             orderSummaries[i].unset("item_orders");
             orderSummaries[i].unset("item_orders_in_progress");
             orderSummaries[i].unset("item_orders_ready");
@@ -55,6 +55,7 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", []);
           }
+          
           orderSummaries[i].set("paid", true);
           orderSummaries[i].set("rated", true);
 
