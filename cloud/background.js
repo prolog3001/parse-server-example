@@ -27,6 +27,12 @@ function closeOpenedOrders(request, response) {
             continue;
           }
 
+          if (orderSummaries[i].get("item_orders_delivered") &&
+            orderSummaries[i].get("item_orders_delivered").length == orderSummaries[i].get("item_orders").length) {
+            console.log("orderSummary is already finished..");
+            continue;
+          }
+
           var itemOrders = orderSummaries[i].get("item_orders");
 
           if (itemOrders && itemOrders.length) {
@@ -55,7 +61,7 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", []);
           }
-          
+
           orderSummaries[i].set("paid", true);
           orderSummaries[i].set("rated", true);
 
