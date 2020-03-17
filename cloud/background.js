@@ -6,7 +6,7 @@ module.exports = {
 
 function closeOpenedOrders(request, response) {
   var then = new Date();
-  then.setHours(then.getHours() - 24);
+  then.setHours(then.getHours() - 12);
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
