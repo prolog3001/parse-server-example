@@ -10,12 +10,9 @@ module.exports = {
   dateDSTPresenter,
   dateDSTBeforeSessionSave,
   decodeBase64Image,
-  getPricesAccordingToCommission,
-  getNetPriceAfterCommission,
-  calculateTeacherNetPrice,
-  calculateStudentNetPayment,
-  getTotalPriceIncludingCommission,
-  checkIfSplashSeller,
+  removeDuplicatesByKey,
+  getObjectById,
+  getObjectsInRelation,
   getRegaxCurrencySign,
   checkIfDollar,
   replaceAll,
@@ -150,236 +147,59 @@ function decodeBase64Image(dataString) {
   return response;
 }
 
-function getPricesAccordingToCommission(request, response) {
-  var params = request.params;
-  var count = !params.count ? 1 :  params.count;
-  var price = params.price;
-  var teacherId = params.teacherId;
-
-  var userQuery = new Parse.Query(Parse.User);
-  userQuery.equalTo("objectId", teacherId);
-  userQuery.include("preferences");
-  userQuery.find({
-    success: function (users) {
-      try {
-        var teacherGotPaid = users[0];
-        var prices = [];
-        var priceSubstractCommision = calculateTeacherNetPrice(count, price, teacherGotPaid);
-        var priceIncludingCommision = calculateStudentNetPayment(count, price, teacherGotPaid);
-        console.log('priceSubstractCommision ', priceSubstractCommision)
-        console.log('priceIncludingCommision ', priceIncludingCommision)
-        prices.push(priceSubstractCommision);
-        prices.push(priceIncludingCommision);
-        response.success(prices);
-      } catch (error) {
-        console.log(error);
-        response.error(error);
-      }
-    },
-    error: function (error) {
-      response.error(error);
-    }
+function removeDuplicatesByKey(keyToRemove, array) {
+  var values = {};
+  return array.filter(function (item) {
+      var val = item[keyToRemove];
+      var exists = values[val];
+      values[val] = true;
+      return !exists;
   });
 }
 
-function getNetPriceAfterCommission(request, response) {
-  var params = request.params;
-  var count = !params.count ? 1 :  params.count;
-  var price = params.price;
-  var teacherId = params.teacherId;
+function getObjectById(className, id, includes) {
+  console.log("className", className);
+  console.log("id", id);
+  return new Promise((resolve, reject) => {
+      var query = new Parse.Query(className);
+      if (includes && includes.length > 0) {
+          for (let i = 0; i < includes.length; i++) {
+              const include = includes[i];
+              console.log('include', include);
+              query.include(include);
+          }
 
-  var userQuery = new Parse.Query(Parse.User);
-  userQuery.equalTo("objectId", teacherId);
-  userQuery.include("preferences");
-  userQuery.find({
-    success: function (users) {
-      try {
-        var teacherGotPaid = users[0];
-        var netPrice = calculateTeacherNetPrice(count, price, teacherGotPaid);
-        response.success(netPrice);
-      } catch (error) {
-        console.log(error);
-        response.error(error);
       }
-    },
-    error: function (error) {
-      response.error(error);
-    }
+      query.equalTo('objectId', id);
+      query.limit(1);
+      query.find().then(function (res) {
+          resolve(res[0]);
+      }, function (err) {
+          console.log('err when finding object', err)
+          reject(err);
+      });
   });
 }
 
-function calculateTeacherNetPrice(count, price, teacherGotPaid) {
-  try {
-    console.log("Price to Get Before Fee - " + price);
+function getObjectsInRelation(relationObject, includes) {
+  return new Promise((resolve, reject) => {
+      var query = relationObject.query();
+      if (includes && includes.length > 0) {
+          for (let i = 0; i < includes.length; i++) {
+              const include = includes[i];
+              console.log('include', include);
+              query.include(include);
+          }
 
-    var netPrice;
-    var merchantFeePercent;
-    var serviceFeePercent;
-    var serviceFeeCents;
-
-    var isInDollars = checkIfSplashSeller(teacherGotPaid);
-
-    try {
-      if (teacherGotPaid.get("preferences") &&
-      teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
-      teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
-      teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
-
-        merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
-        serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
-        serviceFeeCents = teacherGotPaid.get("preferences").get("payment_service_fee_cents") / 100;//1.2 ₪  or 0.3$
-      } else {
-        if (!isInDollars) {
-          merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-          serviceFeePercent = process.env.PAYME_TOTAL_FEE_PERC / 100;//2.4%
-          serviceFeeCents = process.env.PAYME_FEE_CENT / 100; //1.2 ₪ 
-        } else {
-          merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-          serviceFeePercent = process.env.SPLASH_TOTAL_FEE_PERC / 100;//2.9%
-          serviceFeeCents = process.env.SPLASH_FEE_CENT / 100; //0.3$
-        }
       }
-    } catch (error) {
-      if (!isInDollars) {
-        serviceFeePercent = process.env.PAYME_TOTAL_FEE_PERC / 100;//2.6% or 2.1%
-        merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-        serviceFeeCents = process.env.PAYME_FEE_CENT / 100; //1.2 ₪ 
-      } else {
-        serviceFeePercent = process.env.SPLASH_TOTAL_FEE_PERC / 100;//2.9%
-        merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-        serviceFeeCents = process.env.SPLASH_FEE_CENT / 100; //0.3$
-      }
-    }
-
-    netPrice = price * (1 - merchantFeePercent);
-
-    netPrice = netPrice.toFixed(2);
-    console.log("Price to Get After Fee - " + netPrice);
-    return netPrice * count;
-  } catch (error) {
-    console.log(error);
-    return price;
-  }
-}
-
-function getTotalPriceIncludingCommission(request, response) {
-  var params = request.params;
-  var count = !params.count ? 1 : params.count;
-  var price = params.price;
-  var teacherId = params.teacherId;
-
-  var userQuery = new Parse.Query(Parse.User);
-  userQuery.equalTo("objectId", teacherId);
-  userQuery.include("preferences");
-  userQuery.find({
-    success: function (users) {
-      try {
-        var teacherGotPaid = users[0];
-        var netPayment = calculateStudentNetPayment(count, price, teacherGotPaid);
-        response.success(netPayment);
-      } catch (error) {
-        console.log(error);
-        response.error(error);
-      }
-    },
-    error: function (error) {
-      response.error(error);
-    }
+      query.include('preferences');
+      query.find().then(function (res) {
+          resolve(res);
+      }, function (err) {
+          console.log('err when finding object', err)
+          reject(err);
+      });
   });
-}
-
-function calculateStudentNetPayment(count, price, teacherGotPaid) {
-  try {
-    console.log("Price to Pay Before Xd - " + price);
-    //formula for calculating the price a student should pay for the teacher
-    //so the teacher will get 0.98% of his price
-    var Xd;
-    var totalFeeMultiplier;
-    var totalWantedPriceFeeMultiplier;
-
-    var netPrice;
-    var totalFeePercentage;
-    var merchantFeePercent;
-    var serviceFeePercent;
-    var serviceFeeCents;
-
-    var isInDollars = checkIfSplashSeller(teacherGotPaid);
-
-    try {
-      if (teacherGotPaid.get("preferences") &&
-      teacherGotPaid.get("preferences").get("merchant_fee_percent") &&
-      teacherGotPaid.get("preferences").get("payment_service_fee_percent") &&
-      teacherGotPaid.get("preferences").get("payment_service_fee_cents")) {
-        merchantFeePercent = teacherGotPaid.get("preferences").get("merchant_fee_percent") / 100;//2%
-        serviceFeePercent = teacherGotPaid.get("preferences").get("payment_service_fee_percent") / 100;//2.9% or 2.6% or 2.1%
-        serviceFeeCents = teacherGotPaid.get("preferences").get("payment_service_fee_cents") / 100;//1.2 ₪  or 0.3$
-      } else {
-        if (!isInDollars) {
-          serviceFeePercent = process.env.PAYME_TOTAL_FEE_PERC / 100;//2.6% or 2.1%
-          merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-          serviceFeeCents = process.env.PAYME_FEE_CENT / 100; //1.2 ₪ 
-        } else {
-          serviceFeePercent = process.env.SPLASH_TOTAL_FEE_PERC / 100;//2.9%
-          merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-          serviceFeeCents = process.env.SPLASH_FEE_CENT / 100; //0.3$
-        }
-      }
-
-    } catch (error) {
-      if (!isInDollars) {
-        serviceFeePercent = process.env.PAYME_TOTAL_FEE_PERC / 100;//2.6% or 2.1%
-        merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-        serviceFeeCents = process.env.PAYME_FEE_CENT / 100; //1.2 ₪ 
-      } else {
-        serviceFeePercent = process.env.SPLASH_TOTAL_FEE_PERC / 100;//2.9%
-        merchantFeePercent = process.env.MERCHANT_FEE_PERC / 100;//2%
-        serviceFeeCents = process.env.SPLASH_FEE_CENT / 100; //0.3$
-      }
-    }
-
-    totalFeePercentage = serviceFeePercent + merchantFeePercent; //6% --> 0.06 or 5.9% --> 0.059 for Splash
-    totalFeeMultiplier = 1 - totalFeePercentage;
-    console.log("totalFeeMultiplier - " + totalFeeMultiplier);
-
-    totalWantedPriceFeeMultiplier = 1 - merchantFeePercent;
-    console.log("totalWantedPriceFeeMultiplier - " + totalWantedPriceFeeMultiplier);
-
-    console.log("serviceFeeCents - " + serviceFeeCents);
-
-    //The formula is:
-    //FEE_PERC can be PAYME_TOTAL_FEE_PERC or SPLASH_TOTAL_FEE_PERC
-    //(price + Xd)(1 - totalFeePercentage) - serviceFeeCents = price * (1 - serviceFeePercent)
-    //Xd = 0.032*price + 0.32 for that to happen
-
-    Xd = (price * (totalWantedPriceFeeMultiplier - totalFeeMultiplier) + (serviceFeeCents) / totalFeeMultiplier);
-    netPrice = price + Xd;
-    netPrice = netPrice.toFixed(2);
-    console.log("Price to Pay After Xd - " + netPrice);
-    return netPrice * count;
-  } catch (error) {
-    console.log(error);
-    return price;
-  }
-}
-
-function checkIfSplashSeller(parseUser) {
-  try {
-    if (parseUser.get("splash_seller_id") === null || parseUser.get("splash_seller_id") === undefined) {
-      console.log("not splash seller");
-      return false;
-    }
-
-    if (parseUser.get("splash_seller_id").length == 0) {
-      console.log("not splash seller");
-      return false;
-    }
-
-    console.log("sellerInSplash - " + true);
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
 }
 
 function getRegaxCurrencySign(seller, objectToPay) {

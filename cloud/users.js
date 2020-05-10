@@ -91,31 +91,21 @@ function sendTableOrderSMS(request, response) {
     success: function(businesses) {
       console.log("Found..." + businesses.length);
       var thisBusiness = businesses[0];
-      console.log("SMS left to business..." + thisBusiness.get("sms_accumulate"));
+      console.log("SMS left to business..." + thisBusiness.get("orders_accumulate"));
 
-      if(thisBusiness.get("sms_accumulate") > 0){
-        thisBusiness.increment("sms_accumulate", -1)
-        thisBusiness.save(null, {
-          useMasterKey: true,
-          success: function() {
-            Parse.Cloud.run("sendSMS", {
+      if(thisBusiness.get("orders_accumulate") > 0){
+        Parse.Cloud.run("sendSMS", {
               to,
               from,
               text
             })
             .then(function(result) {
               console.log("result :" + JSON.stringify(result))
-              response.success(thisBusiness.get("sms_accumulate"));
+              response.success(thisBusiness.get("orders_accumulate"));
             }, function(error) {
               console.log("Error saving message" + error);
               response.error(-1);
             });
-          },
-          error: function(error) {
-            console.log("Error saving message" + error);
-            response.error(-1);
-          }
-        });
       } else{
         console.log("Error no SMS left");
         response.error(-1);
