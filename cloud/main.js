@@ -64,7 +64,18 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         var params = {};
                         params["userTokens"] = [business.get("admin").get("fcm_token")];
                         params["business_id"] = business.id;
-                        push.pushLowOrders(params);
+                        Parse.Cloud.run('pushLowOrders', params, {
+                            success: function (result) {
+                                try{
+                                    
+                                }catch (error) {
+                                    console.error(error);
+                                }
+                            },
+                            error: function (error) {
+                                console.log('error', error);
+                            }
+                        });
                     }
                     business.increment("orders_accumulate", -1);
 
@@ -108,9 +119,9 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         !orderSummary.get("notified_client")) {
                         //PUSH All Orders Ready
                         var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
-                            i18n.__({ phrase: "DELIVERY", locale: "en" }) :
-                            i18n.__({ phrase: "TA", locale: "en" })) :
-                            i18n.__({ phrase: "TA", locale: "en" })
+                        request.i18n.__({ phrase: "DELIVERY", locale: "en" }) :
+                        request.i18n.__({ phrase: "TA", locale: "en" })) :
+                        request.i18n.__({ phrase: "TA", locale: "en" })
 
                         var userIds = [];
                         userIds.push(business.get("admin").get("fcm_token"));
@@ -122,7 +133,18 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         params["order_id"] = orderSummary.id;
                         params["order_method"] = orderMethod;
 
-                        push.pushReadyOrders(params);
+                        Parse.Cloud.run('pushReadyOrders', params, {
+                            success: function (result) {
+                                try{
+                                    
+                                }catch (error) {
+                                    console.error(error);
+                                }
+                            },
+                            error: function (error) {
+                                console.log('error', error);
+                            }
+                        });
 
                         orderSummary.set("notified_client", true)
                         orderSummary.save(null, { useMasterKey: true })
@@ -172,7 +194,19 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                             params["userTokens"] = [business.get("admin").get("fcm_token")];
                             params["item_name"] = order.get("restaurant_item").get("title");
                             params["item_id"] = order.get("restaurant_item").id;
-                            push.pushLowItems(params);
+
+                            Parse.Cloud.run('pushLowItems', params, {
+                                success: function (result) {
+                                    try{
+                                        
+                                    }catch (error) {
+                                        console.error(error);
+                                    }
+                                },
+                                error: function (error) {
+                                    console.log('error', error);
+                                }
+                            });
                         }
 
                         order.get("restaurant_item").increment("units", -1);
@@ -222,7 +256,19 @@ Parse.Cloud.afterSave("Rating", function (request) {
                         params["userTokens"] = [business.get("admin").get("fcm_token")];
                         params["star_number"] = order.get("waiter_rating");
                         params["order_id"] = rating.get("restaurant_order_summary").id;
-                        push.pushLowRating(params);
+
+                        Parse.Cloud.run('pushLowRating', params, {
+                            success: function (result) {
+                                try{
+                                    
+                                }catch (error) {
+                                    console.error(error);
+                                }
+                            },
+                            error: function (error) {
+                                console.log('error', error);
+                            }
+                        });
                     }
                 } else {
                     console.log("Not order or dont need changes");

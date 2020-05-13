@@ -16,12 +16,12 @@ module.exports = {
 };
 
 //Business low orders push
-async function pushLowOrders(params) {
+async function pushLowOrders(request) {
     console.log('pushLowOrders');
 
-    var users = params.userTokens;
+    var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
+    var pushTitle = request.i18n.__({phrase: "LOW_ORDERS", locale: "en"});
 
     var pushAlert = pushTitle;
 
@@ -39,12 +39,12 @@ async function pushLowOrders(params) {
 }
 
 //All Orders Ready push
-async function pushReadyOrders(params) {
+async function pushReadyOrders(request) {
     console.log('pushReadyOrders');
 
-    var users = params.userTokens;
+    var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: "en"});
+    var pushTitle = request.i18n.__({phrase: "READY_ORDERS", locale: "en"});
     pushTitle.replace("business_name", params.business_name);
     pushTitle.replace("order_id", params.order_id);
     pushTitle.replace("order_method", params.order_method);
@@ -65,12 +65,12 @@ async function pushReadyOrders(params) {
 }
 
 //Low Units push
-async function pushLowItems(params) {
+async function pushLowItems(request) {
     console.log('pushLowItems');
 
-    var users = params.userTokens;
+    var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: "en"});
+    var pushTitle = request.i18n.__({phrase: "LOW_ITEMS", locale: "en"});
     pushTitle.replace("item_name", params.item_name);
 
     var pushAlert = pushTitle;
@@ -89,12 +89,12 @@ async function pushLowItems(params) {
 }
 
 //Low Rating push
-async function pushLowRating(params) {
+async function pushLowRating(request) {
     console.log('pushLowRating');
 
-    var users = params.userTokens;
+    var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_RATING", locale: "en"});
+    var pushTitle = request.i18n.__({phrase: "LOW_RATING", locale: "en"});
     pushTitle.replace("star_number", params.star_number);
 
     var pushAlert = pushTitle;
