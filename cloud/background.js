@@ -1,6 +1,20 @@
+var push = require('./push.js');
+
 module.exports = {
   closeOpenedOrders: function (request, response) {
     closeOpenedOrders(request, response);
+  },
+  ordersPushTest: function (request, response) {
+    ordersPushTest(request, response);
+  },
+  readyPushTest: function (request, response) {
+    readyPushTest(request, response);
+  },
+  itemsPushTest: function (request, response) {
+    itemsPushTest(request, response);
+  },
+  ratePushTest: function (request, response) {
+    ratePushTest(request, response);
   }
 };
 
@@ -97,4 +111,59 @@ function closeOpenedOrders(request, response) {
       response.error('Wasnt able to find opened orders');
     }
   });
+}
+
+async function ordersPushTest() {
+  try {
+    var params = {};
+    params["userIds"] = ["77m5xA8YNB"];
+    params["business_id"] = "OUPcvgIZAn";
+    push.pushLowOrders(params);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function readyPushTest() {
+  try {
+    var orderMethod = i18n.__({ phrase: orderMethod.DELIVERY, locale: en });
+
+    var userIds = [];
+    userIds.push("77m5xA8YNB");
+    userIds.push("sLhzSi4X54");
+
+    var params = {};
+    params["userIds"] = userIds;
+    params["business_name"] = "TEST BUSINESS NAME";
+    params["order_id"] = "npt2mC7QJA";
+    params["order_method"] = orderMethod;
+
+    push.pushReadyOrders(params);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function itemsPushTest() {
+  try {
+    var params = {};
+    params["userIds"] = ["77m5xA8YNB"];
+    params["item_name"] = "TEST ITEM NAME";
+    params["item_id"] = "0Cl1cNELHf";
+    push.pushLowItems(params);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function ratePushTest() {
+  try {
+    var params = {};
+    params["userIds"] = ["77m5xA8YNB"];
+    params["star_number"] = 2;
+    params["order_id"] = "npt2mC7QJA";
+    push.pushLowRating(params);
+  } catch (error) {
+    console.log(error);
+  }
 }
