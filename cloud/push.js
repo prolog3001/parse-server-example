@@ -20,7 +20,7 @@ module.exports = {
 async function pushLowOrders(params) {
     console.log('pushLowOrders');
 
-    var users = params.userIds;
+    var users = params.usertokens;
 
     var pushTitle = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
 
@@ -43,7 +43,7 @@ async function pushLowOrders(params) {
 async function pushReadyOrders(params) {
     console.log('pushReadyOrders');
 
-    var users = params.userIds;
+    var users = params.usertokens;
 
     var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: "en"});
     pushTitle.replace("business_name", params.business_name);
@@ -69,7 +69,7 @@ async function pushReadyOrders(params) {
 async function pushLowItems(params) {
     console.log('pushLowItems');
 
-    var users = params.userIds;
+    var users = params.usertokens;
 
     var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: "en"});
     pushTitle.replace("item_name", params.item_name);
@@ -93,7 +93,7 @@ async function pushLowItems(params) {
 async function pushLowRating(params) {
     console.log('pushLowRating');
 
-    var users = params.userIds;
+    var users = params.usertokens;
 
     var pushTitle = i18n.__({phrase: "LOW_RATING", locale: "en"});
     pushTitle.replace("star_number", params.star_number);
@@ -135,11 +135,8 @@ function sendPushNoAdapter(users, messageData, response) {
 
         var regTokens = [];
         for (var i = 0; i < users.length; i++) {
-            console.log("The users", users[i].id);
-            if (users[i].get("fcm_token")) {
-                console.log("fcm_token", users[i].get("fcm_token"));
-                regTokens.push(users[i].get("fcm_token"));
-            }
+            console.log("fcm_token", users[i]);
+            regTokens.push(users[i]);
         }
 
         const data = {

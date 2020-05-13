@@ -63,7 +63,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                     if (business.get("orders_accumulate") == min - 1) {
                         //PUSH Low Orders
                         var params = {};
-                        params["userIds"] = [business.get("admin").id];
+                        params["usertokens"] = [business.get("admin").get("fcm_token")];
                         params["business_id"] = business.id;
                         push.pushLowOrders(params);
                     }
@@ -114,11 +114,11 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                             i18n.__({ phrase: "TA", locale: "en" })
 
                         var userIds = [];
-                        userIds.push(business.get("admin").id);
-                        userIds.push(restaurantOrderSummaryQuery.get("client").id);
+                        userIds.push(business.get("admin").get("fcm_token"));
+                        userIds.push(restaurantOrderSummaryQuery.get("client").get("fcm_token"));
 
                         var params = {};
-                        params["userIds"] = userIds;
+                        params["usertokens"] = userIds;
                         params["business_name"] = orderSummary.get("business").get("title");
                         params["order_id"] = orderSummary.id;
                         params["order_method"] = orderMethod;
@@ -170,7 +170,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                         if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units") - 1) {
                             //PUSH Low Units
                             var params = {};
-                            params["userIds"] = [business.get("admin").id];
+                            params["usertokens"] = [business.get("admin").get("fcm_token")];
                             params["item_name"] = order.get("restaurant_item").get("title");
                             params["item_id"] = order.get("restaurant_item").id;
                             push.pushLowItems(params);
@@ -220,7 +220,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
                     if (rating.get("waiter_rating") <= 2) {
                         //PUSH Low Rating
                         var params = {};
-                        params["userIds"] = [business.get("admin").id];
+                        params["usertokens"] = [business.get("admin").get("fcm_token")];
                         params["star_number"] = order.get("waiter_rating");
                         params["order_id"] = rating.get("restaurant_order_summary").id;
                         push.pushLowRating(params);
