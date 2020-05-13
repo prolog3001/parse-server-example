@@ -117,7 +117,7 @@ function closeOpenedOrders(request, response) {
 async function ordersPushTest() {
   try {
     var params = {};
-    params["userIds"] = ["77m5xA8YNB"];
+    params["userTokens"] = ["77m5xA8YNB"];
     params["business_id"] = "OUPcvgIZAn";
     push.pushLowOrders(params);
   } catch (error) {
@@ -134,7 +134,7 @@ async function readyPushTest() {
     userIds.push("cFmwVPOqeAY:APA91bEDLql7rU5AoS1_6eTkU-C_rIDoDW3ODGJTz8_JEsjqnVPVJr5Rl3Q9HNZfFstBuaVBmUdUpwr82lbNs87LBjWDy8_rB3j5ZNJPbFL246-_tezTusoytTl2y707V4PFWMiA-WHr");
 
     var params = {};
-    params["userIds"] = userIds;
+    params["userTokens"] = userIds;
     params["business_name"] = "TEST BUSINESS NAME";
     params["order_id"] = "npt2mC7QJA";
     params["order_method"] = orderMethod;
@@ -148,7 +148,7 @@ async function readyPushTest() {
 async function itemsPushTest() {
   try {
     var params = {};
-    params["userIds"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
+    params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["item_name"] = "TEST ITEM NAME";
     params["item_id"] = "0Cl1cNELHf";
     push.pushLowItems(params);
@@ -160,7 +160,7 @@ async function itemsPushTest() {
 async function ratePushTest() {
   try {
     var params = {};
-    params["userIds"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
+    params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["star_number"] = 2;
     params["order_id"] = "npt2mC7QJA";
     push.pushLowRating(params);

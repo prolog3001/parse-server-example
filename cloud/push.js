@@ -20,7 +20,7 @@ module.exports = {
 async function pushLowOrders(params) {
     console.log('pushLowOrders');
 
-    var users = params.usertokens;
+    var users = params.userTokens;
 
     var pushTitle = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
 
@@ -43,7 +43,7 @@ async function pushLowOrders(params) {
 async function pushReadyOrders(params) {
     console.log('pushReadyOrders');
 
-    var users = params.usertokens;
+    var users = params.userTokens;
 
     var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: "en"});
     pushTitle.replace("business_name", params.business_name);
@@ -69,7 +69,7 @@ async function pushReadyOrders(params) {
 async function pushLowItems(params) {
     console.log('pushLowItems');
 
-    var users = params.usertokens;
+    var users = params.userTokens;
 
     var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: "en"});
     pushTitle.replace("item_name", params.item_name);
@@ -93,7 +93,7 @@ async function pushLowItems(params) {
 async function pushLowRating(params) {
     console.log('pushLowRating');
 
-    var users = params.usertokens;
+    var users = params.userTokens;
 
     var pushTitle = i18n.__({phrase: "LOW_RATING", locale: "en"});
     pushTitle.replace("star_number", params.star_number);
