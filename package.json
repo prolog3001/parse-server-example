@@ -25,7 +25,8 @@
     "sharp": "0.20.1",
     "winston": "^2.4.1",
     "winston-daily-rotate-file": "^3.0.0",
-    "nexmo": "2.4.0"
+    "nexmo": "2.4.0",
+    "i18n": "0.9.1"
   },
   "scripts": {
     "start": "node index.js"

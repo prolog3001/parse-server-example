@@ -1,29 +1,110 @@
 const utils = require('./utils.js');
 
 module.exports = {
-    pushOutOfStock: (request) => {
-        return pushOutOfStock(request);
+    pushLowOrders: (request) => {
+        return pushLowOrders(request);
+    },
+    pushReadyOrders: (request) => {
+        return pushReadyOrders(request);
+    },
+    pushLowItems: (request) => {
+        return pushLowItems(request);
+    },
+    pushLowRating: (request) => {
+        return pushLowRating(request);
     }
 };
 
-async function pushOutOfStock(request) {
-    console.log('pushOutOfStock');
+//Business low orders push
+async function pushLowOrders(params) {
+    console.log('pushLowOrders');
 
-    let objectId = request.params.suggesterObjectId
-    let item = await utils.getObjectById('RestaurantItem', objectId);
+    var users = params.userIds;
 
-    var users = [];
+    var pushTitle = i18n.__({phrase: push.LOW_ORDERS, locale: en});
 
-    var pushTitle = item.get('title') + ' is almost out of stock';
-
-    var pushAlert = 'Time to restock inventory..';
+    var pushAlert = pushTitle;
 
     var pushData = {
         alert: pushAlert,
         session_alert: pushAlert,
         push_title: pushTitle,
         push_type: 0,
-        push_object_id: item.id,
+        push_object_id: params.business_id,
+        push_badge: "Increment"
+    };
+
+    sendPushNoAdapter(users,pushData)
+
+}
+
+//All Orders Ready push
+async function pushReadyOrders(params) {
+    console.log('pushReadyOrders');
+
+    var users = params.userIds;
+
+    var pushTitle = i18n.__({phrase: push.READY_ORDERS, locale: en});
+    pushTitle.replace("business_name", params.business_name);
+    pushTitle.replace("order_id", params.order_id);
+    pushTitle.replace("order_method", params.order_method);
+
+    var pushAlert = pushTitle;
+
+    var pushData = {
+        alert: pushAlert,
+        session_alert: pushAlert,
+        push_title: pushTitle,
+        push_type: 0,
+        push_object_id: params.order_id,
+        push_badge: "Increment"
+    };
+
+    sendPushNoAdapter(users,pushData)
+
+}
+
+//Low Units push
+async function pushLowItems(params) {
+    console.log('pushLowItems');
+
+    var users = params.userIds;
+
+    var pushTitle = i18n.__({phrase: push.LOW_ITEMS, locale: en});
+    pushTitle.replace("item_name", params.item_name);
+
+    var pushAlert = pushTitle;
+
+    var pushData = {
+        alert: pushAlert,
+        session_alert: pushAlert,
+        push_title: pushTitle,
+        push_type: 0,
+        push_object_id: params.item_id,
+        push_badge: "Increment"
+    };
+
+    sendPushNoAdapter(users,pushData)
+
+}
+
+//Low Rating push
+async function pushLowRating(params) {
+    console.log('pushLowRating');
+
+    var users = params.userIds;
+
+    var pushTitle = i18n.__({phrase: push.LOW_RATING, locale: en});
+    pushTitle.replace("star_number", params.star_number);
+
+    var pushAlert = pushTitle;
+
+    var pushData = {
+        alert: pushAlert,
+        session_alert: pushAlert,
+        push_title: pushTitle,
+        push_type: 0,
+        push_object_id: params.order_id,
         push_badge: "Increment"
     };
 

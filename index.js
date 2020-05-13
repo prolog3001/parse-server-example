@@ -1,12 +1,17 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
-// var S3Adapter = require('@parse/s3-files-adapter');
+var i18n = require('i18n');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
     console.log('DATABASE_URI not specified, falling back to localhost.');
 }
+
+i18n.configure({
+    locales:['en', 'he'],
+    directory: __dirname + '/cloud/locales'
+});
 
 var api = new ParseServer({
     databaseURI: databaseUri || 'mongodb://localhost:27017/dev',

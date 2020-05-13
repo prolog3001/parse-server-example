@@ -1,6 +1,6 @@
 var users = require('./users.js');
 var utils = require('./utils.js');
-var payme = require('./payme.js');
+var push = require('./push.js');
 var tables = require('./tables.js');
 var background = require('./background.js');
 
@@ -29,49 +29,206 @@ Parse.Cloud.define("dateDSTBeforeSessionSave", utils.dateDSTBeforeSessionSave);
 Parse.Cloud.define("getRegaxCurrencySign", utils.getRegaxCurrencySign);
 Parse.Cloud.define("replaceAll", utils.replaceAll);
 
+Parse.Cloud.define("pushLowOrders", push.pushLowOrders);
+Parse.Cloud.define("pushReadyOrders", push.pushReadyOrders);
+Parse.Cloud.define("pushLowItems", push.pushLowItems);
+Parse.Cloud.define("pushLowRating", push.pushLowRating);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
-// Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
-//     var orderSummaryPointer = request.object;
-//     console.log("Object Type", orderSummaryPointer.className);
-//     console.log("Object Table", orderSummaryPointer.get("table"));
+//Business low orders count
+Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
+    if (request.object.existed() === false) {
+        var orderSummaryPointer = request.object;
+        console.log("Object Type", orderSummaryPointer.className);
 
-//     var userQuery = new Parse.Query("RestaurantOrderSummary");
-//     userQuery.containedIn("objectId", orderSummaryPointer.id);
-//     userQuery.include("table");
+        var businessQuery = new Parse.Query("Business");
+        businessQuery.equalTo("objectId", orderSummaryPointer.get("business").id);
+        businessQuery.include("admin");
 
-//     userQuery.find({
-//         useMasterKey: true, 
-//         success: function (orderSummaries) {
-//             console.log("Found..." + orderSummaries.length);
-//             orderSummaryObject = orderSummaries[0];
+        businessQuery.find({
+            useMasterKey: true,
+            success: function (businesses) {
+                console.log("Found Business" + businesses.length);
+                var business = businesses[0];
 
-//             if (orderSummaryObject && orderSummaryObject.className == "RestaurantOrderSummary" &&
-//                 orderSummaryObject.get("table") && orderSummaryObject.get("table").get("title") == "TA") {
-//                 orderSummaryObject.unset("table");
-//                 if (orderSummaryObject.get("table")) {
-//                     console.log("Fail, cant delete order table");
-//                     return;
-//                 }
+                if (business) {
+                    var min = business.get("orders_accumulate_min") > 0 ? order.get("orders_accumulate_min") : 50;
+                    if (business.get("orders_accumulate") == min - 1) {
+                        //PUSH Low Orders
+                        var params = {};
+                        params["userIds"] = [business.get("admin").id];
+                        params["business_id"] = business.id;
+                        push.pushLowOrders(params);
+                    }
+                    business.increment("orders_accumulate", -1);
 
-//                 orderSummaryObject.save(null, { useMasterKey: true })
-//                     .then(function (result) {
-//                         console.log("Success saving after table removal", result);
-//                     }, function (error) {
-//                         console.log("Error", error);
-//                     });
-//             } else {
-//                 console.log("Not OrderSummary or dont need changes");
-//             }
-//         },
+                    business.save(null, { useMasterKey: true })
+                        .then(function (result) {
+                            console.log("Success saving after order decrement", result);
+                        }, function (error) {
+                            console.log("Error", error);
+                        });
+                } else {
+                    console.log("Not business or dont need changes");
+                }
+            },
 
-//         error: function (error) {
-//             console.log("Query Error", error);
-//         }
-//     });
-// })
+            error: function (error) {
+                console.log("Query Error", error);
+            }
+        });
+    } else {
+        var orderSummaryPointer = request.object;
+        console.log("Object Type", orderSummaryPointer.className);
+        console.log("Maybe notify user on ready items");
+
+        var restaurantOrderSummaryQuery = new Parse.Query("RestaurantOrderSummary");
+        restaurantOrderSummaryQuery.equalTo("objectId", orderSummaryPointer.id);
+        restaurantOrderSummaryQuery.include("business");
+        restaurantOrderSummaryQuery.include("client");
+        restaurantOrderSummaryQuery.include("item_orders");
+        restaurantOrderSummaryQuery.include("item_orders_ready");
+
+        restaurantOrderSummaryQuery.find({
+            useMasterKey: true,
+            success: function (orderSummaries) {
+                console.log("Found orderSummaries" + orderSummaries.length);
+                var orderSummary = orderSummaries[0];
+
+                if (orderSummary) {
+                    if (orderSummary.get("item_orders") &&
+                        orderSummary.get("item_orders_ready") &&
+                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length &&
+                        !orderSummary.get("notified_client")) {
+                        //PUSH All Orders Ready
+                        var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
+                            i18n.__({ phrase: orderMethod.DELIVERY, locale: en }) :
+                            i18n.__({ phrase: orderMethod.TA, locale: en })) :
+                            i18n.__({ phrase: orderMethod.TA, locale: SERVE })
+
+                        var userIds = [];
+                        userIds.push(business.get("admin").id);
+                        userIds.push(restaurantOrderSummaryQuery.get("client").id);
+
+                        var params = {};
+                        params["userIds"] = userIds;
+                        params["business_name"] = orderSummary.get("business").get("title");
+                        params["order_id"] = orderSummary.id;
+                        params["order_method"] = orderMethod;
+
+                        push.pushReadyOrders(params);
+
+                        orderSummary.set("notified_client", true)
+                        orderSummary.save(null, { useMasterKey: true })
+                            .then(function (result) {
+                                console.log("Success saving after order push", result);
+                            }, function (error) {
+                                console.log("Error", error);
+                            });
+                    }
+                } else {
+                    console.log("Not RestaurantOrderSummary or dont need changes");
+                }
+            },
+
+            error: function (error) {
+                console.log("Query Error", error);
+            }
+        });
+    }
+})
+
+//Item Low Quantity
+Parse.Cloud.afterSave("RestaurantOrder", function (request) {
+    if (request.object.existed() === false) {
+        var orderPointer = request.object;
+        console.log("Object Type", orderPointer.className);
+
+        var orderQuery = new Parse.Query("RestaurantOrder");
+        orderQuery.equalTo("objectId", orderPointer.id);
+        orderQuery.include("business");
+        orderQuery.include("business.admin");
+        orderQuery.include("restaurant_item");
+
+        orderQuery.find({
+            useMasterKey: true,
+            success: function (orders) {
+                console.log("Found orders: " + orders.length);
+                var order = orders[0];
+
+                if (order && order.className == "RestaurantOrder" &&
+                    order.get("restaurant_item")) {
+
+                    if (order.get("restaurant_item").get("units") > 0) {
+                        if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units") - 1) {
+                            //PUSH Low Units
+                            var params = {};
+                            params["userIds"] = [business.get("admin").id];
+                            params["item_name"] = order.get("restaurant_item").get("title");
+                            params["item_id"] = order.get("restaurant_item").id;
+                            push.pushLowItems(params);
+                        }
+
+                        order.get("restaurant_item").increment("units", -1);
+                    }
+
+                    order.get("restaurant_item").save(null, { useMasterKey: true })
+                        .then(function (result) {
+                            console.log("Success saving after units and orders count", result);
+                        }, function (error) {
+                            console.log("Error", error);
+                        });
+                } else {
+                    console.log("Not order or dont need changes");
+                }
+            }, error: function (error) {
+                console.log("Query Error", error);
+            }
+        });
+    }
+})
+
+//Waiter Low Rating
+Parse.Cloud.afterSave("Rating", function (request) {
+    if (request.object.existed() === false) {
+        var rating = request.object;
+        console.log("Object Type", rating.className);
+
+        var ratingQuery = new Parse.Query("Rating");
+        ratingQuery.equalTo("objectId", rating.id);
+        ratingQuery.include("business");
+        ratingQuery.include("business.admin");
+        ratingQuery.include("restaurant_order_summary.waiter");
+
+        ratingQuery.find({
+            useMasterKey: true,
+            success: function (ratings) {
+                console.log("Found ratings: " + ratings.length);
+                var rating = ratings[0];
+
+                if (rating && rating.className == "Rating" &&
+                    rating.get("restaurant_order_summary") &&
+                    rating.get("restaurant_order_summary").get("waiter")) {
+
+                    if (rating.get("waiter_rating") <= 2) {
+                        //PUSH Low Rating
+                        var params = {};
+                        params["userIds"] = [business.get("admin").id];
+                        params["star_number"] = order.get("waiter_rating");
+                        params["order_id"] = rating.get("restaurant_order_summary").id;
+                        push.pushLowRating(params);
+                    }
+                } else {
+                    console.log("Not order or dont need changes");
+                }
+            }, error: function (error) {
+                console.log("Query Error", error);
+            }
+        });
+    }
+})
 
 Parse.Cloud.afterSave("Table", function (request) {
     if (request.object.existed() === false) {
