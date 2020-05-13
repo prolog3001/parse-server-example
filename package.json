@@ -20,7 +20,7 @@
     "geo-tz": "4.0.1",
     "moment-timezone": "^0.5.14",
     "parse": "~1.8.0",
-    "parse-server": "2.7.4",
+    "parse-server": "2.8.4",
     "node-pushnotifications": "^1.1.8",
     "sharp": "0.20.1",
     "winston": "^2.4.1",
