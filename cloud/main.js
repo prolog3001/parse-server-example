@@ -119,9 +119,9 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         !orderSummary.get("notified_client")) {
                         //PUSH All Orders Ready
                         var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
-                        i18n({ phrase: "DELIVERY", locale: "en" }) :
-                        i18n({ phrase: "TA", locale: "en" })) :
-                        i18n({ phrase: "TA", locale: "en" })
+                        i18n.__({ phrase: "DELIVERY", locale: "en" }) :
+                        i18n.__({ phrase: "TA", locale: "en" })) :
+                        i18n.__({ phrase: "TA", locale: "en" })
 
                         var userIds = [];
                         userIds.push(business.get("admin").get("fcm_token"));

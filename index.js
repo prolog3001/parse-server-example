@@ -1,17 +1,13 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var i18n = require('i18n');
+var cookieParser = require('cookie-parser');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
     console.log('DATABASE_URI not specified, falling back to localhost.');
 }
-
-i18n.configure({
-    locales:['en', 'he'],
-    directory: __dirname + '/cloud/locales'
-});
 
 var api = new ParseServer({
     databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
@@ -55,6 +51,16 @@ var api = new ParseServer({
 });
 
 var app = express();
+app.use(cookieParser("Dreamdiner"));
+
+
+i18n.configure({
+    locales:['en', 'he'],
+    directory: __dirname + '/cloud/locales',
+    defaultLocale: 'en',
+    cookie: 'i18n'
+});
+
 app.use(i18n.init);
 
 // Serve the Parse API on the /parse URL prefix
@@ -63,7 +69,18 @@ app.use(mountPath, api);
 
 // Parse Server plays nicely with the rest of your web routes
 app.get('/', function(req, res) {
+    if(req.cookies.i18n == undefined)
+        res.setLocale('es')
+    else
+        res.setLocale(req.cookies.i18n);
+        
+    res.render('main', {i18n: res})
     res.status(200).send('I dream of planning tables!');
+});
+
+app.get('/en', function (req, res) {
+    res.cookie('i18n', 'en');
+    res.redirect('/')
 });
 
 var port = process.env.PORT || 1337;
