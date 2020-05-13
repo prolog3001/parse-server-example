@@ -33,6 +33,10 @@ Parse.Cloud.define("pushLowOrders", push.pushLowOrders);
 Parse.Cloud.define("pushReadyOrders", push.pushReadyOrders);
 Parse.Cloud.define("pushLowItems", push.pushLowItems);
 Parse.Cloud.define("pushLowRating", push.pushLowRating);
+Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
+Parse.Cloud.job("readyPushTest", background.readyPushTest);
+Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
+Parse.Cloud.job("ratePushTest", background.ratePushTest);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
