@@ -1,5 +1,4 @@
 var push = require('./push.js');
-var i18n = require('i18n');
 
 module.exports = {
   closeOpenedOrders: function (request, response) {
@@ -117,7 +116,7 @@ function closeOpenedOrders(request, response) {
 async function ordersPushTest() {
   try {
     var params = {};
-    params["userTokens"] = ["77m5xA8YNB"];
+    params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["business_id"] = "OUPcvgIZAn";
     push.pushLowOrders(params);
   } catch (error) {

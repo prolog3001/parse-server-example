@@ -3,7 +3,6 @@ var utils = require('./utils.js');
 var push = require('./push.js');
 var tables = require('./tables.js');
 var background = require('./background.js');
-var i18n = require('i18n');
 
 Parse.Cloud.define("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.job("sendVerificationCode", users.sendVerificationCode);
