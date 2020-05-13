@@ -137,7 +137,7 @@ async function ordersPushTest() {
 
 async function readyPushTest(request) {
   try {
-    var orderMethod = request.__({ phrase: "DELIVERY", locale: "en" });
+    var orderMethod = i18n({ phrase: "DELIVERY", locale: "en" });
 
     var userIds = [];
     userIds.push("dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T");
