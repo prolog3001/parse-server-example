@@ -22,7 +22,7 @@ async function pushLowOrders(params) {
 
     var users = params.userIds;
 
-    var pushTitle = i18n.__({phrase: "LOW_ORDERS", locale: en});
+    var pushTitle = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
 
     var pushAlert = pushTitle;
 
@@ -45,7 +45,7 @@ async function pushReadyOrders(params) {
 
     var users = params.userIds;
 
-    var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: en});
+    var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: "en"});
     pushTitle.replace("business_name", params.business_name);
     pushTitle.replace("order_id", params.order_id);
     pushTitle.replace("order_method", params.order_method);
@@ -71,7 +71,7 @@ async function pushLowItems(params) {
 
     var users = params.userIds;
 
-    var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: en});
+    var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: "en"});
     pushTitle.replace("item_name", params.item_name);
 
     var pushAlert = pushTitle;
@@ -95,7 +95,7 @@ async function pushLowRating(params) {
 
     var users = params.userIds;
 
-    var pushTitle = i18n.__({phrase: "LOW_RATING", locale: en});
+    var pushTitle = i18n.__({phrase: "LOW_RATING", locale: "en"});
     pushTitle.replace("star_number", params.star_number);
 
     var pushAlert = pushTitle;

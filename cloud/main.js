@@ -98,7 +98,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
 
         restaurantOrderSummaryQuery.find({
             useMasterKey: true,
-            success: async  function (orderSummaries) {
+            success: async function (orderSummaries) {
                 console.log("Found orderSummaries" + orderSummaries.length);
                 var orderSummary = orderSummaries[0];
 
@@ -109,9 +109,9 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         !orderSummary.get("notified_client")) {
                         //PUSH All Orders Ready
                         var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
-                            i18n.__({ phrase: "DELIVERY", locale: en }) :
-                            i18n.__({ phrase: "TA", locale: en })) :
-                            i18n.__({ phrase: "TA", locale: SERVE })
+                            i18n.__({ phrase: "DELIVERY", locale: "en" }) :
+                            i18n.__({ phrase: "TA", locale: "en" })) :
+                            i18n.__({ phrase: "TA", locale: "en" })
 
                         var userIds = [];
                         userIds.push(business.get("admin").id);
@@ -159,7 +159,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
 
         orderQuery.find({
             useMasterKey: true,
-            success: async  function (orders) {
+            success: async function (orders) {
                 console.log("Found orders: " + orders.length);
                 var order = orders[0];
 
@@ -209,7 +209,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
 
         ratingQuery.find({
             useMasterKey: true,
-            success: async  function (ratings) {
+            success: async function (ratings) {
                 console.log("Found ratings: " + ratings.length);
                 var rating = ratings[0];
 
