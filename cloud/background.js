@@ -119,6 +119,11 @@ async function ordersPushTest(request, response) {
     var params = {};
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["business_id"] = "OUPcvgIZAn";
+
+    setInterval(function () {
+      return;
+    }, 10000); //10 * 1000)
+
     Parse.Cloud.run('pushLowOrders', params, {
       success: function (result) {
         try {
@@ -161,6 +166,11 @@ async function readyPushTest(request, response) {
     params["business_name"] = "TEST BUSINESS NAME";
     params["order_id"] = "npt2mC7QJA";
     params["order_method"] = orderMethod;
+
+    setInterval(function () {
+      return;
+    }, 10000); //10 * 1000)
+
     Parse.Cloud.run('pushReadyOrders', params, {
       success: function (result) {
         try {
@@ -196,6 +206,11 @@ async function itemsPushTest(request, response) {
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["item_name"] = "TEST ITEM NAME";
     params["item_id"] = "0Cl1cNELHf";
+
+    setInterval(function () {
+      return;
+    }, 10000); //10 * 1000)
+
     Parse.Cloud.run('pushLowItems', params, {
       success: function (result) {
         try {
@@ -231,6 +246,11 @@ async function ratePushTest(request, response) {
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["star_number"] = 2;
     params["order_id"] = "npt2mC7QJA";
+
+    setInterval(function () {
+      return;
+    }, 10000); //10 * 1000)
+
     Parse.Cloud.run('pushLowRating', params, {
       success: function (result) {
         try {
