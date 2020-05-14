@@ -181,13 +181,10 @@ async function sendPushNoAdapter(users, messageData, response) {
             push.send(regTokens, data, (error, result) => {
                 if (error) {
                     console.log(JSON.stringify(error));
-
-                    reject(error);
                 } else {
                     console.log("PUSH OK");
                     console.log(JSON.stringify(result));
                     // console.log("result", result);
-                    resolve('sent push succesfully');
                 }
             });
             resolve('sent push succesfully');
