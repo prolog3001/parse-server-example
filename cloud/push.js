@@ -1,4 +1,3 @@
-const utils = require('./utils.js');
 const i18n = require('i18n');
 
 module.exports = {
@@ -19,13 +18,13 @@ module.exports = {
 //Business low orders push
 async function pushLowOrders(request, response) {
     console.log('pushLowOrders');
-    console.log("request.params",request.params);
+    console.log("request.params", request.params);
 
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_ORDERS_TITLE", locale: "en"});
+    var pushTitle = i18n.__({ phrase: "LOW_ORDERS_TITLE", locale: "en" });
 
-    var pushAlert = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
+    var pushAlert = i18n.__({ phrase: "LOW_ORDERS", locale: "en" });
 
     var pushData = {
         alert: pushAlert,
@@ -36,23 +35,22 @@ async function pushLowOrders(request, response) {
         push_badge: "Increment"
     };
 
-    return sendPushNoAdapter(users,pushData)
-
+    response.success(sendPushNoAdapter(users, pushData, response));
 }
 
 //All Orders Ready push
 async function pushReadyOrders(request, response) {
     console.log('pushReadyOrders');
-    console.log("request.params",request.params);
+    console.log("request.params", request.params);
 
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "READY_ORDERS_TITLE", locale: "en"});
+    var pushTitle = i18n.__({ phrase: "READY_ORDERS_TITLE", locale: "en" });
     pushTitle.replace("business_name", request.params.business_name);
     pushTitle.replace("order_id", request.params.order_id);
     pushTitle.replace("order_method", request.params.order_method);
 
-    var pushAlert = i18n.__({phrase: "READY_ORDERS", locale: "en"});
+    var pushAlert = i18n.__({ phrase: "READY_ORDERS", locale: "en" });
     pushTitle.replace("business_name", request.params.business_name);
     pushTitle.replace("order_id", request.params.order_id);
     pushTitle.replace("order_method", request.params.order_method);
@@ -66,21 +64,20 @@ async function pushReadyOrders(request, response) {
         push_badge: "Increment"
     };
 
-    return sendPushNoAdapter(users,pushData)
-
+    response.success(sendPushNoAdapter(users, pushData, response));
 }
 
 //Low Units push
 async function pushLowItems(request, response) {
     console.log('pushLowItems');
-    console.log("request.params",request.params);
+    console.log("request.params", request.params);
 
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_ITEMS_TITLE", locale: "en"});
+    var pushTitle = i18n.__({ phrase: "LOW_ITEMS_TITLE", locale: "en" });
     pushTitle.replace("item_name", request.params.item_name);
 
-    var pushAlert =  i18n.__({phrase: "LOW_ITEMS", locale: "en"});
+    var pushAlert = i18n.__({ phrase: "LOW_ITEMS", locale: "en" });
     pushTitle.replace("item_name", request.params.item_name);
 
     var pushData = {
@@ -92,21 +89,20 @@ async function pushLowItems(request, response) {
         push_badge: "Increment"
     };
 
-    return sendPushNoAdapter(users,pushData)
-
+    response.success(sendPushNoAdapter(users, pushData, response));
 }
 
 //Low Rating push
 async function pushLowRating(request, response) {
     console.log('pushLowRating');
-    console.log("request.params",request.params);
-    
+    console.log("request.params", request.params);
+
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_RATING_TITLE", locale: "en"});
+    var pushTitle = i18n.__({ phrase: "LOW_RATING_TITLE", locale: "en" });
     pushTitle.replace("star_number", request.params.star_number);
 
-    var pushAlert = i18n.__({phrase: "LOW_RATING", locale: "en"});
+    var pushAlert = i18n.__({ phrase: "LOW_RATING", locale: "en" });
     pushTitle.replace("star_number", request.params.star_number);
 
     var pushData = {
@@ -118,22 +114,21 @@ async function pushLowRating(request, response) {
         push_badge: "Increment"
     };
 
-    return sendPushNoAdapter(users,pushData, response)
-
+    response.success(sendPushNoAdapter(users, pushData, response));
 }
 
 function sendPushNoAdapter(users, messageData, response) {
-    console.log("sendPushNoAdapter");
-    console.log("users",users);
-    console.log("users length before remove Duplicates",users.length);
-    
     return new Promise((resolve, reject) => {
         try {
-            users = utils.removeDuplicatesByKey("id", users)
-            console.log("users length after remove Duplicates",users.length);
+            console.log("sendPushNoAdapter");
+            console.log("users", users);
+            console.log("users length before remove Duplicates", users.length);
+
+            // users = utils.removeDuplicatesByKey("id", users)
+            console.log("users length after remove Duplicates", users.length);
             var p8 = "cloud/config/prod/key.p8";
             var PushNotifications = require('node-pushnotifications');
-    
+
             const settings = {
                 gcm: {
                     id: process.env.GCM_API_KEY,
@@ -141,15 +136,15 @@ function sendPushNoAdapter(users, messageData, response) {
                 },
                 isAlwaysUseFCM: false // true all messages will be sent through node-gcm (which actually uses FCM)
             };
-    
+
             const push = new PushNotifications(settings);
-    
+
             var regTokens = [];
             for (var i = 0; i < users.length; i++) {
                 console.log("fcm_token", users[i]);
                 regTokens.push(users[i]);
             }
-    
+
             const data = {
                 title: messageData.push_title, // REQUIRED for Android
                 topic: process.env.IOS_PUSH_BUNDLEID, // REQUIRED for iOS (apn and gcm)
@@ -157,12 +152,12 @@ function sendPushNoAdapter(users, messageData, response) {
                 sound: "default",
                 custom: messageData
             }
-    
-            console.log("Push data",data);
+
+            console.log("Push data", data);
             push.send(regTokens, data, (error, result) => {
                 if (error) {
                     console.log(JSON.stringify(error));
-    
+
                     reject(error);
                 } else {
                     console.log("PUSH OK");
@@ -176,5 +171,5 @@ function sendPushNoAdapter(users, messageData, response) {
             console.log(eee);
             reject(eee);
         }
-	});
+    });
 }
