@@ -123,7 +123,7 @@ async function ordersPushTest(request, response) {
     setInterval(function () {
       if (response)
         response.success();
-      return result;
+      return;
     }, 10000); //10 * 1000)
 
     Parse.Cloud.run('pushLowOrders', params, {
@@ -172,7 +172,7 @@ async function readyPushTest(request, response) {
     setInterval(function () {
       if (response)
         response.success();
-      return result;
+      return;
     }, 10000); //10 * 1000)
 
     Parse.Cloud.run('pushReadyOrders', params, {
@@ -214,7 +214,7 @@ async function itemsPushTest(request, response) {
     setInterval(function () {
       if (response)
         response.success();
-      return result;
+      return;
     }, 10000); //10 * 1000)
 
     Parse.Cloud.run('pushLowItems', params, {
@@ -256,7 +256,7 @@ async function ratePushTest(request, response) {
     setInterval(function () {
       if (response)
         response.success();
-      return result;
+      return;
     }, 10000); //10 * 1000)
 
     Parse.Cloud.run('pushLowRating', params, {
