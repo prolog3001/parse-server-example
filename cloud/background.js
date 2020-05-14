@@ -120,7 +120,7 @@ async function ordersPushTest(request, response) {
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["business_id"] = "OUPcvgIZAn";
 
-    return await Parse.Cloud.run('pushLowOrders', params);
+    return await push.pushLowOrders(params);
   } catch (error) {
     console.log(error);
     if (response)
@@ -143,7 +143,7 @@ async function readyPushTest(request, response) {
     params["order_id"] = "npt2mC7QJA";
     params["order_method"] = orderMethod;
 
-    return await Parse.Cloud.run('pushReadyOrders', params);
+    return await push.pushReadyOrders(params);
   } catch (error) {
     console.log(error);
     if (response)
@@ -159,7 +159,7 @@ async function itemsPushTest(request, response) {
     params["item_name"] = "TEST ITEM NAME";
     params["item_id"] = "0Cl1cNELHf";
 
-    return await Parse.Cloud.run('pushLowItems', params);
+    return await push.pushLowItems(params);
   } catch (error) {
     console.log(error);
     if (response)
@@ -175,7 +175,7 @@ async function ratePushTest(request, response) {
     params["star_number"] = 2;
     params["order_id"] = "npt2mC7QJA";
 
-    return await Parse.Cloud.run('pushLowRating', params);
+    return await push.pushLowRating(params);
   } catch (error) {
     console.log(error);
     if (response)
