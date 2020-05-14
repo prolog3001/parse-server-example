@@ -36,9 +36,8 @@ async function pushLowOrders(request, response) {
                 push_object_id: request.params.business_id,
                 push_badge: "Increment"
             };
-            var result = await sendPushNoAdapter(users, pushData, response);
-            console.log('result', result);
-            resolve(result);
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
         } catch (error) {
             console.log('error', error);
             reject(error);
@@ -73,9 +72,8 @@ async function pushReadyOrders(request, response) {
                 push_object_id: request.params.order_id,
                 push_badge: "Increment"
             };
-            var result = await sendPushNoAdapter(users, pushData, response);
-            console.log('result', result);
-            resolve(result);
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
         } catch (error) {
             console.log('error', error);
             reject(error);
@@ -106,9 +104,8 @@ async function pushLowItems(request, response) {
                 push_object_id: request.params.item_id,
                 push_badge: "Increment"
             };
-            var result = await sendPushNoAdapter(users, pushData, response);
-            console.log('result', result);
-            resolve(result);
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
         } catch (error) {
             console.log('error', error);
             reject(error);
@@ -139,9 +136,8 @@ async function pushLowRating(request, response) {
                 push_object_id: request.params.order_id,
                 push_badge: "Increment"
             };
-            var result = await sendPushNoAdapter(users, pushData, response);
-            console.log('result', result);
-            resolve(result);
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
         } catch (error) {
             console.log('error', error);
             reject(error);
