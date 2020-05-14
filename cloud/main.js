@@ -55,48 +55,39 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
         businessQuery.find({
             useMasterKey: true,
             success: async function (businesses) {
-                console.log("Found Business" + businesses.length);
-                var business = businesses[0];
+                try {
+                    console.log("Found Business" + businesses.length);
+                    var business = businesses[0];
 
-                if (business) {
-                    var min = business.get("orders_accumulate_min") > 0 ? order.get("orders_accumulate_min") : 50;
-                    business.increment("orders_accumulate", -1);
+                    if (business) {
+                        var min = business.get("orders_accumulate_min") > 0 ? order.get("orders_accumulate_min") : 50;
+                        business.increment("orders_accumulate", -1);
 
-                    if (business.get("orders_accumulate") == min) {
-                        //PUSH Low Orders
+                        if (business.get("orders_accumulate") == min) {
+                            //PUSH Low Orders
 
-                        var params = {};
-                        params["userTokens"] = [business.get("admin").get("fcm_token")];
-                        params["business_id"] = business.id;
-
-                        await Parse.Cloud.run('pushLowOrders', params, {
-                            success: function (result) {
-                                try {
-                                    business.save(null, { useMasterKey: true })
-                                        .then(function (result) {
-                                            console.log("sent low orders push");
-                                            console.log("Success saving after order decrement", result);
-                                            return result;
-                                        }, function (error) {
-                                            console.log("Error", error);
-                                        });
-                                } catch (error) {
-                                    console.error(error);
-                                    return error;
-                                }
-                            },
-                            error: function (error) {
-                                console.log('error', error);
-                                return error;
-                            }
-                        });
+                            var params = {};
+                            params["userTokens"] = [business.get("admin").get("fcm_token")];
+                            params["business_id"] = business.id;
+                            business.save(null, { useMasterKey: true })
+                                .then(function (result) {
+                                    console.log("sent low orders push");
+                                    console.log("Success saving after order decrement", result);
+                                    return result;
+                                }, function (error) {
+                                    console.log("Error", error);
+                                });
+                            return await push.pushLowOrders(params);
+                        }
+                    } else {
+                        console.log("Not business or dont need changes");
+                        return;
                     }
-                } else {
-                    console.log("Not business or dont need changes");
-                    return;
+                } catch (error) {
+                    console.error(error);
+                    return error;
                 }
             },
-
             error: function (error) {
                 console.log("Query Error", error);
                 return error;
@@ -117,59 +108,56 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
         restaurantOrderSummaryQuery.find({
             useMasterKey: true,
             success: async function (orderSummaries) {
-                console.log("Found orderSummaries" + orderSummaries.length);
-                var orderSummary = orderSummaries[0];
+                try {
+                    console.log("Found orderSummaries" + orderSummaries.length);
+                    var orderSummary = orderSummaries[0];
 
-                if (orderSummary) {
-                    if (orderSummary.get("item_orders") &&
-                        orderSummary.get("item_orders_ready") &&
-                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length &&
-                        !orderSummary.get("notified_client")) {
-                        //PUSH All Orders Ready
+                    if (orderSummary) {
+                        if (orderSummary.get("item_orders") &&
+                            orderSummary.get("item_orders_ready") &&
+                            orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length &&
+                            !orderSummary.get("notified_client")) {
+                            //PUSH All Orders Ready
+                            orderSummary.set("notified_client", true)
 
-                        orderSummary.set("notified_client", true)
-                        await orderSummary.save(null, { useMasterKey: true })
-                            .then(async function (result) {
-                                console.log("Success saving after order push", result);
+                            await orderSummary.save(null, { useMasterKey: true })
+                                .then(async function (result) {
+                                    try {
+                                        console.log("Success saving after order push", result);
 
-                                var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
-                                    i18n.__({ phrase: "DELIVERY", locale: "en" }) :
-                                    i18n.__({ phrase: "TA", locale: "en" })) :
-                                    i18n.__({ phrase: "TA", locale: "en" })
+                                        var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
+                                            i18n.__({ phrase: "DELIVERY", locale: "en" }) :
+                                            i18n.__({ phrase: "TA", locale: "en" })) :
+                                            i18n.__({ phrase: "TA", locale: "en" })
 
-                                var userIds = [];
-                                userIds.push(business.get("admin").get("fcm_token"));
-                                userIds.push(restaurantOrderSummaryQuery.get("client").get("fcm_token"));
+                                        var userIds = [];
+                                        userIds.push(business.get("admin").get("fcm_token"));
+                                        userIds.push(restaurantOrderSummaryQuery.get("client").get("fcm_token"));
 
-                                var params = {};
-                                params["userTokens"] = userIds;
-                                params["business_name"] = orderSummary.get("business").get("title");
-                                params["order_id"] = orderSummary.id;
-                                params["order_method"] = orderMethod;
+                                        var params = {};
+                                        params["userTokens"] = userIds;
+                                        params["business_name"] = orderSummary.get("business").get("title");
+                                        params["order_id"] = orderSummary.id;
+                                        params["order_method"] = orderMethod;
+                                        return await push.pushReadyOrders(params);
 
-                                await Parse.Cloud.run('pushReadyOrders', params, {
-                                    success: function (result) {
-                                        try {
-                                            console.log("sent ready order push");
-                                            return result;
-                                        } catch (error) {
-                                            console.error(error);
-                                            return error;
-                                        }
-                                    },
-                                    error: function (error) {
-                                        console.log('error', error);
+                                    } catch (error) {
+                                        console.log("Error", error);
                                         return error;
                                     }
+                                }, function (error) {
+                                    console.log("Error", error);
+                                    return error;
                                 });
-                            }, function (error) {
-                                console.log("Error", error);
-                                return error;
-                            });
+                        }
+                    } else {
+                        console.log("Not RestaurantOrderSummary or dont need changes");
+                        return
                     }
-                } else {
-                    console.log("Not RestaurantOrderSummary or dont need changes");
-                    return
+
+                } catch (error) {
+                    console.log("error", error);
+                    return error;
                 }
             },
 
@@ -196,51 +184,46 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
         orderQuery.find({
             useMasterKey: true,
             success: async function (orders) {
-                console.log("Found orders: " + orders.length);
-                var order = orders[0];
+                try {
+                    console.log("Found orders: " + orders.length);
+                    var order = orders[0];
 
-                if (order && order.className == "RestaurantOrder" &&
-                    order.get("restaurant_item")) {
+                    if (order && order.className == "RestaurantOrder" &&
+                        order.get("restaurant_item")) {
 
-                    if (order.get("restaurant_item").get("units") > 0) {
-                        if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units") - 1) {
-                            //PUSH Low Units
+                        if (order.get("restaurant_item").get("units") > 0) {
+                            if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units") - 1) {
+                                //PUSH Low Units
+                                order.get("restaurant_item").increment("units", -1);
+                                await order.get("restaurant_item").save(null, { useMasterKey: true })
+                                    .then(async function (result) {
+                                        try {
+                                            console.log("Success saving after units and orders count", result);
 
-                            order.get("restaurant_item").increment("units", -1);
-                            await order.get("restaurant_item").save(null, { useMasterKey: true })
-                                .then(async function (result) {
-                                    console.log("Success saving after units and orders count", result);
+                                            var params = {};
+                                            params["userTokens"] = [business.get("admin").get("fcm_token")];
+                                            params["item_name"] = order.get("restaurant_item").get("title");
+                                            params["item_id"] = order.get("restaurant_item").id;
 
-                                    var params = {};
-                                    params["userTokens"] = [business.get("admin").get("fcm_token")];
-                                    params["item_name"] = order.get("restaurant_item").get("title");
-                                    params["item_id"] = order.get("restaurant_item").id;
-
-                                    await Parse.Cloud.run('pushLowItems', params, {
-                                        success: function (result) {
-                                            try {
-                                                console.log("sent low items push");
-                                                return result;
-                                            } catch (error) {
-                                                console.error(error);
-                                                return error;
-                                            }
-                                        },
-                                        error: function (error) {
-                                            console.log('error', error);
+                                            return await push.pushLowItems(params);
+                                        } catch (error) {
+                                            console.log("error", error);
                                             return error;
                                         }
+                                    }, function (error) {
+                                        console.log("error", error);
+                                        return error;
                                     });
-                                }, function (error) {
-                                    console.log("Error", error);
-                                    return error;
-                                });
-                        }
+                            }
 
+                        }
+                    } else {
+                        console.log("Not order or dont need changes");
+                        return;
                     }
-                } else {
-                    console.log("Not order or dont need changes");
-                    return;
+                } catch (error) {
+                    console.log("error", error);
+                    return error;
                 }
             }, error: function (error) {
                 console.log("Query Error", error);
@@ -265,40 +248,30 @@ Parse.Cloud.afterSave("Rating", async function (request) {
         ratingQuery.find({
             useMasterKey: true,
             success: async function (ratings) {
-                console.log("Found ratings: " + ratings.length);
-                var rating = ratings[0];
+                try {
+                    console.log("Found ratings: " + ratings.length);
+                    var rating = ratings[0];
 
-                if (rating && rating.className == "Rating" &&
-                    rating.get("restaurant_order_summary") &&
-                    rating.get("restaurant_order_summary").get("waiter")) {
+                    if (rating && rating.className == "Rating" &&
+                        rating.get("restaurant_order_summary") &&
+                        rating.get("restaurant_order_summary").get("waiter")) {
 
-                    if (rating.get("waiter_rating") <= 2) {
-                        //PUSH Low Rating
+                        if (rating.get("waiter_rating") <= 2) {
+                            //PUSH Low Rating
+                            var params = {};
+                            params["userTokens"] = [business.get("admin").get("fcm_token")];
+                            params["star_number"] = order.get("waiter_rating");
+                            params["order_id"] = rating.get("restaurant_order_summary").id;
 
-                        var params = {};
-                        params["userTokens"] = [business.get("admin").get("fcm_token")];
-                        params["star_number"] = order.get("waiter_rating");
-                        params["order_id"] = rating.get("restaurant_order_summary").id;
-
-                        await Parse.Cloud.run('pushLowRating', params, {
-                            success: function (result) {
-                                try {
-                                    console.log("sent low rating push");
-                                    return result;
-                                } catch (error) {
-                                    console.error(error);
-                                    return error;
-                                }
-                            },
-                            error: function (error) {
-                                console.log('error', error);
-                                return error;
-                            }
-                        });
+                            return await push.pushLowRating(params);
+                        }
+                    } else {
+                        console.log("Not order or dont need changes");
+                        return;
                     }
-                } else {
-                    console.log("Not order or dont need changes");
-                    return;
+                } catch (error) {
+                    console.log("error", error);
+                    return error;
                 }
             }, error: function (error) {
                 console.log("Query Error", error);
