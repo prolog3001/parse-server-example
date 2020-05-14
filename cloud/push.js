@@ -46,7 +46,7 @@ async function pushLowOrders(params, response) {
 }
 
 //All Orders Ready push
-async function pushReadyOrders(request, response) {
+async function pushReadyOrders(params, response) {
     return new Promise((resolve, reject) => {
         try {
             console.log('pushReadyOrders');
@@ -82,7 +82,7 @@ async function pushReadyOrders(request, response) {
 }
 
 //Low Units push
-async function pushLowItems(request, response) {
+async function pushLowItems(params, response) {
     return new Promise((resolve, reject) => {
         try {
             console.log('pushLowItems');
@@ -114,7 +114,7 @@ async function pushLowItems(request, response) {
 }
 
 //Low Rating push
-async function pushLowRating(request, response) {
+async function pushLowRating(params, response) {
     return new Promise((resolve, reject) => {
         try {
             console.log('pushLowRating');
