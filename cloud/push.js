@@ -12,7 +12,8 @@ module.exports = {
     },
     pushLowRating: (request, response) => {
         return pushLowRating(request, response);
-    }
+    },
+    getPushType
 };
 
 //Business low orders push
@@ -68,7 +69,7 @@ async function pushReadyOrders(params, response) {
                 alert: pushAlert,
                 session_alert: pushAlert,
                 push_title: pushTitle,
-                push_type: 0,
+                push_type: 1,
                 push_object_id: params.order_id,
                 push_badge: "Increment"
             };
@@ -100,7 +101,7 @@ async function pushLowItems(params, response) {
                 alert: pushAlert,
                 session_alert: pushAlert,
                 push_title: pushTitle,
-                push_type: 0,
+                push_type: 2,
                 push_object_id: params.item_id,
                 push_badge: "Increment"
             };
@@ -132,7 +133,7 @@ async function pushLowRating(params, response) {
                 alert: pushAlert,
                 session_alert: pushAlert,
                 push_title: pushTitle,
-                push_type: 0,
+                push_type: 3,
                 push_object_id: params.order_id,
                 push_badge: "Increment"
             };
@@ -197,4 +198,16 @@ async function sendPushNoAdapter(users, messageData, response) {
             reject(eee);
         }
     });
+}
+
+function getPushType(name) {
+    
+    var pushType = {
+        "LOW_ORDERS": 0,
+        "READY_ORDERS": 1,
+        "LOW_ITEMS": 2,
+        "LOW_RATING": 3
+    }
+
+    return pushType[name];
 }
