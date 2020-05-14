@@ -35,16 +35,12 @@ async function pushLowOrders(request, response) {
             push_object_id: request.params.business_id,
             push_badge: "Increment"
         };
-
-        setInterval(function () {
-            return new Promise((resolve, reject) => {
-                resolve('sent push succesfully');
-            });
-        }, 5000); //5 * 1000)
-        
-        return sendPushNoAdapter(users, pushData, response);
+        var result = sendPushNoAdapter(users, pushData, response);
+        console.log('result', result);
+        return result;
     } catch (error) {
         console.log('error', error);
+        return;
     }
 }
 
@@ -74,16 +70,12 @@ async function pushReadyOrders(request, response) {
             push_object_id: request.params.order_id,
             push_badge: "Increment"
         };
-
-        setInterval(function () {
-            return new Promise((resolve, reject) => {
-                resolve('sent push succesfully');
-            });
-        }, 5000); //5 * 1000)
-
-        return sendPushNoAdapter(users, pushData, response);
+        var result = sendPushNoAdapter(users, pushData, response);
+        console.log('result', result);
+        return result;
     } catch (error) {
         console.log('error', error);
+        return;
     }
 }
 
@@ -109,16 +101,12 @@ async function pushLowItems(request, response) {
             push_object_id: request.params.item_id,
             push_badge: "Increment"
         };
-
-        setInterval(function () {
-            return new Promise((resolve, reject) => {
-                resolve('sent push succesfully');
-            });
-        }, 5000); //5 * 1000)
-
-        return sendPushNoAdapter(users, pushData, response);
+        var result = sendPushNoAdapter(users, pushData, response);
+        console.log('result', result);
+        return result;
     } catch (error) {
         console.log('error', error);
+        return;
     }
 }
 
@@ -144,20 +132,16 @@ async function pushLowRating(request, response) {
             push_object_id: request.params.order_id,
             push_badge: "Increment"
         };
-
-        setInterval(function () {
-            return new Promise((resolve, reject) => {
-                resolve('sent push succesfully');
-            });
-        }, 5000); //5 * 1000)
-
-        return sendPushNoAdapter(users, pushData, response);
+        var result = sendPushNoAdapter(users, pushData, response);
+        console.log('result', result);
+        return result;
     } catch (error) {
         console.log('error', error);
+        return;
     }
 }
 
-function sendPushNoAdapter(users, messageData, response) {
+async function sendPushNoAdapter(users, messageData, response) {
     return new Promise((resolve, reject) => {
         try {
             console.log("sendPushNoAdapter");

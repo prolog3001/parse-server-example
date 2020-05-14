@@ -121,7 +121,7 @@ async function ordersPushTest(request, response) {
     params["business_id"] = "OUPcvgIZAn";
 
     await Parse.Cloud.run('pushLowOrders', params, {
-      success: async function (result) {
+      success: function (result) {
         try {
           console.log('result', result);
           if (response)
@@ -165,7 +165,7 @@ async function readyPushTest(request, response) {
     params["order_method"] = orderMethod;
 
     await Parse.Cloud.run('pushReadyOrders', params, {
-      success: async function (result) {
+      success: function (result) {
         try {
           console.log('result', result);
           if (response)
@@ -202,7 +202,7 @@ async function itemsPushTest(request, response) {
     params["item_id"] = "0Cl1cNELHf";
 
     await Parse.Cloud.run('pushLowItems', params, {
-      success: async function (result) {
+      success: function (result) {
         try {
           console.log('result', result);
           if (response)
@@ -239,7 +239,7 @@ async function ratePushTest(request, response) {
     params["order_id"] = "npt2mC7QJA";
 
     await Parse.Cloud.run('pushLowRating', params, {
-      success: async function (result) {
+      success: function (result) {
         try {
           console.log('result', result);
           if (response)
