@@ -53,7 +53,6 @@ var api = new ParseServer({
 var app = express();
 app.use(cookieParser("Dreamdiner"));
 
-
 i18n.configure({
     locales:['en', 'he'],
     directory: __dirname + '/cloud/locales',
@@ -70,10 +69,10 @@ app.use(mountPath, api);
 // Parse Server plays nicely with the rest of your web routes
 app.get('/', function(req, res) {
     if(req.cookies.i18n == undefined)
-        res.setLocale('es')
+        res.setLocale('en')
     else
         res.setLocale(req.cookies.i18n);
-        
+
     res.render('main', {i18n: res})
     res.status(200).send('I dream of planning tables!');
 });

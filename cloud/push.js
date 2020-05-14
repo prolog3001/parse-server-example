@@ -1,23 +1,33 @@
 const utils = require('./utils.js');
+const i18n = require('i18n');
 
 module.exports = {
-    pushLowOrders: (request) => {
+    pushLowOrders: (request, response) => {
         return pushLowOrders(request);
     },
-    pushReadyOrders: (request) => {
+    pushReadyOrders: (request, response) => {
         return pushReadyOrders(request);
     },
-    pushLowItems: (request) => {
+    pushLowItems: (request, response) => {
         return pushLowItems(request);
     },
-    pushLowRating: (request) => {
+    pushLowRating: (request, response) => {
         return pushLowRating(request);
     }
 };
 
 //Business low orders push
-async function pushLowOrders(request) {
+async function pushLowOrders(reques, responset) {
     console.log('pushLowOrders');
+
+    i18n.configure({
+        locales:['en', 'he'],
+        directory: __dirname + '/locales',
+        defaultLocale: 'en',
+        cookie: 'i18n'
+    });
+
+    i18n.init(reques, responset);
 
     var users = request.params.userTokens;
 
@@ -39,8 +49,17 @@ async function pushLowOrders(request) {
 }
 
 //All Orders Ready push
-async function pushReadyOrders(request) {
+async function pushReadyOrders(request, response) {
     console.log('pushReadyOrders');
+
+    i18n.configure({
+        locales:['en', 'he'],
+        directory: __dirname + '/cloud/locales',
+        defaultLocale: 'en',
+        cookie: 'i18n'
+    });
+
+    i18n.init(reques, responset);
 
     var users = request.params.userTokens;
 
@@ -65,8 +84,17 @@ async function pushReadyOrders(request) {
 }
 
 //Low Units push
-async function pushLowItems(request) {
+async function pushLowItems(request, response) {
     console.log('pushLowItems');
+
+    i18n.configure({
+        locales:['en', 'he'],
+        directory: __dirname + '/cloud/locales',
+        defaultLocale: 'en',
+        cookie: 'i18n'
+    });
+
+    i18n.init(reques, responset);
 
     var users = request.params.userTokens;
 
@@ -89,8 +117,17 @@ async function pushLowItems(request) {
 }
 
 //Low Rating push
-async function pushLowRating(request) {
+async function pushLowRating(request, response) {
     console.log('pushLowRating');
+
+    i18n.configure({
+        locales:['en', 'he'],
+        directory: __dirname + '/cloud/locales',
+        defaultLocale: 'en',
+        cookie: 'i18n'
+    });
+
+    i18n.init(reques, responset);
 
     var users = request.params.userTokens;
 

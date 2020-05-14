@@ -1,4 +1,5 @@
 var push = require('./push.js');
+var i18n = require('i18n');
 
 module.exports = {
   closeOpenedOrders: function (request, response) {
@@ -137,6 +138,15 @@ async function ordersPushTest() {
 
 async function readyPushTest(request) {
   try {
+    i18n.configure({
+        locales:['en', 'he'],
+        directory: __dirname + '/locales',
+        defaultLocale: 'en',
+        cookie: 'i18n'
+    });
+
+    i18n.init(reques, responset);
+
     var orderMethod = i18n.__({ phrase: "DELIVERY", locale: "en" });
 
     var userIds = [];
