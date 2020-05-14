@@ -113,7 +113,7 @@ async function pushLowRating(request, response) {
         push_badge: "Increment"
     };
 
-    sendPushNoAdapter(users,pushData)
+    sendPushNoAdapter(users,pushData, response)
 
 }
 
@@ -158,7 +158,7 @@ function sendPushNoAdapter(users, messageData, response) {
                 console.log(JSON.stringify(err));
 
                 if (response)
-                    response.error();
+                    response.error(err);
             } else {
                 console.log("PUSH OK");
                 console.log(JSON.stringify(result));
@@ -169,5 +169,6 @@ function sendPushNoAdapter(users, messageData, response) {
         });
     } catch (eee) {
         console.log(eee);
+        response.error(eee);
     }
 }

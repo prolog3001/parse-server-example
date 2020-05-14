@@ -121,18 +121,21 @@ async function ordersPushTest() {
     params["business_id"] = "OUPcvgIZAn";
     Parse.Cloud.run('pushLowOrders', params, {
       success: function (result) {
-          try{
-              
-          }catch (error) {
-              console.error(error);
-          }
+        try {
+          return result;
+        } catch (error) {
+          console.error(error);
+          return error;
+        }
       },
       error: function (error) {
-          console.log('error', error);
+        console.log('error', error);
+        return error;
       }
-  });
+    });
   } catch (error) {
     console.log(error);
+    return error;
   }
 }
 
@@ -151,18 +154,21 @@ async function readyPushTest(request) {
     params["order_method"] = orderMethod;
     Parse.Cloud.run('pushReadyOrders', params, {
       success: function (result) {
-          try{
-              
-          }catch (error) {
-              console.error(error);
-          }
+        try {
+          return result;
+        } catch (error) {
+          console.error(error);
+          return error;
+        }
       },
       error: function (error) {
-          console.log('error', error);
+        console.log('error', error);
+        return error;
       }
-  });
+    });
   } catch (error) {
     console.log(error);
+    return error;
   }
 }
 
@@ -174,18 +180,21 @@ async function itemsPushTest() {
     params["item_id"] = "0Cl1cNELHf";
     Parse.Cloud.run('pushLowItems', params, {
       success: function (result) {
-          try{
-              
-          }catch (error) {
-              console.error(error);
-          }
+        try {
+          return result;
+        } catch (error) {
+          console.error(error);
+          return error;
+        }
       },
       error: function (error) {
-          console.log('error', error);
+        console.log('error', error);
+        return error;
       }
-  });
+    });
   } catch (error) {
     console.log(error);
+    return error;
   }
 }
 
@@ -197,17 +206,20 @@ async function ratePushTest() {
     params["order_id"] = "npt2mC7QJA";
     Parse.Cloud.run('pushLowRating', params, {
       success: function (result) {
-          try{
-              
-          }catch (error) {
-              console.error(error);
-          }
+        try {
+          return result;
+        } catch (error) {
+          console.error(error);
+          return error;
+        }
       },
       error: function (error) {
-          console.log('error', error);
+        console.log('error', error);
+        return error;
       }
-  });
+    });
   } catch (error) {
     console.log(error);
+    return error;
   }
 }
