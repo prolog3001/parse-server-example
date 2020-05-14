@@ -129,7 +129,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
 
                         orderSummary.set("notified_client", true)
                         await orderSummary.save(null, { useMasterKey: true })
-                            .then(function (result) {
+                            .then(async function (result) {
                                 console.log("Success saving after order push", result);
 
                                 var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
@@ -208,7 +208,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
 
                             order.get("restaurant_item").increment("units", -1);
                             await order.get("restaurant_item").save(null, { useMasterKey: true })
-                                .then(function (result) {
+                                .then(async function (result) {
                                     console.log("Success saving after units and orders count", result);
 
                                     var params = {};
