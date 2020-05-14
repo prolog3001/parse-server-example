@@ -37,11 +37,11 @@ async function pushLowOrders(request, response) {
         };
 
         setInterval(function () {
-          if (response)
-            response.success();
-          return new Parse.Query("Business");
+            return new Promise((resolve, reject) => {
+                resolve('sent push succesfully');
+            });
         }, 5000); //5 * 1000)
-
+        
         return sendPushNoAdapter(users, pushData, response);
     } catch (error) {
         console.log('error', error);
@@ -76,9 +76,9 @@ async function pushReadyOrders(request, response) {
         };
 
         setInterval(function () {
-          if (response)
-            response.success();
-          return new Parse.Query("Business");
+            return new Promise((resolve, reject) => {
+                resolve('sent push succesfully');
+            });
         }, 5000); //5 * 1000)
 
         return sendPushNoAdapter(users, pushData, response);
@@ -111,9 +111,9 @@ async function pushLowItems(request, response) {
         };
 
         setInterval(function () {
-          if (response)
-            response.success();
-          return new Parse.Query("Business");
+            return new Promise((resolve, reject) => {
+                resolve('sent push succesfully');
+            });
         }, 5000); //5 * 1000)
 
         return sendPushNoAdapter(users, pushData, response);
@@ -146,9 +146,9 @@ async function pushLowRating(request, response) {
         };
 
         setInterval(function () {
-          if (response)
-            response.success();
-          return new Parse.Query("Business");
+            return new Promise((resolve, reject) => {
+                resolve('sent push succesfully');
+            });
         }, 5000); //5 * 1000)
 
         return sendPushNoAdapter(users, pushData, response);
