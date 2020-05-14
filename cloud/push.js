@@ -19,6 +19,7 @@ module.exports = {
 //Business low orders push
 async function pushLowOrders(request, response) {
     console.log('pushLowOrders');
+    console.log("request.params",request.params);
 
     var users = request.params.userTokens;
 
@@ -35,13 +36,14 @@ async function pushLowOrders(request, response) {
         push_badge: "Increment"
     };
 
-    sendPushNoAdapter(users,pushData)
+    return sendPushNoAdapter(users,pushData)
 
 }
 
 //All Orders Ready push
 async function pushReadyOrders(request, response) {
     console.log('pushReadyOrders');
+    console.log("request.params",request.params);
 
     var users = request.params.userTokens;
 
@@ -64,13 +66,14 @@ async function pushReadyOrders(request, response) {
         push_badge: "Increment"
     };
 
-    sendPushNoAdapter(users,pushData)
+    return sendPushNoAdapter(users,pushData)
 
 }
 
 //Low Units push
 async function pushLowItems(request, response) {
     console.log('pushLowItems');
+    console.log("request.params",request.params);
 
     var users = request.params.userTokens;
 
@@ -89,13 +92,15 @@ async function pushLowItems(request, response) {
         push_badge: "Increment"
     };
 
-    sendPushNoAdapter(users,pushData)
+    return sendPushNoAdapter(users,pushData)
 
 }
 
 //Low Rating push
 async function pushLowRating(request, response) {
     console.log('pushLowRating');
+    console.log("request.params",request.params);
+    
     var users = request.params.userTokens;
 
     var pushTitle = i18n.__({phrase: "LOW_RATING_TITLE", locale: "en"});
@@ -113,7 +118,7 @@ async function pushLowRating(request, response) {
         push_badge: "Increment"
     };
 
-    sendPushNoAdapter(users,pushData, response)
+    return sendPushNoAdapter(users,pushData, response)
 
 }
 
@@ -121,54 +126,58 @@ function sendPushNoAdapter(users, messageData, response) {
     console.log("sendPushNoAdapter");
     console.log("users",users);
     console.log("users length before remove Duplicates",users.length);
-    try {
-        users = utils.removeDuplicatesByKey("id", users)
-        console.log("users length after remove Duplicates",users.length);
-        var p8 = "cloud/config/prod/key.p8";
-        var PushNotifications = require('node-pushnotifications');
-
-        const settings = {
-            gcm: {
-                id: process.env.GCM_API_KEY,
-                phonegap: false, // phonegap compatibility mode, see below (defaults to false)
-            },
-            isAlwaysUseFCM: false // true all messages will be sent through node-gcm (which actually uses FCM)
-        };
-
-        const push = new PushNotifications(settings);
-
-        var regTokens = [];
-        for (var i = 0; i < users.length; i++) {
-            console.log("fcm_token", users[i]);
-            regTokens.push(users[i]);
-        }
-
-        const data = {
-            title: messageData.push_title, // REQUIRED for Android
-            topic: process.env.IOS_PUSH_BUNDLEID, // REQUIRED for iOS (apn and gcm)
-            body: messageData.session_alert,
-            sound: "default",
-            custom: messageData
-        }
-
-        console.log("Push data",data);
-        push.send(regTokens, data, (err, result) => {
-            if (err) {
-                console.log(err);
-                console.log(JSON.stringify(err));
-
-                if (response)
-                    response.error(err);
-            } else {
-                console.log("PUSH OK");
-                console.log(JSON.stringify(result));
-                // console.log("result", result);
-                if (response)
-                    response.success('sent push succesfully');
+    
+    return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+        try {
+            users = utils.removeDuplicatesByKey("id", users)
+            console.log("users length after remove Duplicates",users.length);
+            var p8 = "cloud/config/prod/key.p8";
+            var PushNotifications = require('node-pushnotifications');
+    
+            const settings = {
+                gcm: {
+                    id: process.env.GCM_API_KEY,
+                    phonegap: false, // phonegap compatibility mode, see below (defaults to false)
+                },
+                isAlwaysUseFCM: false // true all messages will be sent through node-gcm (which actually uses FCM)
+            };
+    
+            const push = new PushNotifications(settings);
+    
+            var regTokens = [];
+            for (var i = 0; i < users.length; i++) {
+                console.log("fcm_token", users[i]);
+                regTokens.push(users[i]);
             }
-        });
-    } catch (eee) {
-        console.log(eee);
-        response.error(eee);
-    }
+    
+            const data = {
+                title: messageData.push_title, // REQUIRED for Android
+                topic: process.env.IOS_PUSH_BUNDLEID, // REQUIRED for iOS (apn and gcm)
+                body: messageData.session_alert,
+                sound: "default",
+                custom: messageData
+            }
+    
+            console.log("Push data",data);
+            push.send(regTokens, data, (error, result) => {
+                if (error) {
+                    console.log(JSON.stringify(error));
+    
+                    reject(error);
+                } else {
+                    console.log("PUSH OK");
+                    console.log(JSON.stringify(result));
+                    // console.log("result", result);
+                    resolve('sent push succesfully');
+                }
+            });
+        } catch (eee) {
+            console.log(eee);
+            reject(eee);
+        }
+	});
 }
