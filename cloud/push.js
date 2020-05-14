@@ -171,6 +171,7 @@ function sendPushNoAdapter(users, messageData, response) {
                     resolve('sent push succesfully');
                 }
             });
+            resolve('sent push succesfully');
         } catch (eee) {
             console.log(eee);
             reject(eee);
