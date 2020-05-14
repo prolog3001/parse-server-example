@@ -114,7 +114,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
         restaurantOrderSummaryQuery.include("item_orders");
         restaurantOrderSummaryQuery.include("item_orders_ready");
 
-        await restaurantOrderSummaryQuery.find({
+        restaurantOrderSummaryQuery.find({
             useMasterKey: true,
             success: async function (orderSummaries) {
                 console.log("Found orderSummaries" + orderSummaries.length);
@@ -193,7 +193,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
         orderQuery.include("business.admin");
         orderQuery.include("restaurant_item");
 
-        await orderQuery.find({
+        orderQuery.find({
             useMasterKey: true,
             success: async function (orders) {
                 console.log("Found orders: " + orders.length);
@@ -262,7 +262,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
         ratingQuery.include("business.admin");
         ratingQuery.include("restaurant_order_summary.waiter");
 
-        await ratingQuery.find({
+        ratingQuery.find({
             useMasterKey: true,
             success: async function (ratings) {
                 console.log("Found ratings: " + ratings.length);
