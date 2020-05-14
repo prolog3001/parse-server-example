@@ -66,7 +66,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         //PUSH Low Orders
 
                         setInterval(function () {
-                            return;
+                            return businessQuery;
                         }, 10000); //10 * 1000)
 
                         var params = {};
@@ -132,7 +132,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         //PUSH All Orders Ready
 
                         setInterval(function () {
-                            return;
+                            return restaurantOrderSummaryQuery;
                         }, 10000); //10 * 1000)
 
                         orderSummary.set("notified_client", true)
@@ -215,7 +215,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                             //PUSH Low Units
 
                             setInterval(function () {
-                                return;
+                                return orderQuery;
                             }, 10000); //10 * 1000)
 
                             order.get("restaurant_item").increment("units", -1);
@@ -288,9 +288,9 @@ Parse.Cloud.afterSave("Rating", function (request) {
                         //PUSH Low Rating
 
                         setInterval(function() {
-                            return;
+                            return ratingQuery;
                         }, 10000); //10 * 1000)
-                        
+
                         var params = {};
                         params["userTokens"] = [business.get("admin").get("fcm_token")];
                         params["star_number"] = order.get("waiter_rating");
