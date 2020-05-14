@@ -52,7 +52,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
         businessQuery.equalTo("objectId", orderSummaryPointer.get("business").id);
         businessQuery.include("admin");
 
-        await businessQuery.find({
+        businessQuery.find({
             useMasterKey: true,
             success: async function (businesses) {
                 console.log("Found Business" + businesses.length);
