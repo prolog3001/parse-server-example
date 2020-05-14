@@ -72,6 +72,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                                 try {
                                     business.save(null, { useMasterKey: true })
                                         .then(function (result) {
+                                            console.log("sent low orders push");
                                             console.log("Success saving after order decrement", result);
                                             return result;
                                         }, function (error) {
@@ -147,6 +148,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                                 Parse.Cloud.run('pushReadyOrders', params, {
                                     success: function (result) {
                                         try {
+                                            console.log("sent ready order push");
                                             return result;
                                         } catch (error) {
                                             console.error(error);
@@ -214,6 +216,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                                     Parse.Cloud.run('pushLowItems', params, {
                                         success: function (result) {
                                             try {
+                                                console.log("sent low items push");
                                                 return result;
                                             } catch (error) {
                                                 console.error(error);
@@ -276,6 +279,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
                         Parse.Cloud.run('pushLowRating', params, {
                             success: function (result) {
                                 try {
+                                    console.log("sent low rating push");
                                     return result;
                                 } catch (error) {
                                     console.error(error);
