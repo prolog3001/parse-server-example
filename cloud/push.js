@@ -35,7 +35,7 @@ async function pushLowOrders(request, response) {
         push_badge: "Increment"
     };
 
-    response.success(sendPushNoAdapter(users, pushData, response));
+    return sendPushNoAdapter(users, pushData, response);
 }
 
 //All Orders Ready push
@@ -64,7 +64,7 @@ async function pushReadyOrders(request, response) {
         push_badge: "Increment"
     };
 
-    response.success(sendPushNoAdapter(users, pushData, response));
+    return sendPushNoAdapter(users, pushData, response);
 }
 
 //Low Units push
@@ -89,7 +89,7 @@ async function pushLowItems(request, response) {
         push_badge: "Increment"
     };
 
-    response.success(sendPushNoAdapter(users, pushData, response));
+    return sendPushNoAdapter(users, pushData, response);
 }
 
 //Low Rating push
@@ -114,7 +114,7 @@ async function pushLowRating(request, response) {
         push_badge: "Increment"
     };
 
-    response.success(sendPushNoAdapter(users, pushData, response));
+    return sendPushNoAdapter(users, pushData, response);
 }
 
 function sendPushNoAdapter(users, messageData, response) {
