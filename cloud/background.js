@@ -141,6 +141,7 @@ async function ordersPushTest(request, response) {
         return error;
       }
     });
+    response.success();
   } catch (error) {
     console.log(error);
     if (response)
@@ -184,6 +185,7 @@ async function readyPushTest(request, response) {
         return error;
       }
     });
+    response.success();
   } catch (error) {
     console.log(error);
     if (response)
@@ -220,6 +222,7 @@ async function itemsPushTest(request, response) {
         return error;
       }
     });
+    response.success();
   } catch (error) {
     console.log(error);
     if (response)
@@ -256,6 +259,7 @@ async function ratePushTest(request, response) {
         return error;
       }
     });
+    response.success();
   } catch (error) {
     console.log(error);
     if (response)

@@ -152,12 +152,6 @@ async function pushLowRating(request, response) {
         }, 5000); //5 * 1000)
 
         return sendPushNoAdapter(users, pushData, response);
-
-    setInterval(function () {
-      if (response)
-        response.success();
-      return new Parse.Query("Business");
-    }, 10000); //10 * 1000)
     } catch (error) {
         console.log('error', error);
     }
