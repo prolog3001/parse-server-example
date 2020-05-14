@@ -43,15 +43,6 @@ async function pushLowOrders(request, response) {
 async function pushReadyOrders(request, response) {
     console.log('pushReadyOrders');
 
-    i18n.configure({
-        locales:['en', 'he'],
-        directory: __dirname + '/cloud/locales',
-        defaultLocale: 'en',
-        cookie: 'i18n'
-    });
-
-    i18n.init(request, response);
-
     var users = request.params.userTokens;
 
     var pushTitle = i18n.__({phrase: "READY_ORDERS_TITLE", locale: "en"});
