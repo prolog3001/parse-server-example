@@ -40,7 +40,7 @@ async function pushLowOrders(request, responset) {
         session_alert: pushAlert,
         push_title: pushTitle,
         push_type: 0,
-        push_object_id: params.business_id,
+        push_object_id: request.params.business_id,
         push_badge: "Increment"
     };
 
@@ -64,9 +64,9 @@ async function pushReadyOrders(request, response) {
     var users = request.params.userTokens;
 
     var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: "en"});
-    pushTitle.replace("business_name", params.business_name);
-    pushTitle.replace("order_id", params.order_id);
-    pushTitle.replace("order_method", params.order_method);
+    pushTitle.replace("business_name", request.params.business_name);
+    pushTitle.replace("order_id", request.params.order_id);
+    pushTitle.replace("order_method", request.params.order_method);
 
     var pushAlert = pushTitle;
 
@@ -75,7 +75,7 @@ async function pushReadyOrders(request, response) {
         session_alert: pushAlert,
         push_title: pushTitle,
         push_type: 0,
-        push_object_id: params.order_id,
+        push_object_id: request.params.order_id,
         push_badge: "Increment"
     };
 
@@ -99,7 +99,7 @@ async function pushLowItems(request, response) {
     var users = request.params.userTokens;
 
     var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: "en"});
-    pushTitle.replace("item_name", params.item_name);
+    pushTitle.replace("item_name", request.params.item_name);
 
     var pushAlert = pushTitle;
 
@@ -108,7 +108,7 @@ async function pushLowItems(request, response) {
         session_alert: pushAlert,
         push_title: pushTitle,
         push_type: 0,
-        push_object_id: params.item_id,
+        push_object_id: request.params.item_id,
         push_badge: "Increment"
     };
 
@@ -132,7 +132,7 @@ async function pushLowRating(request, response) {
     var users = request.params.userTokens;
 
     var pushTitle = i18n.__({phrase: "LOW_RATING", locale: "en"});
-    pushTitle.replace("star_number", params.star_number);
+    pushTitle.replace("star_number", request.params.star_number);
 
     var pushAlert = pushTitle;
 
@@ -141,7 +141,7 @@ async function pushLowRating(request, response) {
         session_alert: pushAlert,
         push_title: pushTitle,
         push_type: 0,
-        push_object_id: params.order_id,
+        push_object_id: request.params.order_id,
         push_badge: "Increment"
     };
 
