@@ -5,13 +5,13 @@ module.exports = {
         return pushLowOrders(request);
     },
     pushReadyOrders: (request, response) => {
-        return pushReadyOrders(request);
+        return pushReadyOrders(request, response);
     },
     pushLowItems: (request, response) => {
-        return pushLowItems(request);
+        return pushLowItems(request, response);
     },
     pushLowRating: (request, response) => {
-        return pushLowRating(request);
+        return pushLowRating(request, response);
     }
 };
 
