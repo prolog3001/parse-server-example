@@ -114,7 +114,7 @@ function closeOpenedOrders(request, response) {
   });
 }
 
-async function ordersPushTest() {
+async function ordersPushTest(request, response) {
   try {
     var params = {};
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
@@ -122,24 +122,33 @@ async function ordersPushTest() {
     Parse.Cloud.run('pushLowOrders', params, {
       success: function (result) {
         try {
+          console.log('result', result);
+          if (response)
+            response.success(result);
           return result;
         } catch (error) {
           console.error(error);
+          if (response)
+            response.error(result);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
+        if (response)
+          response.error(result);
         return error;
       }
     });
   } catch (error) {
     console.log(error);
+    if (response)
+      response.error(result);
     return error;
   }
 }
 
-async function readyPushTest(request) {
+async function readyPushTest(request, response) {
   try {
     var orderMethod = i18n.__({ phrase: "DELIVERY", locale: "en" });
 
@@ -155,24 +164,33 @@ async function readyPushTest(request) {
     Parse.Cloud.run('pushReadyOrders', params, {
       success: function (result) {
         try {
+          console.log('result', result);
+          if (response)
+            response.success(result);
           return result;
         } catch (error) {
           console.error(error);
+          if (response)
+            response.error(result);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
+        if (response)
+          response.error(result);
         return error;
       }
     });
   } catch (error) {
     console.log(error);
+    if (response)
+      response.error(result);
     return error;
   }
 }
 
-async function itemsPushTest() {
+async function itemsPushTest(request, response) {
   try {
     var params = {};
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
@@ -181,24 +199,33 @@ async function itemsPushTest() {
     Parse.Cloud.run('pushLowItems', params, {
       success: function (result) {
         try {
+          console.log('result', result);
+          if (response)
+            response.success(result);
           return result;
         } catch (error) {
           console.error(error);
+          if (response)
+            response.error(result);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
+        if (response)
+          response.error(result);
         return error;
       }
     });
   } catch (error) {
     console.log(error);
+    if (response)
+      response.error(result);
     return error;
   }
 }
 
-async function ratePushTest() {
+async function ratePushTest(request, response) {
   try {
     var params = {};
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
@@ -207,19 +234,28 @@ async function ratePushTest() {
     Parse.Cloud.run('pushLowRating', params, {
       success: function (result) {
         try {
+          console.log('result', result);
+          if (response)
+            response.success(result);
           return result;
         } catch (error) {
           console.error(error);
+          if (response)
+            response.error(result);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
+        if (response)
+          response.error(result);
         return error;
       }
     });
   } catch (error) {
     console.log(error);
+    if (response)
+      response.error(result);
     return error;
   }
 }
