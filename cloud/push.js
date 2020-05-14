@@ -55,14 +55,14 @@ async function pushReadyOrders(params, response) {
             var users = params.userTokens;
 
             var pushTitle = i18n.__({ phrase: "READY_ORDERS_TITLE", locale: "en" });
-            pushTitle.replace("business_name", params.business_name);
-            pushTitle.replace("order_id", params.order_id);
-            pushTitle.replace("order_method", params.order_method);
+            pushTitle = pushTitle.replace("business_name", params.business_name);
+            pushTitle = pushTitle.replace("order_id", params.order_id);
+            pushTitle = pushTitle.replace("order_method", params.order_method);
 
             var pushAlert = i18n.__({ phrase: "READY_ORDERS", locale: "en" });
-            pushTitle.replace("business_name", params.business_name);
-            pushTitle.replace("order_id", params.order_id);
-            pushTitle.replace("order_method", params.order_method);
+            pushAlert = pushAlert.replace("business_name", params.business_name);
+            pushAlert = pushAlert.replace("order_id", params.order_id);
+            pushAlert = pushAlert.replace("order_method", params.order_method);
 
             var pushData = {
                 alert: pushAlert,
@@ -91,10 +91,10 @@ async function pushLowItems(params, response) {
             var users = params.userTokens;
 
             var pushTitle = i18n.__({ phrase: "LOW_ITEMS_TITLE", locale: "en" });
-            pushTitle.replace("item_name", params.item_name);
+            pushTitle = pushTitle.replace("item_name", params.item_name);
 
             var pushAlert = i18n.__({ phrase: "LOW_ITEMS", locale: "en" });
-            pushTitle.replace("item_name", params.item_name);
+            pushAlert = pushAlert.replace("item_name", params.item_name);
 
             var pushData = {
                 alert: pushAlert,
@@ -123,10 +123,10 @@ async function pushLowRating(params, response) {
             var users = params.userTokens;
 
             var pushTitle = i18n.__({ phrase: "LOW_RATING_TITLE", locale: "en" });
-            pushTitle.replace("star_number", params.star_number);
+            pushTitle = pushTitle.replace("star_number", params.star_number);
 
             var pushAlert = i18n.__({ phrase: "LOW_RATING", locale: "en" });
-            pushTitle.replace("star_number", params.star_number);
+            pushAlert = pushAlert.replace("star_number", params.star_number);
 
             var pushData = {
                 alert: pushAlert,
