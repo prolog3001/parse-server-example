@@ -128,10 +128,6 @@ function sendPushNoAdapter(users, messageData, response) {
     console.log("users length before remove Duplicates",users.length);
     
     return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onload = () => resolve(reader.result);
-		reader.onerror = error => reject(error);
         try {
             users = utils.removeDuplicatesByKey("id", users)
             console.log("users length after remove Duplicates",users.length);
