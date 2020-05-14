@@ -17,104 +17,120 @@ module.exports = {
 
 //Business low orders push
 async function pushLowOrders(request, response) {
-    console.log('pushLowOrders');
-    console.log("request.params", request.params);
+    try {
+        console.log('pushLowOrders');
+        console.log("request.params", request.params);
 
-    var users = request.params.userTokens;
+        var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({ phrase: "LOW_ORDERS_TITLE", locale: "en" });
+        var pushTitle = i18n.__({ phrase: "LOW_ORDERS_TITLE", locale: "en" });
 
-    var pushAlert = i18n.__({ phrase: "LOW_ORDERS", locale: "en" });
+        var pushAlert = i18n.__({ phrase: "LOW_ORDERS", locale: "en" });
 
-    var pushData = {
-        alert: pushAlert,
-        session_alert: pushAlert,
-        push_title: pushTitle,
-        push_type: 0,
-        push_object_id: request.params.business_id,
-        push_badge: "Increment"
-    };
+        var pushData = {
+            alert: pushAlert,
+            session_alert: pushAlert,
+            push_title: pushTitle,
+            push_type: 0,
+            push_object_id: request.params.business_id,
+            push_badge: "Increment"
+        };
 
-    return sendPushNoAdapter(users, pushData, response);
+        return sendPushNoAdapter(users, pushData, response);
+    } catch (error) {
+        console.log('error', error);
+    }
 }
 
 //All Orders Ready push
 async function pushReadyOrders(request, response) {
-    console.log('pushReadyOrders');
-    console.log("request.params", request.params);
+    try {
+        console.log('pushReadyOrders');
+        console.log("request.params", request.params);
 
-    var users = request.params.userTokens;
+        var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({ phrase: "READY_ORDERS_TITLE", locale: "en" });
-    pushTitle.replace("business_name", request.params.business_name);
-    pushTitle.replace("order_id", request.params.order_id);
-    pushTitle.replace("order_method", request.params.order_method);
+        var pushTitle = i18n.__({ phrase: "READY_ORDERS_TITLE", locale: "en" });
+        pushTitle.replace("business_name", request.params.business_name);
+        pushTitle.replace("order_id", request.params.order_id);
+        pushTitle.replace("order_method", request.params.order_method);
 
-    var pushAlert = i18n.__({ phrase: "READY_ORDERS", locale: "en" });
-    pushTitle.replace("business_name", request.params.business_name);
-    pushTitle.replace("order_id", request.params.order_id);
-    pushTitle.replace("order_method", request.params.order_method);
+        var pushAlert = i18n.__({ phrase: "READY_ORDERS", locale: "en" });
+        pushTitle.replace("business_name", request.params.business_name);
+        pushTitle.replace("order_id", request.params.order_id);
+        pushTitle.replace("order_method", request.params.order_method);
 
-    var pushData = {
-        alert: pushAlert,
-        session_alert: pushAlert,
-        push_title: pushTitle,
-        push_type: 0,
-        push_object_id: request.params.order_id,
-        push_badge: "Increment"
-    };
+        var pushData = {
+            alert: pushAlert,
+            session_alert: pushAlert,
+            push_title: pushTitle,
+            push_type: 0,
+            push_object_id: request.params.order_id,
+            push_badge: "Increment"
+        };
 
-    return sendPushNoAdapter(users, pushData, response);
+        return sendPushNoAdapter(users, pushData, response);
+    } catch (error) {
+        console.log('error', error);
+    }
 }
 
 //Low Units push
 async function pushLowItems(request, response) {
-    console.log('pushLowItems');
-    console.log("request.params", request.params);
+    try {
+        console.log('pushLowItems');
+        console.log("request.params", request.params);
 
-    var users = request.params.userTokens;
+        var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({ phrase: "LOW_ITEMS_TITLE", locale: "en" });
-    pushTitle.replace("item_name", request.params.item_name);
+        var pushTitle = i18n.__({ phrase: "LOW_ITEMS_TITLE", locale: "en" });
+        pushTitle.replace("item_name", request.params.item_name);
 
-    var pushAlert = i18n.__({ phrase: "LOW_ITEMS", locale: "en" });
-    pushTitle.replace("item_name", request.params.item_name);
+        var pushAlert = i18n.__({ phrase: "LOW_ITEMS", locale: "en" });
+        pushTitle.replace("item_name", request.params.item_name);
 
-    var pushData = {
-        alert: pushAlert,
-        session_alert: pushAlert,
-        push_title: pushTitle,
-        push_type: 0,
-        push_object_id: request.params.item_id,
-        push_badge: "Increment"
-    };
+        var pushData = {
+            alert: pushAlert,
+            session_alert: pushAlert,
+            push_title: pushTitle,
+            push_type: 0,
+            push_object_id: request.params.item_id,
+            push_badge: "Increment"
+        };
 
-    return sendPushNoAdapter(users, pushData, response);
+        return sendPushNoAdapter(users, pushData, response);
+    } catch (error) {
+        console.log('error', error);
+    }
 }
 
 //Low Rating push
 async function pushLowRating(request, response) {
-    console.log('pushLowRating');
-    console.log("request.params", request.params);
+    try {
+        console.log('pushLowRating');
+        console.log("request.params", request.params);
 
-    var users = request.params.userTokens;
+        var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({ phrase: "LOW_RATING_TITLE", locale: "en" });
-    pushTitle.replace("star_number", request.params.star_number);
+        var pushTitle = i18n.__({ phrase: "LOW_RATING_TITLE", locale: "en" });
+        pushTitle.replace("star_number", request.params.star_number);
 
-    var pushAlert = i18n.__({ phrase: "LOW_RATING", locale: "en" });
-    pushTitle.replace("star_number", request.params.star_number);
+        var pushAlert = i18n.__({ phrase: "LOW_RATING", locale: "en" });
+        pushTitle.replace("star_number", request.params.star_number);
 
-    var pushData = {
-        alert: pushAlert,
-        session_alert: pushAlert,
-        push_title: pushTitle,
-        push_type: 0,
-        push_object_id: request.params.order_id,
-        push_badge: "Increment"
-    };
+        var pushData = {
+            alert: pushAlert,
+            session_alert: pushAlert,
+            push_title: pushTitle,
+            push_type: 0,
+            push_object_id: request.params.order_id,
+            push_badge: "Increment"
+        };
 
-    return sendPushNoAdapter(users, pushData, response);
+        return sendPushNoAdapter(users, pushData, response);
+    } catch (error) {
+        console.log('error', error);
+    }
 }
 
 function sendPushNoAdapter(users, messageData, response) {
