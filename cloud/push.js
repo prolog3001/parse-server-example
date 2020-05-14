@@ -17,7 +17,7 @@ module.exports = {
 };
 
 //Business low orders push
-async function pushLowOrders(reques, responset) {
+async function pushLowOrders(request, responset) {
     console.log('pushLowOrders');
 
     i18n.configure({
@@ -27,7 +27,7 @@ async function pushLowOrders(reques, responset) {
         cookie: 'i18n'
     });
 
-    i18n.init(reques, responset);
+    i18n.init(request, responset);
 
     var users = request.params.userTokens;
 
@@ -59,7 +59,7 @@ async function pushReadyOrders(request, response) {
         cookie: 'i18n'
     });
 
-    i18n.init(reques, responset);
+    i18n.init(request, responset);
 
     var users = request.params.userTokens;
 
@@ -94,7 +94,7 @@ async function pushLowItems(request, response) {
         cookie: 'i18n'
     });
 
-    i18n.init(reques, responset);
+    i18n.init(request, responset);
 
     var users = request.params.userTokens;
 
