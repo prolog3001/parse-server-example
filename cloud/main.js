@@ -96,15 +96,6 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
             }
         });
     } else {
-        i18n.configure({
-            locales:['en', 'he'],
-            directory: __dirname + '/locales',
-            defaultLocale: 'en',
-            cookie: 'i18n'
-        });
-    
-        i18n.init(reques, responset);
-
         var orderSummaryPointer = request.object;
         console.log("Object Type", orderSummaryPointer.className);
         console.log("Maybe notify user on ready items");

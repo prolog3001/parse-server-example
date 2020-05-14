@@ -1,4 +1,8 @@
 {
+    "LOW_ORDERS_TITLE": "Your order credit bank is low.",
+    "READY_ORDERS_TITLE": "business_name has finished preparing your order",
+    "LOW_ITEMS_TITLE": "Units for item_name are low.",
+    "LOW_RATING_TITLE": "Client gave you star_number",
     "LOW_ORDERS": "Your order credit bank is running low. Consider adding more credits now.",
     "READY_ORDERS": "business_name has finished preparing order - order_id and is ready for order_method",
     "LOW_ITEMS": "Units for item_name are running low. Consider adding more units now.",

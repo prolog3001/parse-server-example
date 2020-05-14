@@ -22,9 +22,9 @@ async function pushLowOrders(request, response) {
 
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
+    var pushTitle = i18n.__({phrase: "LOW_ORDERS_TITLE", locale: "en"});
 
-    var pushAlert = pushTitle;
+    var pushAlert = i18n.__({phrase: "LOW_ORDERS", locale: "en"});
 
     var pushData = {
         alert: pushAlert,
@@ -54,12 +54,15 @@ async function pushReadyOrders(request, response) {
 
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "READY_ORDERS", locale: "en"});
+    var pushTitle = i18n.__({phrase: "READY_ORDERS_TITLE", locale: "en"});
     pushTitle.replace("business_name", request.params.business_name);
     pushTitle.replace("order_id", request.params.order_id);
     pushTitle.replace("order_method", request.params.order_method);
 
-    var pushAlert = pushTitle;
+    var pushAlert = i18n.__({phrase: "READY_ORDERS", locale: "en"});
+    pushTitle.replace("business_name", request.params.business_name);
+    pushTitle.replace("order_id", request.params.order_id);
+    pushTitle.replace("order_method", request.params.order_method);
 
     var pushData = {
         alert: pushAlert,
@@ -78,21 +81,13 @@ async function pushReadyOrders(request, response) {
 async function pushLowItems(request, response) {
     console.log('pushLowItems');
 
-    i18n.configure({
-        locales:['en', 'he'],
-        directory: __dirname + '/cloud/locales',
-        defaultLocale: 'en',
-        cookie: 'i18n'
-    });
-
-    i18n.init(request, response);
-
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_ITEMS", locale: "en"});
+    var pushTitle = i18n.__({phrase: "LOW_ITEMS_TITLE", locale: "en"});
     pushTitle.replace("item_name", request.params.item_name);
 
-    var pushAlert = pushTitle;
+    var pushAlert =  i18n.__({phrase: "LOW_ITEMS", locale: "en"});
+    pushTitle.replace("item_name", request.params.item_name);
 
     var pushData = {
         alert: pushAlert,
@@ -110,22 +105,13 @@ async function pushLowItems(request, response) {
 //Low Rating push
 async function pushLowRating(request, response) {
     console.log('pushLowRating');
-
-    i18n.configure({
-        locales:['en', 'he'],
-        directory: __dirname + '/cloud/locales',
-        defaultLocale: 'en',
-        cookie: 'i18n'
-    });
-
-    i18n.init(reques, response);
-
     var users = request.params.userTokens;
 
-    var pushTitle = i18n.__({phrase: "LOW_RATING", locale: "en"});
+    var pushTitle = i18n.__({phrase: "LOW_RATING_TITLE", locale: "en"});
     pushTitle.replace("star_number", request.params.star_number);
 
-    var pushAlert = pushTitle;
+    var pushAlert = i18n.__({phrase: "LOW_RATING", locale: "en"});
+    pushTitle.replace("star_number", request.params.star_number);
 
     var pushData = {
         alert: pushAlert,
