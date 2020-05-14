@@ -55,7 +55,7 @@ app.use(cookieParser("Dreamdiner"));
 
 i18n.configure({
     locales:['en', 'he'],
-    directory: __dirname + '/locales',
+    directory: __dirname + '/cloud/locales',
     defaultLocale: 'en',
     cookie: 'i18n'
 });
