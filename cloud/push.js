@@ -17,17 +17,8 @@ module.exports = {
 };
 
 //Business low orders push
-async function pushLowOrders(request, responset) {
+async function pushLowOrders(request, response) {
     console.log('pushLowOrders');
-
-    i18n.configure({
-        locales:['en', 'he'],
-        directory: __dirname + '/locales',
-        defaultLocale: 'en',
-        cookie: 'i18n'
-    });
-
-    i18n.init(request, responset);
 
     var users = request.params.userTokens;
 
@@ -59,7 +50,7 @@ async function pushReadyOrders(request, response) {
         cookie: 'i18n'
     });
 
-    i18n.init(request, responset);
+    i18n.init(request, response);
 
     var users = request.params.userTokens;
 
@@ -94,7 +85,7 @@ async function pushLowItems(request, response) {
         cookie: 'i18n'
     });
 
-    i18n.init(request, responset);
+    i18n.init(request, response);
 
     var users = request.params.userTokens;
 
@@ -127,7 +118,7 @@ async function pushLowRating(request, response) {
         cookie: 'i18n'
     });
 
-    i18n.init(reques, responset);
+    i18n.init(reques, response);
 
     var users = request.params.userTokens;
 
