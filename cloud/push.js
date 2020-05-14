@@ -36,6 +36,12 @@ async function pushLowOrders(request, response) {
             push_badge: "Increment"
         };
 
+        setInterval(function () {
+          if (response)
+            response.success();
+          return new Parse.Query("Business");
+        }, 5000); //5 * 1000)
+
         return sendPushNoAdapter(users, pushData, response);
     } catch (error) {
         console.log('error', error);
@@ -69,6 +75,12 @@ async function pushReadyOrders(request, response) {
             push_badge: "Increment"
         };
 
+        setInterval(function () {
+          if (response)
+            response.success();
+          return new Parse.Query("Business");
+        }, 5000); //5 * 1000)
+
         return sendPushNoAdapter(users, pushData, response);
     } catch (error) {
         console.log('error', error);
@@ -97,6 +109,12 @@ async function pushLowItems(request, response) {
             push_object_id: request.params.item_id,
             push_badge: "Increment"
         };
+
+        setInterval(function () {
+          if (response)
+            response.success();
+          return new Parse.Query("Business");
+        }, 5000); //5 * 1000)
 
         return sendPushNoAdapter(users, pushData, response);
     } catch (error) {
@@ -127,7 +145,19 @@ async function pushLowRating(request, response) {
             push_badge: "Increment"
         };
 
+        setInterval(function () {
+          if (response)
+            response.success();
+          return new Parse.Query("Business");
+        }, 5000); //5 * 1000)
+
         return sendPushNoAdapter(users, pushData, response);
+
+    setInterval(function () {
+      if (response)
+        response.success();
+      return new Parse.Query("Business");
+    }, 10000); //10 * 1000)
     } catch (error) {
         console.log('error', error);
     }

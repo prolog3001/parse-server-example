@@ -65,10 +65,6 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                     if (business.get("orders_accumulate") == min) {
                         //PUSH Low Orders
 
-                        setInterval(function () {
-                            return businessQuery;
-                        }, 10000); //10 * 1000)
-
                         var params = {};
                         params["userTokens"] = [business.get("admin").get("fcm_token")];
                         params["business_id"] = business.id;
@@ -130,10 +126,6 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length &&
                         !orderSummary.get("notified_client")) {
                         //PUSH All Orders Ready
-
-                        setInterval(function () {
-                            return restaurantOrderSummaryQuery;
-                        }, 10000); //10 * 1000)
 
                         orderSummary.set("notified_client", true)
                         orderSummary.save(null, { useMasterKey: true })
@@ -214,10 +206,6 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                         if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units") - 1) {
                             //PUSH Low Units
 
-                            setInterval(function () {
-                                return orderQuery;
-                            }, 10000); //10 * 1000)
-
                             order.get("restaurant_item").increment("units", -1);
                             order.get("restaurant_item").save(null, { useMasterKey: true })
                                 .then(function (result) {
@@ -286,10 +274,6 @@ Parse.Cloud.afterSave("Rating", function (request) {
 
                     if (rating.get("waiter_rating") <= 2) {
                         //PUSH Low Rating
-
-                        setInterval(function() {
-                            return ratingQuery;
-                        }, 10000); //10 * 1000)
 
                         var params = {};
                         params["userTokens"] = [business.get("admin").get("fcm_token")];
