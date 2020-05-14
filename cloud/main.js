@@ -43,7 +43,7 @@ Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
 //Business low orders count
-Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
+Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
     if (request.object.existed() === false) {
         var orderSummaryPointer = request.object;
         console.log("Object Type", orderSummaryPointer.className);
@@ -182,7 +182,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
 })
 
 //Item Low Quantity
-Parse.Cloud.afterSave("RestaurantOrder", function (request) {
+Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
     if (request.object.existed() === false) {
         var orderPointer = request.object;
         console.log("Object Type", orderPointer.className);
@@ -251,7 +251,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
 })
 
 //Waiter Low Rating
-Parse.Cloud.afterSave("Rating", function (request) {
+Parse.Cloud.afterSave("Rating", async function (request) {
     if (request.object.existed() === false) {
         var rating = request.object;
         console.log("Object Type", rating.className);
@@ -308,7 +308,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
     }
 })
 
-Parse.Cloud.afterSave("Table", function (request) {
+Parse.Cloud.afterSave("Table", async function (request) {
     if (request.object.existed() === false) {
         // It's a new object 
         var table = request.object;
