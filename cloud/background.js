@@ -120,7 +120,7 @@ async function ordersPushTest(request, response) {
     params["userTokens"] = ["dX6K0km_Ao0:APA91bHZINjdqtEeU5qbuPuP90PT0mPXNMDw8b4XYX1oT-1gmJB_bdQLltVjkVTBxKuOTixeUQa4q1UtS9RihU90a15kQexNr3UzRAXW9v4kZ46hGzR6z959W0wCPhD7BXT4LZD31I8T"];
     params["business_id"] = "OUPcvgIZAn";
 
-    Parse.Cloud.run('pushLowOrders', params, {
+    await Parse.Cloud.run('pushLowOrders', params, {
       success: async function (result) {
         try {
           console.log('result', result);
@@ -130,14 +130,14 @@ async function ordersPushTest(request, response) {
         } catch (error) {
           console.error(error);
           if (response)
-            response.error(result);
+            response.error(error);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
         if (response)
-          response.error(result);
+          response.error(error);
         return error;
       }
     });
@@ -145,7 +145,7 @@ async function ordersPushTest(request, response) {
   } catch (error) {
     console.log(error);
     if (response)
-      response.error(result);
+      response.error(error);
     return error;
   }
 }
@@ -164,7 +164,7 @@ async function readyPushTest(request, response) {
     params["order_id"] = "npt2mC7QJA";
     params["order_method"] = orderMethod;
 
-    Parse.Cloud.run('pushReadyOrders', params, {
+    await Parse.Cloud.run('pushReadyOrders', params, {
       success: async function (result) {
         try {
           console.log('result', result);
@@ -174,14 +174,14 @@ async function readyPushTest(request, response) {
         } catch (error) {
           console.error(error);
           if (response)
-            response.error(result);
+            response.error(error);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
         if (response)
-          response.error(result);
+          response.error(error);
         return error;
       }
     });
@@ -189,7 +189,7 @@ async function readyPushTest(request, response) {
   } catch (error) {
     console.log(error);
     if (response)
-      response.error(result);
+      response.error(error);
     return error;
   }
 }
@@ -201,7 +201,7 @@ async function itemsPushTest(request, response) {
     params["item_name"] = "TEST ITEM NAME";
     params["item_id"] = "0Cl1cNELHf";
 
-    Parse.Cloud.run('pushLowItems', params, {
+    await Parse.Cloud.run('pushLowItems', params, {
       success: async function (result) {
         try {
           console.log('result', result);
@@ -211,14 +211,14 @@ async function itemsPushTest(request, response) {
         } catch (error) {
           console.error(error);
           if (response)
-            response.error(result);
+            response.error(error);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
         if (response)
-          response.error(result);
+          response.error(error);
         return error;
       }
     });
@@ -226,7 +226,7 @@ async function itemsPushTest(request, response) {
   } catch (error) {
     console.log(error);
     if (response)
-      response.error(result);
+      response.error(error);
     return error;
   }
 }
@@ -238,7 +238,7 @@ async function ratePushTest(request, response) {
     params["star_number"] = 2;
     params["order_id"] = "npt2mC7QJA";
 
-    Parse.Cloud.run('pushLowRating', params, {
+    await Parse.Cloud.run('pushLowRating', params, {
       success: async function (result) {
         try {
           console.log('result', result);
@@ -248,14 +248,14 @@ async function ratePushTest(request, response) {
         } catch (error) {
           console.error(error);
           if (response)
-            response.error(result);
+            response.error(error);
           return error;
         }
       },
       error: function (error) {
         console.log('error', error);
         if (response)
-          response.error(result);
+          response.error(error);
         return error;
       }
     });
@@ -263,7 +263,7 @@ async function ratePushTest(request, response) {
   } catch (error) {
     console.log(error);
     if (response)
-      response.error(result);
+      response.error(error);
     return error;
   }
 }

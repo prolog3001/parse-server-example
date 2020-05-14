@@ -52,7 +52,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
         businessQuery.equalTo("objectId", orderSummaryPointer.get("business").id);
         businessQuery.include("admin");
 
-        businessQuery.find({
+        await businessQuery.find({
             useMasterKey: true,
             success: async function (businesses) {
                 console.log("Found Business" + businesses.length);
@@ -69,7 +69,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         params["userTokens"] = [business.get("admin").get("fcm_token")];
                         params["business_id"] = business.id;
 
-                        Parse.Cloud.run('pushLowOrders', params, {
+                        await Parse.Cloud.run('pushLowOrders', params, {
                             success: function (result) {
                                 try {
                                     business.save(null, { useMasterKey: true })
@@ -114,7 +114,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
         restaurantOrderSummaryQuery.include("item_orders");
         restaurantOrderSummaryQuery.include("item_orders_ready");
 
-        restaurantOrderSummaryQuery.find({
+        await restaurantOrderSummaryQuery.find({
             useMasterKey: true,
             success: async function (orderSummaries) {
                 console.log("Found orderSummaries" + orderSummaries.length);
@@ -128,7 +128,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                         //PUSH All Orders Ready
 
                         orderSummary.set("notified_client", true)
-                        orderSummary.save(null, { useMasterKey: true })
+                        await orderSummary.save(null, { useMasterKey: true })
                             .then(function (result) {
                                 console.log("Success saving after order push", result);
 
@@ -147,7 +147,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", function (request) {
                                 params["order_id"] = orderSummary.id;
                                 params["order_method"] = orderMethod;
 
-                                Parse.Cloud.run('pushReadyOrders', params, {
+                                await Parse.Cloud.run('pushReadyOrders', params, {
                                     success: function (result) {
                                         try {
                                             console.log("sent ready order push");
@@ -193,7 +193,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
         orderQuery.include("business.admin");
         orderQuery.include("restaurant_item");
 
-        orderQuery.find({
+        await orderQuery.find({
             useMasterKey: true,
             success: async function (orders) {
                 console.log("Found orders: " + orders.length);
@@ -207,7 +207,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                             //PUSH Low Units
 
                             order.get("restaurant_item").increment("units", -1);
-                            order.get("restaurant_item").save(null, { useMasterKey: true })
+                            await order.get("restaurant_item").save(null, { useMasterKey: true })
                                 .then(function (result) {
                                     console.log("Success saving after units and orders count", result);
 
@@ -216,7 +216,7 @@ Parse.Cloud.afterSave("RestaurantOrder", function (request) {
                                     params["item_name"] = order.get("restaurant_item").get("title");
                                     params["item_id"] = order.get("restaurant_item").id;
 
-                                    Parse.Cloud.run('pushLowItems', params, {
+                                    await Parse.Cloud.run('pushLowItems', params, {
                                         success: function (result) {
                                             try {
                                                 console.log("sent low items push");
@@ -262,7 +262,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
         ratingQuery.include("business.admin");
         ratingQuery.include("restaurant_order_summary.waiter");
 
-        ratingQuery.find({
+        await ratingQuery.find({
             useMasterKey: true,
             success: async function (ratings) {
                 console.log("Found ratings: " + ratings.length);
@@ -280,7 +280,7 @@ Parse.Cloud.afterSave("Rating", function (request) {
                         params["star_number"] = order.get("waiter_rating");
                         params["order_id"] = rating.get("restaurant_order_summary").id;
 
-                        Parse.Cloud.run('pushLowRating', params, {
+                        await Parse.Cloud.run('pushLowRating', params, {
                             success: function (result) {
                                 try {
                                     console.log("sent low rating push");
