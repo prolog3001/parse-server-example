@@ -193,14 +193,14 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
                         order.get("restaurant_item")) {
 
                         if (order.get("restaurant_item").get("units") > 0) {
-                            if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units") - 1) {
-                                //PUSH Low Units
-                                order.get("restaurant_item").increment("units", -1);
-                                await order.get("restaurant_item").save(null, { useMasterKey: true })
-                                    .then(async function (result) {
-                                        try {
-                                            console.log("Success saving after units and orders count", result);
+                            order.get("restaurant_item").increment("units", -1);
+                            await order.get("restaurant_item").save(null, { useMasterKey: true })
+                                .then(async function (result) {
+                                    try {
+                                        console.log("Success saving after units and orders count", result);
 
+                                        if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units")) {
+                                            //PUSH Low Units
                                             var params = {};
                                             params["userTokens"] = [business.get("admin").get("fcm_token")];
                                             params["item_name"] = order.get("restaurant_item").get("title");
@@ -208,15 +208,17 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
                                             params["business_id"] = order.get("restaurant_item").get("business").id;
 
                                             return await push.pushLowItems(params);
-                                        } catch (error) {
-                                            console.log("error", error);
-                                            return error;
+                                        } else {
+                                            return;
                                         }
-                                    }, function (error) {
+                                    } catch (error) {
                                         console.log("error", error);
                                         return error;
-                                    });
-                            }
+                                    }
+                                }, function (error) {
+                                    console.log("error", error);
+                                    return error;
+                                });
 
                         }
                     } else {
