@@ -202,10 +202,10 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
                                         if (order.get("restaurant_item").get("units") == order.get("restaurant_item").get("alert_at_units")) {
                                             //PUSH Low Units
                                             var params = {};
-                                            params["userTokens"] = [business.get("admin").get("fcm_token")];
+                                            params["userTokens"] = [order.get("business").get("admin").get("fcm_token")];
                                             params["item_name"] = order.get("restaurant_item").get("title");
                                             params["item_id"] = order.get("restaurant_item").id;
-                                            params["business_id"] = order.get("restaurant_item").get("business").id;
+                                            params["business_id"] = order.get("business").id;
 
                                             return await push.pushLowItems(params);
                                         } else {
