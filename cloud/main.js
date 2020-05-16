@@ -60,7 +60,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                     var business = businesses[0];
 
                     if (business) {
-                        var min = business.get("orders_accumulate_min") > 0 ? order.get("orders_accumulate_min") : 50;
+                        var min = business.get("orders_accumulate_min") > 0 ? business.get("orders_accumulate_min") : 50;
                         business.increment("orders_accumulate", -1);
 
                         if (business.get("orders_accumulate") == min) {
