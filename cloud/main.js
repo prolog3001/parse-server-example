@@ -139,6 +139,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                         params["business_name"] = orderSummary.get("business").get("title");
                                         params["order_id"] = orderSummary.id;
                                         params["order_method"] = orderMethod;
+                                        params["business_id"] = orderSummary.get("business").id;
                                         return await push.pushReadyOrders(params);
 
                                     } catch (error) {
@@ -204,6 +205,7 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
                                             params["userTokens"] = [business.get("admin").get("fcm_token")];
                                             params["item_name"] = order.get("restaurant_item").get("title");
                                             params["item_id"] = order.get("restaurant_item").id;
+                                            params["business_id"] = order.get("restaurant_item").get("business").id;
 
                                             return await push.pushLowItems(params);
                                         } catch (error) {
@@ -260,8 +262,9 @@ Parse.Cloud.afterSave("Rating", async function (request) {
                             //PUSH Low Rating
                             var params = {};
                             params["userTokens"] = [business.get("admin").get("fcm_token")];
-                            params["star_number"] = order.get("waiter_rating");
+                            params["star_number"] = rating.get("waiter_rating");
                             params["order_id"] = rating.get("restaurant_order_summary").id;
+                            params["business_id"] = rating.get("business").id;
 
                             return await push.pushLowRating(params);
                         }
