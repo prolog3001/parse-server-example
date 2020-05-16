@@ -62,6 +62,14 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                     if (business) {
                         var min = business.get("orders_accumulate_min") > 0 ? business.get("orders_accumulate_min") : 50;
                         business.increment("orders_accumulate", -1);
+                        business.save(null, { useMasterKey: true })
+                            .then(function (result) {
+                                console.log("sent low orders push");
+                                console.log("Success saving after order decrement", result);
+                                return result;
+                            }, function (error) {
+                                console.log("Error", error);
+                            });
 
                         if (business.get("orders_accumulate") == min) {
                             //PUSH Low Orders
@@ -69,14 +77,6 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                             var params = {};
                             params["userTokens"] = [business.get("admin").get("fcm_token")];
                             params["business_id"] = business.id;
-                            business.save(null, { useMasterKey: true })
-                                .then(function (result) {
-                                    console.log("sent low orders push");
-                                    console.log("Success saving after order decrement", result);
-                                    return result;
-                                }, function (error) {
-                                    console.log("Error", error);
-                                });
                             return await push.pushLowOrders(params);
                         }
                     } else {
