@@ -1,5 +1,6 @@
 var users = require('./users.js');
 var utils = require('./utils.js');
+var orders = require('./orders.js');
 var push = require('./push.js');
 var tables = require('./tables.js');
 var background = require('./background.js');
@@ -34,6 +35,10 @@ Parse.Cloud.define("pushLowOrders", push.pushLowOrders);
 Parse.Cloud.define("pushReadyOrders", push.pushReadyOrders);
 Parse.Cloud.define("pushLowItems", push.pushLowItems);
 Parse.Cloud.define("pushLowRating", push.pushLowRating);
+
+Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
+Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
+
 Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
 Parse.Cloud.job("readyPushTest", background.readyPushTest);
 Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
