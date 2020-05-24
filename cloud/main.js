@@ -89,8 +89,9 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                     params["business_id"] = business.id;
                                     await push.pushLowOrders(params);
                                 }
-                            }, function (error) {
+                            }, async function (error) {
                                 console.log("Error", error);
+                                return error;
                             });
                         
                     }
@@ -118,7 +119,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
 
                                     var userIds = [];
                                     userIds.push(business.get("admin").get("fcm_token"));
-                                    userIds.push(restaurantOrderSummaryQuery.get("client").get("fcm_token"));
+                                    userIds.push(orderSummaryFromServer.get("client").get("fcm_token"));
 
                                     var params = {};
                                     params["userTokens"] = userIds;
@@ -132,7 +133,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                     console.log("Error", error);
                                     return error;
                                 }
-                            }, function (error) {
+                            }, async function (error) {
                                 console.log("Error", error);
                                 return error;
                             });
@@ -154,7 +155,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
             }
         },
 
-        error: function (error) {
+        error: async function (error) {
             console.log("Query Error", error);
             return error;
         }
@@ -206,7 +207,7 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
                                         console.log("error", error);
                                         return error;
                                     }
-                                }, function (error) {
+                                }, async function (error) {
                                     console.log("error", error);
                                     return error;
                                 });
@@ -220,7 +221,7 @@ Parse.Cloud.afterSave("RestaurantOrder", async function (request) {
                     console.log("error", error);
                     return error;
                 }
-            }, error: function (error) {
+            }, error: async function (error) {
                 console.log("Query Error", error);
                 return error;
             }
