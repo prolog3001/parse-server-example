@@ -59,6 +59,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
     restaurantOrderSummaryQuery.include("client");
     restaurantOrderSummaryQuery.include("item_orders");
     restaurantOrderSummaryQuery.include("item_orders_ready");
+    restaurantOrderSummaryQuery.include("item_orders_delivered");
 
     restaurantOrderSummaryQuery.find({
         useMasterKey: true,
@@ -96,8 +97,10 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
 
                     if (!orderSummary.get("notified_client") &&
                         orderSummary.get("item_orders") &&
-                        orderSummary.get("item_orders_ready") &&
-                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length) {
+                        (orderSummary.get("item_orders_ready") &&
+                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length) ||
+                        (orderSummary.get("item_orders_delivered") &&
+                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_delivered").length)) {
 
                         //PUSH All Orders Ready
                         console.log("Notify on ready items");
