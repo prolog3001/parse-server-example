@@ -109,7 +109,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                         await orderSummary.save(null, { useMasterKey: true })
                             .then(async function (orderSummaryFromServer) {
                                 try {
-                                    console.log("Success saving after order push", result);
+                                    console.log("Success saving after order push", orderSummaryFromServer);
 
                                     var orderMethod = orderSummaryFromServer.get("take_away") ? (orderSummaryFromServer.get("address") ?
                                         i18n.__({ phrase: "DELIVERY", locale: "en" }) :
