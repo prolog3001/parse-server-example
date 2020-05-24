@@ -13,6 +13,7 @@ function forceCloseOpenedOrders(request, response) {
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
+  openedOrdersQuery.equalTo("business", request.params.businessId);
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.find({
@@ -104,6 +105,7 @@ function forcePayOpenedOrders(request, response) {
   then.setHours(then.getHours());
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+  openedOrdersQuery.equalTo("business", request.params.businessId);
   openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
