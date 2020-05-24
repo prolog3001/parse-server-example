@@ -49,130 +49,112 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
 //Business low orders count
 Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
-    if (request.object.existed() === false) {
-        var orderSummaryPointer = request.object;
-        console.log("Object Type", orderSummaryPointer.className);
+    var orderSummaryPointer = request.object;
+    console.log("Object Type", orderSummaryPointer.className);
 
-        var businessQuery = new Parse.Query("Business");
-        businessQuery.equalTo("objectId", orderSummaryPointer.get("business").id);
-        businessQuery.include("admin");
+    var restaurantOrderSummaryQuery = new Parse.Query("RestaurantOrderSummary");
+    restaurantOrderSummaryQuery.equalTo("objectId", orderSummaryPointer.id);
+    restaurantOrderSummaryQuery.include("business");
+    restaurantOrderSummaryQuery.include("business.admin");
+    restaurantOrderSummaryQuery.include("client");
+    restaurantOrderSummaryQuery.include("item_orders");
+    restaurantOrderSummaryQuery.include("item_orders_ready");
 
-        businessQuery.find({
-            useMasterKey: true,
-            success: async function (businesses) {
-                try {
-                    console.log("Found Business" + businesses.length);
-                    var business = businesses[0];
+    restaurantOrderSummaryQuery.find({
+        useMasterKey: true,
+        success: async function (orderSummaries) {
+            try {
+                console.log("Found orderSummaries" + orderSummaries.length);
+                var orderSummary = orderSummaries[0];
 
-                    if (business) {
+                if (orderSummary) {
+                    var business = orderSummary.get("business");
+
+                    if (request.object.existed() === false && business) {
+                        console.log("New orderSummary object", orderSummary);
+
                         var min = business.get("orders_accumulate_min") > 0 ? business.get("orders_accumulate_min") : 50;
                         business.increment("orders_accumulate", -1);
                         business.save(null, { useMasterKey: true })
                             .then(function (result) {
-                                console.log("sent low orders push");
                                 console.log("Success saving after order decrement", result);
-                                return result;
+
+                                if (business.get("orders_accumulate") == min) {
+                                    //PUSH Low Orders
+                                    console.log("sent low orders push");
+
+                                    var params = {};
+                                    params["userTokens"] = [business.get("admin").get("fcm_token")];
+                                    params["business_id"] = business.id;
+                                    await push.pushLowOrders(params);
+                                }
                             }, function (error) {
                                 console.log("Error", error);
                             });
-
-                        if (business.get("orders_accumulate") == min) {
-                            //PUSH Low Orders
-
-                            var params = {};
-                            params["userTokens"] = [business.get("admin").get("fcm_token")];
-                            params["business_id"] = business.id;
-                            return await push.pushLowOrders(params);
-                        }
-                    } else {
-                        console.log("Not business or dont need changes");
-                        return;
                     }
-                } catch (error) {
-                    console.error(error);
-                    return error;
-                }
-            },
-            error: function (error) {
-                console.log("Query Error", error);
-                return error;
-            }
-        });
-    } else {
-        var orderSummaryPointer = request.object;
-        console.log("Object Type", orderSummaryPointer.className);
-        console.log("Maybe notify user on ready items");
 
-        var restaurantOrderSummaryQuery = new Parse.Query("RestaurantOrderSummary");
-        restaurantOrderSummaryQuery.equalTo("objectId", orderSummaryPointer.id);
-        restaurantOrderSummaryQuery.include("business");
-        restaurantOrderSummaryQuery.include("client");
-        restaurantOrderSummaryQuery.include("item_orders");
-        restaurantOrderSummaryQuery.include("item_orders_ready");
+                    if (!orderSummary.get("notified_client") &&
+                        orderSummary.get("item_orders") &&
+                        orderSummary.get("item_orders_ready") &&
+                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length) {
 
-        restaurantOrderSummaryQuery.find({
-            useMasterKey: true,
-            success: async function (orderSummaries) {
-                try {
-                    console.log("Found orderSummaries" + orderSummaries.length);
-                    var orderSummary = orderSummaries[0];
+                        //PUSH All Orders Ready
+                        console.log("Notify on ready items");
+                        orderSummary.set("notified_client", true)
 
-                    if (orderSummary) {
-                        if (orderSummary.get("item_orders") &&
-                            orderSummary.get("item_orders_ready") &&
-                            orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length &&
-                            !orderSummary.get("notified_client")) {
-                            //PUSH All Orders Ready
-                            orderSummary.set("notified_client", true)
+                        await orderSummary.save(null, { useMasterKey: true })
+                            .then(async function (orderSummaryFromServer) {
+                                try {
+                                    console.log("Success saving after order push", result);
 
-                            await orderSummary.save(null, { useMasterKey: true })
-                                .then(async function (result) {
-                                    try {
-                                        console.log("Success saving after order push", result);
+                                    var orderMethod = orderSummaryFromServer.get("take_away") ? (orderSummaryFromServer.get("address") ?
+                                        i18n.__({ phrase: "DELIVERY", locale: "en" }) :
+                                        i18n.__({ phrase: "TA", locale: "en" })) :
+                                        i18n.__({ phrase: "TA", locale: "en" })
 
-                                        var orderMethod = orderSummary.get("take_away") ? (orderSummary.get("address") ?
-                                            i18n.__({ phrase: "DELIVERY", locale: "en" }) :
-                                            i18n.__({ phrase: "TA", locale: "en" })) :
-                                            i18n.__({ phrase: "TA", locale: "en" })
+                                    var userIds = [];
+                                    userIds.push(business.get("admin").get("fcm_token"));
+                                    userIds.push(restaurantOrderSummaryQuery.get("client").get("fcm_token"));
 
-                                        var userIds = [];
-                                        userIds.push(business.get("admin").get("fcm_token"));
-                                        userIds.push(restaurantOrderSummaryQuery.get("client").get("fcm_token"));
+                                    var params = {};
+                                    params["userTokens"] = userIds;
+                                    params["business_name"] = orderSummaryFromServer.get("business").get("title");
+                                    params["order_id"] = orderSummaryFromServer.id;
+                                    params["order_method"] = orderMethod;
+                                    params["business_id"] = orderSummaryFromServer.get("business").id;
+                                    return await push.pushReadyOrders(params);
 
-                                        var params = {};
-                                        params["userTokens"] = userIds;
-                                        params["business_name"] = orderSummary.get("business").get("title");
-                                        params["order_id"] = orderSummary.id;
-                                        params["order_method"] = orderMethod;
-                                        params["business_id"] = orderSummary.get("business").id;
-                                        return await push.pushReadyOrders(params);
-
-                                    } catch (error) {
-                                        console.log("Error", error);
-                                        return error;
-                                    }
-                                }, function (error) {
+                                } catch (error) {
                                     console.log("Error", error);
                                     return error;
-                                });
-                        }
-                    } else {
-                        console.log("Not RestaurantOrderSummary or dont need changes");
-                        return
+                                }
+                            }, function (error) {
+                                console.log("Error", error);
+                                return error;
+                            });
+                    } else if (!orderSummary.get("notified_client")) {
+                        console.log("Ready and Ordered are not the same size");
+                        return;
+                    } else if (orderSummary.get("notified_client")) {
+                        console.log("Already notified on order summary");
+                        return;
                     }
-
-                } catch (error) {
-                    console.log("error", error);
-                    return error;
+                } else {
+                    console.log("Not order summary or dont need changes");
+                    return;
                 }
-            },
 
-            error: function (error) {
-                console.log("Query Error", error);
+            } catch (error) {
+                console.log("error", error);
                 return error;
             }
-        });
-    }
+        },
+
+        error: function (error) {
+            console.log("Query Error", error);
+            return error;
+        }
+    });
 })
 
 //Item Low Quantity
