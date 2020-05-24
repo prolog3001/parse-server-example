@@ -97,9 +97,12 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                     }
 
                     console.log("notified_client", orderSummary.get("notified_client"));
+                    if(orderSummary.get("notified_client")){
+                        console.log("Already notified on order summary");
+                        return;
+                    }
 
-                    if ((!orderSummary.get("notified_client") || orderSummary.get("notified_client") == false) &&
-                        orderSummary.get("item_orders") &&
+                    if (orderSummary.get("item_orders") &&
                         (orderSummary.get("item_orders_ready") &&
                         orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length) ||
                         (orderSummary.get("item_orders_delivered") &&
