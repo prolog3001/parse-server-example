@@ -8,8 +8,12 @@ module.exports = {
 };
 
 function forceCloseOpenedOrders(request, response) {
+  var business = new ParseObject({
+    id: request.params.businessId
+});
+
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
-  openedOrdersQuery.equalTo("business", request.params.businessId);
+  openedOrdersQuery.equalTo("business", business);
   openedOrdersQuery.notEqualTo("closed_by_admin",true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
@@ -97,8 +101,12 @@ function forceCloseOpenedOrders(request, response) {
 }
 
 function forcePayOpenedOrders(request, response) {
+  var business = new ParseObject({
+    id: request.params.businessId
+  });
+
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
-  openedOrdersQuery.equalTo("business", request.params.businessId);
+  openedOrdersQuery.equalTo("business", business);
   openedOrdersQuery.notEqualTo("paid",true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
