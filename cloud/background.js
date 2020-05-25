@@ -27,6 +27,9 @@ function closeOpenedOrders(request, response) {
   openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
+  openedOrdersQuery.include("item_orders_in_progress");
+  openedOrdersQuery.include("item_orders_ready");
+  openedOrdersQuery.include("item_orders_delivered");
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
@@ -39,12 +42,6 @@ function closeOpenedOrders(request, response) {
         try {
           if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
             console.log("orderSummary is null..");
-            continue;
-          }
-
-          if (orderSummaries[i].get("item_orders_delivered") &&
-            orderSummaries[i].get("item_orders_delivered").length == orderSummaries[i].get("item_orders").length) {
-            console.log("orderSummary is already finished..");
             continue;
           }
 

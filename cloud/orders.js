@@ -8,12 +8,9 @@ module.exports = {
 };
 
 function forceCloseOpenedOrders(request, response) {
-  var then = new Date();
-  then.setHours(then.getHours());
-
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
-  openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
   openedOrdersQuery.equalTo("business", request.params.businessId);
+  openedOrdersQuery.notEqualTo("closed_by_admin",true);
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
@@ -31,12 +28,6 @@ function forceCloseOpenedOrders(request, response) {
         try {
           if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
             console.log("orderSummary is null..");
-            continue;
-          }
-
-          if (orderSummaries[i].get("item_orders_delivered") &&
-            orderSummaries[i].get("item_orders_delivered").length == orderSummaries[i].get("item_orders").length) {
-            console.log("orderSummary is already finished..");
             continue;
           }
 
@@ -80,10 +71,6 @@ function forceCloseOpenedOrders(request, response) {
 
       if (clonedOrderSummary.length > 0) {
         console.log("Try to save all - " + clonedOrderSummary.length);
-        // for(var i=0 ; i<orderSummaries.length ; i++){
-        //   console.log("Try to save - " + JSON.stringify(orderSummaries[i]));
-        // }
-
         Parse.Object.saveAll(clonedOrderSummary, {
           useMasterKey: true,
           success: function (clonedOrderSummary) {
@@ -107,12 +94,9 @@ function forceCloseOpenedOrders(request, response) {
 }
 
 function forcePayOpenedOrders(request, response) {
-  var then = new Date();
-  then.setHours(then.getHours());
-
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", request.params.businessId);
-  openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
+  openedOrdersQuery.notEqualTo("paid",true);
   openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
@@ -134,14 +118,8 @@ function forcePayOpenedOrders(request, response) {
             continue;
           }
 
-          if (orderSummaries[i].get("item_orders_delivered") &&
-            orderSummaries[i].get("item_orders_delivered").length == orderSummaries[i].get("item_orders").length) {
-            console.log("orderSummary is already finished..");
-            continue;
-          }
-
           orderSummaries[i].set("paid", true);
-          orderSummaries[i].set("rated", true);
+          // orderSummaries[i].set("rated", true);
 
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
@@ -151,10 +129,6 @@ function forcePayOpenedOrders(request, response) {
 
       if (clonedOrderSummary.length > 0) {
         console.log("Try to save all - " + clonedOrderSummary.length);
-        // for(var i=0 ; i<orderSummaries.length ; i++){
-        //   console.log("Try to save - " + JSON.stringify(orderSummaries[i]));
-        // }
-
         Parse.Object.saveAll(clonedOrderSummary, {
           useMasterKey: true,
           success: function (clonedOrderSummary) {
