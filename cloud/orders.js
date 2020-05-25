@@ -68,8 +68,7 @@ function forceCloseOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", []);
           }
-          
-          orderSummaries[i].set("closed_by_waiter", true);
+
           orderSummaries[i].set("closed_by_admin", true);
 
           clonedOrderSummary.push(orderSummaries[i]);
