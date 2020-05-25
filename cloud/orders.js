@@ -8,9 +8,10 @@ module.exports = {
 };
 
 function forceCloseOpenedOrders(request, response) {
-  var business = new ParseObject({
-    id: request.params.businessId
-});
+  var Business = Parse.Object.extend("Business");
+  var business = new Business({
+        id: request.params.businessId
+      });
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", business);
@@ -101,9 +102,10 @@ function forceCloseOpenedOrders(request, response) {
 }
 
 function forcePayOpenedOrders(request, response) {
-  var business = new ParseObject({
-    id: request.params.businessId
-  });
+  var Business = Parse.Object.extend("Business");
+  var business = new Business({
+        id: request.params.businessId
+      });
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", business);
