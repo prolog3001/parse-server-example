@@ -46,6 +46,9 @@ function forceCloseOpenedOrders(request, response) {
               specificOrderDish.set("delivered", new Date());
             }
 
+            orderSummaries[i].unset("item_orders_in_progress");
+            orderSummaries[i].unset("item_orders_ready");
+            orderSummaries[i].unset("item_orders_delivered");
             orderSummaries[i].set("item_orders_in_progress", []);
             orderSummaries[i].set("item_orders_ready", []);
             orderSummaries[i].set("item_orders_delivered", itemOrders);
