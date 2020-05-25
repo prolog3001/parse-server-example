@@ -11,11 +11,11 @@ function forceCloseOpenedOrders(request, response) {
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", request.params.businessId);
   openedOrdersQuery.notEqualTo("closed_by_admin",true);
-  openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
+  openedOrdersQuery.limit(2000);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
@@ -100,12 +100,12 @@ function forcePayOpenedOrders(request, response) {
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", request.params.businessId);
   openedOrdersQuery.notEqualTo("paid",true);
-  openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
+  openedOrdersQuery.limit(2000);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {

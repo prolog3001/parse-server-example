@@ -25,11 +25,11 @@ function closeOpenedOrders(request, response) {
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.lessThanOrEqualTo("createdAt", then);
-  openedOrdersQuery.exists("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
+  openedOrdersQuery.limit(2000);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
