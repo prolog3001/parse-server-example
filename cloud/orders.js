@@ -8,6 +8,9 @@ module.exports = {
 };
 
 function forceCloseOpenedOrders(request, response) {
+  var oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
   var Business = Parse.Object.extend("Business");
   var business = new Business({
         id: request.params.businessId
@@ -16,11 +19,12 @@ function forceCloseOpenedOrders(request, response) {
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", business);
   openedOrdersQuery.notEqualTo("closed_by_admin",true);
+  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
-  openedOrdersQuery.limit(2000);
+  openedOrdersQuery.limit(500);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
@@ -102,6 +106,9 @@ function forceCloseOpenedOrders(request, response) {
 }
 
 function forcePayOpenedOrders(request, response) {
+  var oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
   var Business = Parse.Object.extend("Business");
   var business = new Business({
         id: request.params.businessId
@@ -109,13 +116,14 @@ function forcePayOpenedOrders(request, response) {
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", business);
+  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.notEqualTo("paid",true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
-  openedOrdersQuery.limit(2000);
+  openedOrdersQuery.limit(500);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
