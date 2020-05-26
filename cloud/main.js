@@ -36,8 +36,9 @@ Parse.Cloud.define("pushReadyOrders", push.pushReadyOrders);
 Parse.Cloud.define("pushLowItems", push.pushLowItems);
 Parse.Cloud.define("pushLowRating", push.pushLowRating);
 
-Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
+Parse.Cloud.define("forceDeliverOpenedOrders", orders.forceDeliverOpenedOrders);
 Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
+Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 
 Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
 Parse.Cloud.job("readyPushTest", background.readyPushTest);

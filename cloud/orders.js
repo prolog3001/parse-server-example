@@ -1,24 +1,30 @@
 module.exports = {
-  forceCloseOpenedOrders: function (request, response) {
-    forceCloseOpenedOrders(request, response);
+  forceDeliverOpenedOrders: function (request, response) {
+    forceDeliverOpenedOrders(request, response);
   },
   forcePayOpenedOrders: function (request, response) {
     forcePayOpenedOrders(request, response);
+  },
+  forceCloseOpenedOrders: function (request, response) {
+    forceCloseOpenedOrders(request, response);
   }
 };
 
-function forceCloseOpenedOrders(request, response) {
+function forceDeliverOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
   var Business = Parse.Object.extend("Business");
   var business = new Business({
-        id: request.params.businessId
-      });
+    id: request.params.businessId
+  });
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", business);
-  openedOrdersQuery.notEqualTo("closed_by_admin",true);
+  if (request.params.orderSummaryId) {
+    openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  }
+  openedOrdersQuery.notEqualTo("closed_by_admin", true);
   openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
@@ -72,7 +78,6 @@ function forceCloseOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
 
-          orderSummaries[i].set("closed_by_admin", true);
 
           clonedOrderSummary.push(orderSummaries[i]);
           clonedOrderSummary.push(orderSummaries[i]);
@@ -111,13 +116,16 @@ function forcePayOpenedOrders(request, response) {
 
   var Business = Parse.Object.extend("Business");
   var business = new Business({
-        id: request.params.businessId
-      });
+    id: request.params.businessId
+  });
 
   var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
   openedOrdersQuery.equalTo("business", business);
+  if (request.params.orderSummaryId) {
+    openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  }
   openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
-  openedOrdersQuery.notEqualTo("paid",true);
+  openedOrdersQuery.notEqualTo("paid", true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
@@ -140,6 +148,81 @@ function forcePayOpenedOrders(request, response) {
           }
 
           orderSummaries[i].set("paid", true);
+          orderSummaries[i].set("closed_by_admin", true);
+          // orderSummaries[i].set("rated", true);
+
+          clonedOrderSummary.push(orderSummaries[i]);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      if (clonedOrderSummary.length > 0) {
+        console.log("Try to save all - " + clonedOrderSummary.length);
+        Parse.Object.saveAll(clonedOrderSummary, {
+          useMasterKey: true,
+          success: function (clonedOrderSummary) {
+            console.log("#### Saved Order Summary Array  " + clonedOrderSummary.length);
+            response.success("Saved Order Summary Array  " + clonedOrderSummary.length);
+          },
+          error: function (error) {
+            console.log("Wasnt able to save  " + error);
+            response.error('Wasnt able to find opened orders');
+          }
+        });
+      } else {
+        console.log("#### We have NO opened orders from 12 hours back or more");
+        response.error('We have NO opened orders from 12 hours back or more');
+      }
+    },
+    error: function () {
+      response.error('Wasnt able to find opened orders');
+    }
+  });
+}
+
+function forceCloseOpenedOrders(request, response) {
+  var oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  var Business = Parse.Object.extend("Business");
+  var business = new Business({
+    id: request.params.businessId
+  });
+
+  var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+  openedOrdersQuery.equalTo("business", business);
+  if (request.params.orderSummaryId) {
+    openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  }
+  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
+  openedOrdersQuery.notEqualTo("paid", true);
+  openedOrdersQuery.include("item_orders");
+  openedOrdersQuery.include("item_orders");
+  openedOrdersQuery.include("item_orders_in_progress");
+  openedOrdersQuery.include("item_orders_ready");
+  openedOrdersQuery.include("item_orders_delivered");
+  openedOrdersQuery.limit(500);
+  openedOrdersQuery.find({
+    useMasterKey: true,
+    success: function (orderSummaries) {
+      console.log("#### Orders to Close " + orderSummaries.length);
+      // console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
+
+      var clonedOrderSummary = [];
+
+      for (var i = 0; i < orderSummaries.length; i++) {
+        try {
+          if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
+            console.log("orderSummary is null..");
+            continue;
+          }
+
+          if (request.params.byAdmin) {
+            orderSummaries[i].set("closed_by_admin", true);
+          } else {
+            orderSummaries[i].set("closed_by_waiter", true);
+          }
           // orderSummaries[i].set("rated", true);
 
           clonedOrderSummary.push(orderSummaries[i]);
