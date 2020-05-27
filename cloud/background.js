@@ -26,10 +26,11 @@ function deleteTATables(request, response) {
   var then = new Date();
   then.setHours(then.getHours() - 12);
 
-  var openedOrdersQuery = new Parse.Query("Table");
-  openedOrdersQuery.equalTo("title", "TA");
-  openedOrdersQuery.limit(1000);
-  openedOrdersQuery.find({
+  var taTablesQuery = new Parse.Query("Table");
+  taTablesQuery.equalTo("title", "TA");
+  taTablesQuery.notEqualTo("seats", -1);
+  taTablesQuery.limit(1000);
+  taTablesQuery.find({
     useMasterKey: true,
     success: function (tables) {
       console.log("#### Tables to Close " + tables.length);
