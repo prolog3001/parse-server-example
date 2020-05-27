@@ -2,6 +2,9 @@ var push = require('./push.js');
 var i18n = require('i18n');
 
 module.exports = {
+  deleteTATables: function (request, response) {
+    deleteTATables(request, response);
+  },
   closeOpenedOrders: function (request, response) {
     closeOpenedOrders(request, response);
   },
@@ -18,6 +21,43 @@ module.exports = {
     ratePushTest(request, response);
   }
 };
+
+function deleteTATables(request, response) {
+  var then = new Date();
+  then.setHours(then.getHours() - 12);
+
+  var openedOrdersQuery = new Parse.Query("Table");
+  openedOrdersQuery.equalTo("title", "TA");
+  openedOrdersQuery.limit(1000);
+  openedOrdersQuery.find({
+    useMasterKey: true,
+    success: function (tables) {
+      console.log("#### Tables to Close " + tables.length);
+
+      if (tables.length > 0) {
+        console.log("Try to delete all TA tables- " + tables.length);
+
+        Parse.Object.destroyAll(tables, {
+          useMasterKey: true,
+          success: function (result) {
+            console.log("#### Deleted all TA tables");
+            response.success("Deleted all TA tables");
+          },
+          error: function (error) {
+            console.log("Wasnt able to delete  " + error);
+            response.error("Wasnt able to delete  " + error);
+          }
+        });
+      } else {
+        console.log("#### We have NO TA tables from past week");
+        response.error('We have NO TA tables from past week');
+      }
+    },
+    error: function () {
+      response.error('Wasnt able to find TA tables');
+    }
+  });
+}
 
 function closeOpenedOrders(request, response) {
   var then = new Date();

@@ -24,13 +24,12 @@ function forceDeliverOpenedOrders(request, response) {
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
   }
-  openedOrdersQuery.notEqualTo("closed_by_admin", true);
   openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
-  openedOrdersQuery.limit(500);
+  openedOrdersQuery.limit(1000);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
@@ -131,7 +130,7 @@ function forcePayOpenedOrders(request, response) {
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
-  openedOrdersQuery.limit(500);
+  openedOrdersQuery.limit(1000);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {

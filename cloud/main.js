@@ -45,6 +45,9 @@ Parse.Cloud.job("readyPushTest", background.readyPushTest);
 Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
 Parse.Cloud.job("ratePushTest", background.ratePushTest);
 
+Parse.Cloud.define("deleteTATables", background.deleteTATables);
+Parse.Cloud.job("deleteTATables", background.deleteTATables);
+
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 

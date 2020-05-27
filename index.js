@@ -91,7 +91,12 @@ httpServer.listen(port, function() {
 // This will enable the Live Query real-time server
 ParseServer.createLiveQueryServer(httpServer);
 
-// Re-Occuring of sessions
+// Closing of opened orders
 setInterval(function() {
     Parse.Cloud.run('closeOpenedOrders', {});
 }, 21600000); //6 * 60 * 60 * 1000)
+
+// Deleting of TA tables
+setInterval(function() {
+    Parse.Cloud.run('deleteTATables', {});
+}, 3600000); //60 * 60 * 1000)
