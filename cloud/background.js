@@ -70,7 +70,8 @@ function closeOpenedOrders(request, response) {
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
-  openedOrdersQuery.limit(500);
+  openedOrdersQuery.notEqualTo("paid", true);
+  openedOrdersQuery.limit(100);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
