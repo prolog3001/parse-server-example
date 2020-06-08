@@ -32,7 +32,7 @@ var api = new ParseServer({
         }
     },
     liveQuery: {
-        classNames: ["User", "Business", "Order",
+        classNames: ["_User", "User", "Business", "Order",
             "RestaurantOrderSummary", "Table", "UserWaiterRelation"
         ] // List of classes to support for query subscriptions
     },
