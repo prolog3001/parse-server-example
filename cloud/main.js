@@ -36,6 +36,9 @@ Parse.Cloud.define("pushReadyOrders", push.pushReadyOrders);
 Parse.Cloud.define("pushLowItems", push.pushLowItems);
 Parse.Cloud.define("pushLowRating", push.pushLowRating);
 
+Parse.Cloud.define("forceOrderedOpenedOrders", orders.forceOrderedOpenedOrders);
+Parse.Cloud.define("forceProgressOpenedOrders", orders.forceProgressOpenedOrders);
+Parse.Cloud.define("forceReadyOpenedOrders", orders.forceReadyOpenedOrders);
 Parse.Cloud.define("forceDeliverOpenedOrders", orders.forceDeliverOpenedOrders);
 Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
@@ -127,7 +130,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                         i18n.__({ phrase: "TA", locale: "en" })
 
                                     var userIds = [];
-                                    userIds.push(business.get("admin").get("fcm_token"));
+                                    // userIds.push(business.get("admin").get("fcm_token"));
                                     userIds.push(orderSummaryFromServer.get("client").get("fcm_token"));
 
                                     var params = {};
