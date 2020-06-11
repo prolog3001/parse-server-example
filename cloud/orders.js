@@ -82,8 +82,6 @@ function forceOrderedOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
 
-
-          clonedOrderSummary.push(orderSummaries[i]);
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
           console.error(error);
@@ -177,8 +175,6 @@ function forceProgressOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
 
-
-          clonedOrderSummary.push(orderSummaries[i]);
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
           console.error(error);
@@ -272,8 +268,6 @@ function forceReadyOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
 
-
-          clonedOrderSummary.push(orderSummaries[i]);
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
           console.error(error);
@@ -371,8 +365,6 @@ function forceDeliverOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
 
-
-          clonedOrderSummary.push(orderSummaries[i]);
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
           console.error(error);
