@@ -70,8 +70,7 @@ function closeOpenedOrders(request, response) {
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
-  openedOrdersQuery.notEqualTo("paid", true);
-  openedOrdersQuery.limit(100);
+  openedOrdersQuery.limit(500);
   openedOrdersQuery.find({
     useMasterKey: true,
     success: function (orderSummaries) {
@@ -119,6 +118,12 @@ function closeOpenedOrders(request, response) {
             orderSummaries[i].set("item_orders_delivered", []);
           }
 
+          if (orderSummaries[i].get("closed_by_admin")) {
+            console.log("orderSummary is closed already..");
+            continue;
+          }
+
+          orderSummaries[i].set("closed_by_admin", true);
           orderSummaries[i].set("paid", true);
           orderSummaries[i].set("rated", true);
 

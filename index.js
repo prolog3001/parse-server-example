@@ -92,9 +92,9 @@ httpServer.listen(port, function() {
 ParseServer.createLiveQueryServer(httpServer);
 
 // Closing of opened orders
-setInterval(function() {
-    Parse.Cloud.run('closeOpenedOrders', {});
-}, 21600000); //6 * 60 * 60 * 1000)
+// setInterval(function() {
+//     Parse.Cloud.run('closeOpenedOrders', {});
+// }, 21600000); //6 * 60 * 60 * 1000)
 
 // Deleting of TA tables
 setInterval(function() {

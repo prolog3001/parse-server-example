@@ -433,7 +433,7 @@ function forcePayOpenedOrders(request, response) {
           }
 
           orderSummaries[i].set("paid", true);
-          orderSummaries[i].set("closed_by_admin", true);
+          // orderSummaries[i].set("closed_by_admin", true);
           // orderSummaries[i].set("rated", true);
 
           clonedOrderSummary.push(orderSummaries[i]);
@@ -481,7 +481,7 @@ function forceCloseOpenedOrders(request, response) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
   }
   openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
-  openedOrdersQuery.notEqualTo("paid", true);
+  // openedOrdersQuery.notEqualTo("paid", true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
@@ -500,6 +500,11 @@ function forceCloseOpenedOrders(request, response) {
         try {
           if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
             console.log("orderSummary is null..");
+            continue;
+          }
+
+          if (orderSummaries[i].get("closed_by_admin") || orderSummaries[i].get("closed_by_waiter")) {
+            console.log("orderSummary is closed already..");
             continue;
           }
 
