@@ -1,6 +1,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var routes = require('./controllers/routes');
+var bodyParser = require('body-parser');
 var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 
