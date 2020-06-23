@@ -52,6 +52,9 @@ var api = new ParseServer({
     //   }
 });
 
+var app = express();
+app.use(cookieParser("Dreamdiner"));
+
 // Serve the Parse API on the /parse URL prefix
 var mountPath = process.env.PARSE_MOUNT || '/parse';
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -59,9 +62,6 @@ app.use(mountPath, api);
 
 // Parse Server plays nicely with the rest of your web routes
 routes(app);
-
-var app = express();
-app.use(cookieParser("Dreamdiner"));
 
 i18n.configure({
     locales:['en', 'he'],
