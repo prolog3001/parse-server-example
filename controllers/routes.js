@@ -1,5 +1,5 @@
 var PaymentRequestController = require('./PaymentRequestController');
-var RegisterTeacherController = require('./RegisterTeacherController');
+var RegisterBusinessController = require('./RegisterBusinessController');
 
 module.exports = function (app) {
   app.get('/', function(req, res) {
@@ -7,7 +7,7 @@ module.exports = function (app) {
   });
 
   app.post('/api/payment-request/success', PaymentRequestController);
-  app.post('/api/register-teacher/success', RegisterTeacherController);
+  app.post('/api/register-business/success', RegisterBusinessController);
 
-  //WEBHOOK callback url: https://digidine-server.herokuapp.com/parse/api/payment-request/success
+  //WEBHOOK callback url: https://digidine-server.herokuapp.com/parse/api/register-business/success
 }
