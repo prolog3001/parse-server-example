@@ -23,7 +23,7 @@ function getObjectById(className, id) {
 async function savePayment(req) {
   console.log('savePayment');
 
-  let { productType, clientId, businessId, productId } = req.query;
+  let { productType, clientId, businessId, productId, productId, tip } = req.query;
 
   var Payment = Parse.Object.extend(PAYMENT_CLASS_NAME);
   var payment = new Payment();
@@ -44,7 +44,7 @@ async function savePayment(req) {
       break;
   }
 
-  var price = parseInt(req.body.price);
+  var price = parseInt(req.body.price)-tip;
   var paymentParams = {
     client,
     business: business,
@@ -59,6 +59,7 @@ async function savePayment(req) {
     // data from payme
     currency: req.body.currency,
     price: price / 100,
+    tip,
     payme_transaction_id: req.body.payme_transaction_id,
     payme_json: JSON.stringify(req.body),
     sub_payme_id: req.body.sub_payme_id,
@@ -231,10 +232,6 @@ function isRefundedPayment(req) {
   return (req.body.notify_type && req.body.notify_type === 'refund');
 }
 
-function isSubActive(req) {
-  return (req.body.notify_type && req.body.notify_type === 'sub-active');
-}
-
 module.exports = function (req, res) {
   console.log('PaymentRequestController');
   console.log('Recived payment action with req.body:', req.body);
@@ -242,7 +239,6 @@ module.exports = function (req, res) {
 
   console.log('canSavePayment?', canSavePayment(req));
   console.log('isRefundedPayment?', isRefundedPayment(req));
-  console.log('isSubActive?', isSubActive(req));
 
   if (req.body.buyer_key) {
     var phone = req.body.buyer_contact_phone ? req.body.buyer_contact_phone : req.body.buyer_phone;

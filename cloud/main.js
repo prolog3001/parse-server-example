@@ -18,7 +18,7 @@ Parse.Cloud.define("unBlockUser", users.unBlockUser);
 Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);
 Parse.Cloud.define("getFullUserInstallationsFromIds", users.getFullUserInstallationsFromIds);
 Parse.Cloud.define("createNewUser", users.createNewUser);
-Parse.Cloud.define("saveUserSellerIdByPhone", users.saveUserSellerIdByPhone);
+Parse.Cloud.define("saveBusinessSellerId", users.saveBusinessSellerId);
 Parse.Cloud.define("saveAndroidUserDeviceToken", users.saveAndroidUserDeviceToken);
 Parse.Cloud.define("createPaymentRequest", users.createPaymentRequest);
 Parse.Cloud.define("paymentRequestSettled", users.paymentRequestSettled);

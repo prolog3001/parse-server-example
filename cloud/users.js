@@ -22,8 +22,8 @@ module.exports = {
   createNewUser: function (request, response) {
     createNewUser(request, response);
   },
-  saveUserSellerIdByPhone: function (request, response) {
-    saveUserSellerIdByPhone(request, response);
+  saveBusinessSellerId: function (request, response) {
+    saveBusinessSellerId(request, response);
   },
   saveAndroidUserDeviceToken: function (request, response) {
     saveAndroidUserDeviceToken(request, response);
@@ -263,20 +263,20 @@ function createNewUser(request, response) {
   });
 }
 
-function saveUserSellerIdByPhone(request, response){
+function saveBusinessSellerId(request, response){
   var params = request.params;
-  console.log("saveUserSellerIdByPhone");
-  console.log("phone", params.phone);
+  console.log("saveBusinessSellerId");
+  console.log("phone", params.businessId);
   console.log("seller_payme_id", params.seller_payme_id);
 
-  var userQuery = new Parse.Query(Parse.User);
-  userQuery.endsWith("username", params.phone.substring(params.phone.length - 5, params.phone.length));
+  var userQuery = new Parse.Query("Business");
+  userQuery.equalTo("objectId", businessId);
   userQuery.find({
-    success: function(users) {
+    success: function(businesses) {
       try {
-        if(users && users.length > 0){
-          var newIsraeliSeller = users[0];
-          console.log("found user", newIsraeliSeller.id);
+        if(businesses && businesses.length > 0){
+          var newIsraeliSeller = businesses[0];
+          console.log("found business", newIsraeliSeller.id);
           newIsraeliSeller.set("seller_payme_id", params.seller_payme_id);
           newIsraeliSeller.save(null, {
             useMasterKey: true,
@@ -290,7 +290,7 @@ function saveUserSellerIdByPhone(request, response){
             }
           });
         } else{
-          console.log("no user found, create one!");
+          console.log("no user business, create one!");
           createNewUser(request, response)
           console.log("created new user");
         }

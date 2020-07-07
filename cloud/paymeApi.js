@@ -19,7 +19,7 @@ module.exports = {
 async function purchaseProduct(request, response) {
     console.log('purchaseProduct');
     console.log('params', request.params);
-    let { businessId, productType, clientId, productId, amount} = request.params;
+    let { businessId, productType, clientId, productId, amount, tip} = request.params;
 
     let client = await utils.getObjectById('User', clientId);
     var product;
@@ -42,7 +42,7 @@ async function purchaseProduct(request, response) {
     var locale = business.get('language');
     locale = locale ? (locale.includes('he') ? 'he' : 'en') : 'en';
 
-    let amountToPay = Math.floor(amount * 100);
+    let amountToPay = Math.floor((amount + tip) * 100);
 
     let buyerKey = client.get('payme_buyer_key');
     let isBuyerKeyValid = !utils.isEmpty(buyerKey);
@@ -59,7 +59,7 @@ async function purchaseProduct(request, response) {
 
         currency: product ? product.get('currency') : business.get('currency'),
         product_name: product ? product.get('title') : (locale == 'he' ? 'סכום חופשי' : 'Free Amount'),
-        sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amountToPay}),
+        sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip}),
         sale_name: client.get('name'),
 
         layout: 'micro_ltr',
@@ -108,9 +108,9 @@ async function purchaseProduct(request, response) {
 
 function getWebhookUrl(params) {
     console.log('getWebhookUrl params', params);
-    let { productType, product, business, client} = params;
+    let { productType, product, business, client, amount, tip} = params;
 
-    var webhookParams = '?sellerId=' + business.id + '&buyerId=' + client.id + '&productType=' + productType;
+    var webhookParams = '?businessId=' + business.id + '&buyerId=' + client.id + '&productType=' + productType + '&tip=' + tip;
 
     var webhookResult;
     switch (parseInt(productType)) {

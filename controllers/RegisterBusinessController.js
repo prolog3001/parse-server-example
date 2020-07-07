@@ -30,19 +30,17 @@
 // fee_forcurr_processing_charge: '0.30',
 // notify_type: 'seller-create' }
 
-async function saveUser(req) {
+async function saveBusiness(req) {
   console.log('saveUser');
-  var phone = req.body.seller_contact_phone ? req.body.seller_contact_phone : req.body.seller_phone;
-  console.log('phone', phone);
+  var businessId = req.query.businessId;
+  console.log('businessId', businessId);
 
-  var number = phone.replace(/\D/g, '').slice(-10);
   var params = {
     sellerPaymeId : req.body.seller_payme_id,
-    phone : phone,
-    name : req.body.seller_first_name + " " + req.body.seller_last_name
+    businessId : businessId,
   }
 
-  Parse.Cloud.run('saveUserSellerIdByPhone', params, {
+  Parse.Cloud.run('saveBusinessSellerId', params, {
     success: (res) => {
       console.log('success saving user');
     },
@@ -52,7 +50,7 @@ async function saveUser(req) {
   });
 }
 
-function canSaveUser(req) {
+function canSaveBusiness(req) {
   return req.body.payme_status === 'success';
 }
 
@@ -60,10 +58,10 @@ module.exports = function(req, res) {
   // console.log('Recived response on new user registering payments. REQ:', req);
   console.log('Recived  response on new user registering payments. REQ BODY:', req.body);
   // console.log('Recived  response on new user registering payments. RES:', res);
-  console.log('canSaveUser?', canSaveUser(req));
+  console.log('canSaveUser?', canSaveBusiness(req));
 
-  if (canSaveUser(req)) {
-    saveUser(req);
+  if (canSaveBusiness(req)) {
+    saveBusiness(req);
   }
   res.status(200).send('OK');
 }
