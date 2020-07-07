@@ -22,8 +22,8 @@ module.exports = {
   createNewUser: function (request, response) {
     createNewUser(request, response);
   },
-  saveUserSellerIdByEmail: function (request, response) {
-    saveUserSellerIdByEmail(request, response);
+  saveUserSellerIdByPhone: function (request, response) {
+    saveUserSellerIdByPhone(request, response);
   },
   saveAndroidUserDeviceToken: function (request, response) {
     saveAndroidUserDeviceToken(request, response);
@@ -263,25 +263,25 @@ function createNewUser(request, response) {
   });
 }
 
-function saveUserSellerIdByEmail(request, response){
+function saveUserSellerIdByPhone(request, response){
   var params = request.params;
-  console.log("saveUserSellerIdByEmail");
-  console.log("email", params.email);
+  console.log("saveUserSellerIdByPhone");
+  console.log("phone", params.phone);
   console.log("seller_payme_id", params.seller_payme_id);
 
   var userQuery = new Parse.Query(Parse.User);
-  userQuery.equalTo("email", params.email);
+  userQuery.endsWith("username", params.phone.substring(params.phone.length - 5, params.phone.length));
   userQuery.find({
     success: function(users) {
       try {
         if(users && users.length > 0){
-          var newIsraeliTeacher = users[0];
-          console.log("found user", newIsraeliTeacher.id);
-          newIsraeliTeacher.set("seller_payme_id", params.seller_payme_id);
-          newIsraeliTeacher.save(null, {
+          var newIsraeliSeller = users[0];
+          console.log("found user", newIsraeliSeller.id);
+          newIsraeliSeller.set("seller_payme_id", params.seller_payme_id);
+          newIsraeliSeller.save(null, {
             useMasterKey: true,
             success: function(user) {
-              console.log("Saved Teacher Seller Id");
+              console.log("Saved Businesss Seller Id");
               response.success('success');
             },
             error: function(error) {

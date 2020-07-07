@@ -32,23 +32,17 @@
 
 async function saveUser(req) {
   console.log('saveUser');
-  var email = req.body.seller_contact_email;
-  console.log('email', email);
+  var phone = req.body.seller_contact_phone ? req.body.seller_contact_phone : req.body.seller_phone;
+  console.log('phone', phone);
 
-  if(email.indexOf('+') > -1){
-    console.log('email contains +');
-    email = email.replace(email.substring(email.indexOf('+'), (email.indexOf('@'))), "");
-    console.log('email without +', email);
-  }
-
+  var number = phone.replace(/\D/g, '').slice(-10);
   var params = {
     sellerPaymeId : req.body.seller_payme_id,
-    email : email,
-    firstName : req.body.seller_first_name,
-    lastName : req.body.seller_last_name
+    phone : phone,
+    name : req.body.seller_first_name + " " + req.body.seller_last_name
   }
 
-  Parse.Cloud.run('saveUserSellerIdByEmail', params, {
+  Parse.Cloud.run('saveUserSellerIdByPhone', params, {
     success: (res) => {
       console.log('success saving user');
     },

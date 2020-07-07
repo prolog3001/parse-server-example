@@ -6,6 +6,10 @@ const geoTz = require('geo-tz');
 
 module.exports = {
   sendSMS,
+  getObjectById,
+  getUserByPhone,
+  getObjectByIdWithInclude,
+  getObjectByIdIncludes,
   uploadImage,
   dateDSTPresenter,
   dateDSTBeforeSessionSave,
@@ -16,7 +20,8 @@ module.exports = {
   getRegaxCurrencySign,
   checkIfDollar,
   replaceAll,
-  removeDuplicatesByKey
+  removeDuplicatesByKey,
+  saveBuyerKeyToUser
 }
 
 function sendSMS(request, response) {
@@ -258,6 +263,81 @@ function checkIfDollar(seller) {
     console.log(error);
     return false;
   }
+}
+
+async function saveBuyerKeyToUser(phone, key) {
+  var buyer = await getUserByPhone(phone);
+  buyer.save({ 'payme_buyer_key': key }, { useMasterKey: true });
+  console.log('Saved buyer key to user', buyer.id);
+}
+
+function getUserByPhone(phone, includes) {
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query(Parse.User);
+    query.endsWith('username', phone.substring(phone.length - 5, phone.length));
+    if (includes && includes.length > 0) {
+      for (let i = 0; i < includes.length; i++) {
+        const include = includes[i];
+        console.log('include', include);
+        query.include(include);
+      }
+    }
+    query.limit(1);
+    query.find({
+      useMasterKey: true,
+      success: function (res) {
+        resolve(res[0]);
+      },
+      error: function (err) {
+        console.log('err when finding object', err)
+        reject(err);
+      }
+    });
+  });
+}
+
+function getObjectByIdWithInclude(className, includeField, id) {
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query(className);
+    query.equalTo('objectId', id);
+    query.include(includeField);
+    query.limit(1);
+    query.find({
+      useMasterKey: true,
+      success: function (res) {
+        resolve(res[0]);
+      },
+      error: function (err) {
+        console.log('err when finding object', err)
+        reject(err);
+      }
+    });
+  });
+}
+
+function getObjectByIdIncludes(className, id, includes) {
+  return new Promise((resolve, reject) => {
+    var query = new Parse.Query(className);
+    if (includes && includes.length > 0) {
+      for (let i = 0; i < includes.length; i++) {
+        const include = includes[i];
+        console.log('include', include);
+        query.include(include);
+      }
+    }
+    query.equalTo('objectId', id);
+    query.limit(1);
+    query.find({
+      useMasterKey: true,
+      success: function (res) {
+        resolve(res[0]);
+      },
+      error: function (err) {
+        console.log('err when finding object', err)
+        reject(err);
+      }
+    });
+  });
 }
 
 function replaceAll(str, find, replace) {

@@ -5,6 +5,7 @@ var push = require('./push.js');
 var tables = require('./tables.js');
 var background = require('./background.js');
 var i18n = require('i18n');
+var paymeApi = require('./paymeApi.js');
 
 Parse.Cloud.define("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.job("sendVerificationCode", users.sendVerificationCode);
@@ -17,7 +18,7 @@ Parse.Cloud.define("unBlockUser", users.unBlockUser);
 Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);
 Parse.Cloud.define("getFullUserInstallationsFromIds", users.getFullUserInstallationsFromIds);
 Parse.Cloud.define("createNewUser", users.createNewUser);
-Parse.Cloud.define("saveUserSellerIdByEmail", users.saveUserSellerIdByEmail);
+Parse.Cloud.define("saveUserSellerIdByPhone", users.saveUserSellerIdByPhone);
 Parse.Cloud.define("saveAndroidUserDeviceToken", users.saveAndroidUserDeviceToken);
 Parse.Cloud.define("createPaymentRequest", users.createPaymentRequest);
 Parse.Cloud.define("paymentRequestSettled", users.paymentRequestSettled);
@@ -53,6 +54,9 @@ Parse.Cloud.job("deleteTATables", background.deleteTATables);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
+
+Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
+Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 
 //Business low orders count
 Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
