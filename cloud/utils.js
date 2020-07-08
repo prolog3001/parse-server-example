@@ -21,6 +21,8 @@ module.exports = {
   checkIfDollar,
   replaceAll,
   removeDuplicatesByKey,
+  isEmpty,
+  isEmptyValue,
   saveBuyerKeyToUser
 }
 
@@ -160,6 +162,14 @@ function removeDuplicatesByKey(keyToRemove, array) {
       values[val] = true;
       return !exists;
   });
+}
+
+function isEmpty(string) {
+  return (!string || 0 === string.length);
+}
+
+function isEmptyValue(value){
+  return (value == null || value.length === 0);
 }
 
 function getObjectById(className, id, includes) {
