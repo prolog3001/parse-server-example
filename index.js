@@ -15,7 +15,7 @@ var api = new ParseServer({
     databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
     cloud: __dirname + '/cloud/main.js',
     appId: process.env.APP_ID,
-    appName: 'DigiDine Table Planner',
+    appName: 'Dreamdiner',
     masterKey: process.env.MASTER_KEY,
     serverURL: process.env.SERVER_URL, // Don't forget to change to https if needed
     publicServerURL: process.env.PUBLIC_SERVER_URL,

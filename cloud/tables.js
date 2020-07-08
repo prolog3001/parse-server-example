@@ -7,7 +7,7 @@ module.exports = {
 function sendSomething(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
 
-  const from = 'DigiDine'
+  const from = 'DreamDiner'
   const to = request.params ? request.params.phoneNumber ? request.params.phoneNumber : "+972526677877" : "972526677877"
   const text = "Your verification code is " + verificationCode
 

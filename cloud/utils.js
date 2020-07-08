@@ -37,7 +37,7 @@ function sendSMS(request, response) {
   })
 
   if(!from || from == null || from.length == 0)
-  from = 'DigiDine'
+  from = 'DreamDiner'
 
   nexmo.message.sendSms(
     from, to, text, {type: 'unicode'},

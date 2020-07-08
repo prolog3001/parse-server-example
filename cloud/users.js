@@ -39,7 +39,7 @@ module.exports = {
 function sendVerificationCode(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
 
-  const from = request.params ? request.params.from ? request.params.from : 'DigiDine' : 'DigiDine'
+  const from = request.params ? request.params.from ? request.params.from : 'DreamDiner' : 'DreamDiner'
   const to = request.params ? (request.params.phoneNumber ? request.params.phoneNumber : undefined) : undefined
   const text = "Your verification code is " + verificationCode
 
@@ -71,7 +71,7 @@ function sendVerificationCode(request, response) {
 }
 
 function sendTableOrderSMS(request, response) {
-  const from = request.params ? request.params.from ? request.params.from : 'DigiDine' : 'DigiDine'
+  const from = request.params ? request.params.from ? request.params.from : 'DreamDiner' : 'DreamDiner'
   const to = request.params ? request.params.to ? request.params.to : undefined : undefined
   const text = request.params.text
   const business = request.params.business;
