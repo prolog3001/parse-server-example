@@ -54,7 +54,7 @@ async function purchaseProduct(request, response) {
         sale_price: amountToPay.toString(),
 
         ...(!isSellerPaidDirectly && {
-            market_fee: (userPreferences.get("merchant_fee_percent") ? userPreferences.get("merchant_fee_percent") : parseFloat(MERCHANT_FEE)),
+            market_fee: parseFloat(MERCHANT_FEE),
         }),
 
         currency: product ? product.get('currency') : business.get('currency'),
