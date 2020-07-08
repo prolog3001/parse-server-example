@@ -37,7 +37,7 @@ async function purchaseProduct(request, response) {
             break;
     }
 
-    let isSellerPaidDirectly = await sellerPaidDirectly(owner);
+    let isSellerPaidDirectly = await sellerPaidDirectly(business);
 
     var locale = business.get('language');
     locale = locale ? (locale.includes('he') ? 'he' : 'en') : 'en';
@@ -185,7 +185,7 @@ async function refundProduct(request, response) {
 
     var params = {
         payme_client_key: process.env.PAYME_KEY,
-        seller_payme_id: owner.get('payme_seller_id'),
+        seller_payme_id: business.get('payme_seller_id'),
         payme_sale_id: payment.get('payme_sale_id'),
         language: locale
     };
