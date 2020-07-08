@@ -31,7 +31,7 @@ async function purchaseProduct(request, response) {
             break;
         case 1://Order
             product = await utils.getObjectById('RestaurantOrderSummary', productId);
-            business = await utils.getObjectById('Business', product.get('business').id);
+            business = await utils.getObjectById('Business', businessId);
             break;
         default:
             break;
@@ -163,7 +163,7 @@ async function refundProduct(request, response) {
             break;
         case 1://Order
             product = await utils.getObjectById('RestaurantOrderSummary', productId);
-            business = await utils.getObjectById('Business', product.get('business').id);
+            business = await utils.getObjectById('Business', businessId);
             break;
         default:
             break;
