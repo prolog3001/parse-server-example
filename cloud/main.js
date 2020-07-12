@@ -86,12 +86,12 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                         console.log("New orderSummary object", orderSummary);
 
                         var min = business.get("orders_accumulate_min") > 0 ? business.get("orders_accumulate_min") : 50;
-                        business.increment("orders_accumulate", -1);
+                        business.increment("items_accumulate", -1);
                         business.save(null, { useMasterKey: true })
                             .then(async function (result) {
                                 console.log("Success saving after order decrement", result);
 
-                                if (business.get("orders_accumulate") == min) {
+                                if (business.get("items_accumulate") == min) {
                                     //PUSH Low Orders
                                     console.log("sent low orders push");
 
