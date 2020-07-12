@@ -57,10 +57,10 @@ async function purchaseProduct(request, response) {
             market_fee: parseFloat(MERCHANT_FEE),
         }),
 
-        currency: product ? product.get('currency') : business.get('currency'),
-        product_name: product ? product.get('title') : (locale == 'he' ? 'סכום חופשי' : 'Free Amount'),
+        currency: business.get('currency'),
+        product_name: product ? product.id : (locale == 'he' ? 'סכום חופשי' : 'Free Amount'),
         sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip}),
-        sale_name: client.get('name'),
+        sale_name: (locale == 'he' ? 'תשלום על הזמנה על ידי: ' : 'Payment for Order by: ') + client.get('name'),
 
         layout: 'micro_ltr',
         installments: 1,
