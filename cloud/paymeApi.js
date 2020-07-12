@@ -52,7 +52,7 @@ async function purchaseProduct(request, response) {
     console.log('amountToPay', amountToPay);
 
     params = {
-        seller_payme_id: business.get('payme_seller_id'),
+        seller_payme_id: business.get('payme_seller_id_debug'),
         sale_price: amountToPay.toString(),
 
         ...(!isSellerPaidDirectly && {
@@ -140,7 +140,7 @@ function sellerPaidDirectly(seller) {
             let result = await axios({
                 method: 'post',
                 url: process.env.PAYME_URL + '/api/get-sellers',
-                data: { payme_client_key: process.env.PAYME_KEY, seller_payme_id: seller.get('payme_seller_id') },
+                data: { payme_client_key: process.env.PAYME_KEY, seller_payme_id: seller.get('payme_seller_id_debug') },
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 maxContentLength: Infinity,
                 maxBodyLength: Infinity
@@ -197,7 +197,7 @@ async function refundProduct(request, response) {
 
         var params = {
             payme_client_key: process.env.PAYME_KEY,
-            seller_payme_id: business.get('payme_seller_id'),
+            seller_payme_id: business.get('payme_seller_id_debug'),
             payme_sale_id: payment.get('payme_sale_id'),
             language: locale
         };
