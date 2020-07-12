@@ -47,7 +47,6 @@ async function purchaseProduct(request, response) {
     let buyerKey = client.get('payme_buyer_key');
     let isBuyerKeyValid = !utils.isEmpty(buyerKey);
     let currency = business.get('currency');
-    currency = currency == '₪' ? "NIS" : "USD";
 
     console.log('buyerKey', buyerKey);
     console.log('amountToPay', amountToPay);
