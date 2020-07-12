@@ -78,14 +78,15 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
             try {
                 console.log("Found orderSummaries: " + orderSummaries.length);
                 var orderSummary = orderSummaries[0];
-                console.log("orderSummary: " + orderSummary);
 
                 if (orderSummary) {
+                    console.log("orderSummary: " + JSON.stringify(orderSummary));
+
                     var business = orderSummary.get("business");
-                    console.log("business", business.id);
+                    console.log("business: " + JSON.stringify(business));
 
                     if (request.object.existed() === false && business) {
-                        console.log("New orderSummary object", orderSummary);
+                        console.log("New orderSummary object");
 
                         var min = business.get("orders_accumulate_min") > 0 ? business.get("orders_accumulate_min") : 50;
                         business.increment("items_accumulate", -1);
