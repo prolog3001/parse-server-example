@@ -108,6 +108,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                     await push.pushLowOrders(params);
                                 } else{
                                     console.log("no need to send low orders push");
+                                    console.log("new items_accumulate: " + result.get("items_accumulate"));
                                 }
                             },
                             error: async function (error) {
