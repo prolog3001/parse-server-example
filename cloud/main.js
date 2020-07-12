@@ -80,18 +80,18 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                 var orderSummary = orderSummaries[0];
 
                 if (orderSummary) {
-                    console.log("orderSummary: " + JSON.stringify(orderSummary));
+                    // console.log("orderSummary: " + JSON.stringify(orderSummary));
 
                     var business = orderSummary.get("business");
 
                     if (request.object.existed() === false && business) {
-                        console.log("business: " + JSON.stringify(business));
+                        console.log("business: " + business.id);
                         console.log("New orderSummary object");
 
-                        var min = business.get("orders_accumulate_min") > 0 ? business.get("orders_accumulate_min") : 50;
+                        var min = business.get("items_accumulate_min") > 0 ? business.get("items_accumulate_min") : 50;
                         business.increment("items_accumulate", -1);
-                        business.save(null, { useMasterKey: true })
-                            .then(async function (result) {
+                        business.save({}, {
+                            success: async function (result) {
                                 console.log("Success saving after order decrement", result);
 
                                 if (business.get("items_accumulate") == min) {
@@ -102,12 +102,14 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                     params["userTokens"] = [business.get("admin").get("fcm_token")];
                                     params["business_id"] = business.id;
                                     await push.pushLowOrders(params);
+                                } else{
+                                    console.log("no need to send low orders push");
                                 }
-                            }, async function (error) {
+                            },
+                            error: async function (error) {
                                 console.log("Error", error);
-                                return error;
-                            });
-                        
+                            }
+                          });
                     } else{
                         console.log("request.object.existed()", request.object.existed());
                     }
