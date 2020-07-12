@@ -19,7 +19,7 @@ module.exports = {
 async function purchaseProduct(request, response) {
     console.log('purchaseProduct');
     console.log('params', request.params);
-    let { businessId, productType, clientId, productId, amount, tip } = request.params;
+    let { isDebug, businessId, productType, clientId, productId, amount, tip } = request.params;
 
     let client = await utils.getObjectById('User', clientId);
     var product;
@@ -37,7 +37,7 @@ async function purchaseProduct(request, response) {
             break;
     }
 
-    let isSellerPaidDirectly = await sellerPaidDirectly(business);
+    let isSellerPaidDirectly = await sellerPaidDirectly(business, isDebug);
 
     var locale = business.get('language');
     locale = locale ? (locale.includes('he') ? 'he' : 'en') : 'en';
@@ -77,7 +77,7 @@ async function purchaseProduct(request, response) {
         }),
     };
 
-    let paymentUrl = process.env.PAYME_URL + '/api/generate-sale';
+    let paymentUrl = (isDebug ? process.env.PAYME_URL_DEBUG : process.env.PAYME_URL) + '/api/generate-sale';
 
     console.log('params', params);
     console.log('paymentUrl', paymentUrl);
@@ -134,12 +134,12 @@ function getWebhookUrl(params) {
 
 }
 
-function sellerPaidDirectly(seller) {
+function sellerPaidDirectly(seller, isDebug) {
     return new Promise(async (resolve, reject) => {
         if (process.env.PAYME_KEY.length > 0) {
             let result = await axios({
                 method: 'post',
-                url: process.env.PAYME_URL + '/api/get-sellers',
+                url: (isDebug ? process.env.PAYME_URL_DEBUG : process.env.PAYME_URL) + '/api/get-sellers',
                 data: { payme_client_key: process.env.PAYME_KEY, seller_payme_id: seller.get('payme_seller_id_debug') },
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 maxContentLength: Infinity,
@@ -163,7 +163,7 @@ async function refundProduct(request, response) {
     console.log('params', request.params);
 
     if (process.env.PAYME_KEY.length > 0) {
-        let { businessId, productType, clientId, productId } = request.params;
+        let { isDebug, businessId, productType, clientId, productId } = request.params;
 
         let client = await utils.getObjectById('User', clientId);
         var product;
@@ -183,7 +183,7 @@ async function refundProduct(request, response) {
 
         let { payment } = await getPaymentObject({ productType, product, client });
 
-        let canRefund = await getSaleStatus(payment);
+        let canRefund = await getSaleStatus(payment, isDebug);
 
         if (!canRefund) {
             response.error('Payment already refunded');
@@ -202,7 +202,7 @@ async function refundProduct(request, response) {
             language: locale
         };
 
-        let refundUrl = process.env.PAYME_URL + '/api/refund-sale';
+        let refundUrl = (isDebug ? process.env.PAYME_URL_DEBUG : process.env.PAYME_URL) + '/api/refund-sale';
 
         console.log('params', params);
         console.log('refundUrl', refundUrl);
@@ -251,11 +251,11 @@ function getPaymentObject(params) {
     });
 }
 
-function getSaleStatus(payment) {
+function getSaleStatus(payment, isDebug) {
     return new Promise(async (resolve, reject) => {
         if (process.env.PAYME_KEY.length > 0) {
             let params = { payme_client_key: process.env.PAYME_KEY, sale_payme_id: payment.get('payme_sale_id') };
-            let getSalesUrl = process.env.PAYME_URL + '/api/get-sales';
+            let getSalesUrl = (isDebug ? process.env.PAYME_URL_DEBUG : process.env.PAYME_URL) + '/api/get-sales';
             console.log('params', params);
             console.log('getSalesUrl', getSalesUrl);
             let result = await axios({
