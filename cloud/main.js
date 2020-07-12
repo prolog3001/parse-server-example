@@ -81,6 +81,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
 
                 if (orderSummary) {
                     var business = orderSummary.get("business");
+                    console.log("business", business.id);
 
                     if (request.object.existed() === false && business) {
                         console.log("New orderSummary object", orderSummary);
@@ -105,6 +106,8 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                 return error;
                             });
                         
+                    } else{
+                        console.log("request.object.existed()", request.object.existed());
                     }
 
                     console.log("notified_client", orderSummary.get("notified_client"));
