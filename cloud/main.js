@@ -76,8 +76,9 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
         useMasterKey: true,
         success: async function (orderSummaries) {
             try {
-                console.log("Found orderSummaries" + orderSummaries.length);
+                console.log("Found orderSummaries: " + orderSummaries.length);
                 var orderSummary = orderSummaries[0];
+                console.log("orderSummary: " + orderSummary);
 
                 if (orderSummary) {
                     var business = orderSummary.get("business");
