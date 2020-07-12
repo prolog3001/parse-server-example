@@ -130,6 +130,10 @@ function getWebhookUrl(params) {
 
 function sellerPaidDirectly(seller) {
     return new Promise(async (resolve, reject) => {
+        if(!process.env.PAYME_KEY){
+            resolve(false);
+        }
+        
         let result = await axios({
             method: 'post',
             url: process.env.PAYME_URL + '/api/get-sellers',
@@ -151,6 +155,11 @@ function sellerPaidDirectly(seller) {
 async function refundProduct(request, response) {
     console.log('refundProduct');
     console.log('params', request.params);
+    
+    if(!process.env.PAYME_KEY){
+        response.error('Trouble refunding this payment');
+    }
+
     let { businessId, productType, clientId, productId } = request.params;
 
     let client = await utils.getObjectById('User', clientId);
@@ -237,6 +246,11 @@ function getPaymentObject(params) {
 }
 
 function getSaleStatus(payment) {
+    if(!process.env.PAYME_KEY){
+        console.log('canRefund', false);
+        resolve(false);
+    }
+
     return new Promise(async (resolve, reject) => {
         let params = { payme_client_key: process.env.PAYME_KEY, sale_payme_id: payment.get('payme_sale_id') };
         let getSalesUrl = process.env.PAYME_URL + '/api/get-sales';
