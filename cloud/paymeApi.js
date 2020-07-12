@@ -130,7 +130,7 @@ function getWebhookUrl(params) {
 
 function sellerPaidDirectly(seller) {
     return new Promise(async (resolve, reject) => {
-        if(!process.env.PAYME_KEY){
+        if(!process.env.PAYME_KEY || process.env.PAYME_KEY.length == 0){
             resolve(false);
         }
         
@@ -156,7 +156,7 @@ async function refundProduct(request, response) {
     console.log('refundProduct');
     console.log('params', request.params);
     
-    if(!process.env.PAYME_KEY){
+    if(!process.env.PAYME_KEY || process.env.PAYME_KEY.length == 0){
         response.error('Trouble refunding this payment');
     }
 
@@ -246,7 +246,7 @@ function getPaymentObject(params) {
 }
 
 function getSaleStatus(payment) {
-    if(!process.env.PAYME_KEY){
+    if(!process.env.PAYME_KEY || process.env.PAYME_KEY.length == 0){
         console.log('canRefund', false);
         resolve(false);
     }
