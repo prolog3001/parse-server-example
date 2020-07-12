@@ -42,12 +42,12 @@ async function purchaseProduct(request, response) {
     var locale = business.get('language');
     locale = locale ? (locale.includes('he') ? 'he' : 'en') : 'en';
 
-    let amountToPay = Math.floor((amount + tip) * 100);
+    let amountToPay = tip ? Math.floor((amount + tip) * 100) : Math.floor((amount) * 100);
 
     let buyerKey = client.get('payme_buyer_key');
     let isBuyerKeyValid = !utils.isEmpty(buyerKey);
     console.log('buyerKey', buyerKey);
-    console.log('isBuyerKeyValid', isBuyerKeyValid);
+    console.log('amountToPay', amountToPay);
 
     params = {
         seller_payme_id: business.get('payme_seller_id'),
@@ -91,18 +91,22 @@ async function purchaseProduct(request, response) {
         console.log(error);
     })
 
-    console.log(result.data);
-    if (result.data.status_code == 0 || result.data.payme_status === 'success') {
-        console.log('payme_status', result.data.payme_status);
-        if (parseInt(productType) == 3) {
-            response.success(isBuyerKeyValid ? result.data.payme_status : result.data.sub_url);
+    try {
+        console.log(result.data);
+        if (result.data.status_code == 0 || result.data.payme_status === 'success') {
+            console.log('payme_status', result.data.payme_status);
+            if (parseInt(productType) == 3) {
+                response.success(isBuyerKeyValid ? result.data.payme_status : result.data.sub_url);
+            } else {
+                response.success(isBuyerKeyValid ? result.data.payme_status : result.data.sale_url);
+            }
         } else {
-            response.success(isBuyerKeyValid ? result.data.payme_status : result.data.sale_url);
+            console.log('status_error_code', result.data.status_error_code);
+            console.log('status_error_details', result.data.status_error_details);
+            response.error(result.data.status_error_details);
         }
-    } else {
-        console.log('status_error_code', result.data.status_error_code);
-        console.log('status_error_details', result.data.status_error_details);
-        response.error(result.data.status_error_details);
+    } catch (error) {
+        response.error(error);
     }
 }
 
