@@ -23,7 +23,13 @@ function getObjectById(className, id) {
 async function savePayment(req) {
   console.log('savePayment');
 
-  let { productType, clientId, businessId, productId, tip } = req.query;
+  let { productType, clientId, businessId, productId} = req.query;
+
+  let tip = req.query.tip;
+  if(tip >= 0)
+    tip = parseFloat(tip)
+  else 
+    tip = 0
 
   var Payment = Parse.Object.extend(PAYMENT_CLASS_NAME);
   var payment = new Payment();
@@ -43,6 +49,9 @@ async function savePayment(req) {
     default:
       break;
   }
+
+  if(!tip)
+    tip = 0;
 
   var price = parseInt(req.body.price)-tip;
   var paymentParams = {
