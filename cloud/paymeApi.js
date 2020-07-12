@@ -52,7 +52,7 @@ async function purchaseProduct(request, response) {
     console.log('amountToPay', amountToPay);
 
     params = {
-        seller_payme_id: business.get('payme_seller_id_debug'),
+        seller_payme_id: isDebug ? business.get('payme_seller_id_debug') : business.get('payme_seller_id'),
         sale_price: amountToPay.toString(),
 
         ...(!isSellerPaidDirectly && {
@@ -134,13 +134,13 @@ function getWebhookUrl(params) {
 
 }
 
-function sellerPaidDirectly(seller, isDebug) {
+function sellerPaidDirectly(business, isDebug) {
     return new Promise(async (resolve, reject) => {
         if (process.env.PAYME_KEY.length > 0) {
             let result = await axios({
                 method: 'post',
                 url: (isDebug ? process.env.PAYME_URL_DEBUG : process.env.PAYME_URL) + '/api/get-sellers',
-                data: { payme_client_key: process.env.PAYME_KEY, seller_payme_id: seller.get('payme_seller_id_debug') },
+                data: { payme_client_key: process.env.PAYME_KEY, seller_payme_id: isDebug ? business.get('payme_seller_id_debug') : business.get('payme_seller_id') },
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 maxContentLength: Infinity,
                 maxBodyLength: Infinity
@@ -197,7 +197,7 @@ async function refundProduct(request, response) {
 
         var params = {
             payme_client_key: process.env.PAYME_KEY,
-            seller_payme_id: business.get('payme_seller_id_debug'),
+            seller_payme_id: isDebug ? business.get('payme_seller_id_debug') : business.get('payme_seller_id'),
             payme_sale_id: payment.get('payme_sale_id'),
             language: locale
         };
