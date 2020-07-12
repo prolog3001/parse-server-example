@@ -23,7 +23,7 @@ function getObjectById(className, id) {
 async function savePayment(req) {
   console.log('savePayment');
 
-  let { productType, clientId, businessId, productId, productId, tip } = req.query;
+  let { productType, clientId, businessId, productId, tip } = req.query;
 
   var Payment = Parse.Object.extend(PAYMENT_CLASS_NAME);
   var payment = new Payment();
@@ -37,7 +37,7 @@ async function savePayment(req) {
   switch (parseInt(productType)) {
 
     case 1://Order
-      product = await getObjectById('RestaurantOrderSummary', req.query.productId);
+      product = await getObjectById('RestaurantOrderSummary', productId);
       productObjectId = productId;
       break;
     default:
