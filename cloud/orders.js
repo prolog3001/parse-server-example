@@ -433,7 +433,7 @@ async function forcePayOpenedOrders(request, response) {
           }
 
           orderSummaries[i].set("paid", true);
-          orderSummaries[i].set("discount", 100);
+          orderSummaries[i].set("discount_percentage", 1);
 
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
@@ -520,7 +520,7 @@ async function forceCloseOpenedOrders(request, response) {
 
           if (!orderSummaries[i].get("paid")) {
             orderSummaries[i].set("paid", true);
-            orderSummaries[i].set("discount", 100);
+            orderSummaries[i].set("discount_percentage", 1);
           }
           // orderSummaries[i].set("rated", true);
 
