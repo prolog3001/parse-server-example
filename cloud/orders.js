@@ -19,7 +19,7 @@ module.exports = {
   }
 };
 
-function forceOrderedOpenedOrders(request, response) {
+async function forceOrderedOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -112,7 +112,7 @@ function forceOrderedOpenedOrders(request, response) {
   });
 }
 
-function forceProgressOpenedOrders(request, response) {
+async function forceProgressOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -205,7 +205,7 @@ function forceProgressOpenedOrders(request, response) {
   });
 }
 
-function forceReadyOpenedOrders(request, response) {
+async function forceReadyOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -298,7 +298,7 @@ function forceReadyOpenedOrders(request, response) {
   });
 }
 
-function forceDeliverOpenedOrders(request, response) {
+async function forceDeliverOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -395,7 +395,7 @@ function forceDeliverOpenedOrders(request, response) {
   });
 }
 
-function forcePayOpenedOrders(request, response) {
+async function forcePayOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -465,7 +465,7 @@ function forcePayOpenedOrders(request, response) {
   });
 }
 
-function forceCloseOpenedOrders(request, response) {
+async function forceCloseOpenedOrders(request, response) {
   var oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
@@ -489,9 +489,14 @@ function forceCloseOpenedOrders(request, response) {
   openedOrdersQuery.limit(500);
   openedOrdersQuery.find({
     useMasterKey: true,
-    success: function (orderSummaries) {
+    success: async function (orderSummaries) {
       console.log("#### Orders to Close " + orderSummaries.length);
       // console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
+
+      if (request.params.markDelivered) {
+        await forceDeliverOpenedOrders(request, response);
+        console.log("#### Orders marked as delivered");
+      }
 
       var clonedOrderSummary = [];
 
@@ -513,7 +518,7 @@ function forceCloseOpenedOrders(request, response) {
             orderSummaries[i].set("closed_by_waiter", true);
           }
 
-          if(!orderSummaries[i].get("paid")){
+          if (!orderSummaries[i].get("paid")) {
             orderSummaries[i].set("paid", true);
             orderSummaries[i].set("discount", 100);
           }
