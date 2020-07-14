@@ -433,8 +433,7 @@ function forcePayOpenedOrders(request, response) {
           }
 
           orderSummaries[i].set("paid", true);
-          // orderSummaries[i].set("closed_by_admin", true);
-          // orderSummaries[i].set("rated", true);
+          orderSummaries[i].set("discount", 100);
 
           clonedOrderSummary.push(orderSummaries[i]);
         } catch (error) {
@@ -512,6 +511,11 @@ function forceCloseOpenedOrders(request, response) {
             orderSummaries[i].set("closed_by_admin", true);
           } else {
             orderSummaries[i].set("closed_by_waiter", true);
+          }
+
+          if(!orderSummaries[i].get("paid")){
+            orderSummaries[i].set("paid", true);
+            orderSummaries[i].set("discount", 100);
           }
           // orderSummaries[i].set("rated", true);
 
