@@ -88,7 +88,7 @@ async function savePayment(req) {
           // var phone = req.body.buyer_contact_phone ? req.body.buyer_contact_phone : req.body.buyer_phone;
           // var number = phone.replace(/\D/g, '').slice(-10);
           // utils.saveBuyerKeyToUser(number, req.body.buyer_key);
-          utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
+          utils.saveBuyerKeyToUser(buyerId, req.body.buyer_key);
         }
       } catch (error) {
         console.log(error);
