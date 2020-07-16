@@ -44,7 +44,6 @@ async function savePayment(req) {
 
     case 1://Order
       product = await getObjectById('RestaurantOrderSummary', productId);
-      productObjectId = productId;
       break;
     default:
       break;
@@ -58,7 +57,6 @@ async function savePayment(req) {
     client,
     business: business,
     productType: parseInt(productType),
-    productObjectId,
     restaurant_order_summary: product,
     in_israel: true,
 
