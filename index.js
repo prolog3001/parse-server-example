@@ -35,7 +35,7 @@ var api = new ParseServer({
     },
     liveQuery: {
         classNames: ["_User", "User", "Business", "Order",
-            "RestaurantOrderSummary", "Table", "UserWaiterRelation, Payment"
+            "RestaurantOrderSummary", "Table", "UserWaiterRelation", "Payment"
         ] // List of classes to support for query subscriptions
     },
     emailAdapter: {
