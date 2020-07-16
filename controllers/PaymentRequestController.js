@@ -23,19 +23,18 @@ function getObjectById(className, id) {
 async function savePayment(req) {
   console.log('savePayment');
 
-  let { productType, buyerId, businessId, productId} = req.query;
+  let { productType, buyerId, businessId, productId } = req.query;
 
   let tip = req.query.tip;
-  if(tip >= 0)
+  if (tip >= 0)
     tip = parseFloat(tip)
-  else 
+  else
     tip = 0
 
   var Payment = Parse.Object.extend(PAYMENT_CLASS_NAME);
   var payment = new Payment();
 
   var product;
-  var productObjectId;
 
   var client = Parse.User.createWithoutData(buyerId);
   var business = await getObjectById('Business', businessId);
@@ -43,16 +42,17 @@ async function savePayment(req) {
   switch (parseInt(productType)) {
 
     case 1://Order
-      product = await getObjectById('RestaurantOrderSummary', productId);
+      var Product = Parse.Object.extend('RestaurantOrderSummary');
+      product = Product.createWithoutData(productId);
       break;
     default:
       break;
   }
 
-  if(!tip)
+  if (!tip)
     tip = 0;
 
-  var price = parseInt(req.body.price)-tip;
+  var price = parseInt(req.body.price) - tip;
   var paymentParams = {
     client,
     business: business,
