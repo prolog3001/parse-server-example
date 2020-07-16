@@ -82,7 +82,9 @@ async function savePayment(req) {
       console.log('success createing payment!', res);
       try {
         //sendEmailsAboutPurchase(client, seller, paymentParams.price, paymentParams.productType, productObjectId);
-        
+        if (req.body.buyer_key) {
+          utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -247,13 +249,6 @@ module.exports = function (req, res) {
 
   console.log('canSavePayment?', canSavePayment(req));
   console.log('isRefundedPayment?', isRefundedPayment(req));
-  
-  if (req.body.buyer_key) {
-    // var phone = req.body.buyer_contact_phone ? req.body.buyer_contact_phone : req.body.buyer_phone;
-    // var number = phone.replace(/\D/g, '').slice(-10);
-    // utils.saveBuyerKeyToUser(number, req.body.buyer_key);
-    utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
-  }
 
   if (isRefundedPayment(req)) {
     setPaymentAsRefunded(req);
