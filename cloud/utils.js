@@ -275,8 +275,8 @@ function checkIfDollar(seller) {
   }
 }
 
-async function saveBuyerKeyToUser(phone, key) {
-  var buyer = await getUserByPhone(phone);
+async function saveBuyerKeyToUser(clientId, key) {
+  var buyer = await getObjectById('User', clientId);
   buyer.save({ 'payme_buyer_key': key }, { useMasterKey: true });
   console.log('Saved buyer key to user', buyer.id);
 }
@@ -284,7 +284,7 @@ async function saveBuyerKeyToUser(phone, key) {
 function getUserByPhone(phone, includes) {
   return new Promise((resolve, reject) => {
     var query = new Parse.Query(Parse.User);
-    query.endsWith('username', phone.substring(phone.length - 5, phone.length));
+    query.endsWith('username', phone.substring(4, phone.length));
     if (includes && includes.length > 0) {
       for (let i = 0; i < includes.length; i++) {
         const include = includes[i];

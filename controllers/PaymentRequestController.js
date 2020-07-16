@@ -37,7 +37,7 @@ async function savePayment(req) {
   var product;
   var productObjectId;
 
-  var client = await getObjectById('User', clientId);
+  var client = Parse.User.createWithoutData(clientId);
   var business = await getObjectById('Business', businessId);
 
   switch (parseInt(productType)) {
@@ -251,8 +251,9 @@ module.exports = function (req, res) {
 
   if (req.body.buyer_key) {
     var phone = req.body.buyer_contact_phone ? req.body.buyer_contact_phone : req.body.buyer_phone;
-    var number = phone.replace(/\D/g, '').slice(-10);
-    utils.saveBuyerKeyToUser(number, req.body.buyer_key);
+    // var number = phone.replace(/\D/g, '').slice(-10);
+    // utils.saveBuyerKeyToUser(number, req.body.buyer_key);
+    utils.saveBuyerKeyToUser(req.query.clientId, req.body.buyer_key);
   }
 
   if (isRefundedPayment(req)) {
