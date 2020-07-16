@@ -67,7 +67,7 @@ async function savePayment(req) {
     }),
     // data from payme
     currency: req.body.currency,
-    price: price / 100,
+    price: Math.floor((price / 100)),
     tip,
     payme_transaction_id: req.body.payme_transaction_id,
     payme_json: JSON.stringify(req.body),
@@ -83,17 +83,6 @@ async function savePayment(req) {
     success: function (res) {
       console.log('success createing payment!', res);
       try {
-        var productParams = {
-          paid: true
-        }
-        product.save(productParams, {
-          success: function (res) {
-            console.log('success saving product!', res);
-          },
-          error: function (err) {
-            console.log('err createing product!', err);
-          }
-        });
         //sendEmailsAboutPurchase(client, seller, paymentParams.price, paymentParams.productType, productObjectId);
       } catch (error) {
         console.log(error);
