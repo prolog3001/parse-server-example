@@ -276,6 +276,7 @@ function checkIfDollar(seller) {
 }
 
 async function saveBuyerKeyToUser(clientId, key) {
+  console.log('saveBuyerKeyToUser', clientId);
   var buyer = await getObjectById('User', clientId);
   buyer.save({ 'payme_buyer_key': key }, { useMasterKey: true });
   console.log('Saved buyer key to user', buyer.id);

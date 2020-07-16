@@ -23,7 +23,7 @@ function getObjectById(className, id) {
 async function savePayment(req) {
   console.log('savePayment');
 
-  let { productType, clientId, businessId, productId} = req.query;
+  let { productType, buyerId, businessId, productId} = req.query;
 
   let tip = req.query.tip;
   if(tip >= 0)
@@ -37,7 +37,7 @@ async function savePayment(req) {
   var product;
   var productObjectId;
 
-  var client = Parse.User.createWithoutData(clientId);
+  var client = Parse.User.createWithoutData(buyerId);
   var business = await getObjectById('Business', businessId);
 
   switch (parseInt(productType)) {
@@ -250,10 +250,10 @@ module.exports = function (req, res) {
   console.log('isRefundedPayment?', isRefundedPayment(req));
 
   if (req.body.buyer_key) {
-    var phone = req.body.buyer_contact_phone ? req.body.buyer_contact_phone : req.body.buyer_phone;
+    // var phone = req.body.buyer_contact_phone ? req.body.buyer_contact_phone : req.body.buyer_phone;
     // var number = phone.replace(/\D/g, '').slice(-10);
     // utils.saveBuyerKeyToUser(number, req.body.buyer_key);
-    utils.saveBuyerKeyToUser(req.query.clientId, req.body.buyer_key);
+    utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
   }
 
   if (isRefundedPayment(req)) {
