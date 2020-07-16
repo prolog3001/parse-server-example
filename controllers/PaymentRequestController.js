@@ -83,6 +83,17 @@ async function savePayment(req) {
     success: function (res) {
       console.log('success createing payment!', res);
       try {
+        var productParams = {
+          paid: true
+        }
+        product.save(productParams, {
+          success: function (res) {
+            console.log('success saving product!', res);
+          },
+          error: function (err) {
+            console.log('err createing product!', err);
+          }
+        });
         //sendEmailsAboutPurchase(client, seller, paymentParams.price, paymentParams.productType, productObjectId);
       } catch (error) {
         console.log(error);
