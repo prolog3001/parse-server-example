@@ -75,14 +75,11 @@ async function savePayment(req) {
     payme_sale_id: req.body.payme_sale_id,
     payme_sale_code: req.body.payme_sale_code
   }
-  // console.log("savePayment ", JSON.stringify(paymentParams));
 
   payment.save(paymentParams, {
-    success: function (res) {
+    success: async function (res) {
       console.log('success createing payment!', res);
-
       try {
-        //sendEmailsAboutPurchase(client, seller, paymentParams.price, paymentParams.productType, productObjectId);
         if (req.body.buyer_key) {
           utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
         }
