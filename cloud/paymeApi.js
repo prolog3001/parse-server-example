@@ -19,7 +19,7 @@ module.exports = {
 async function purchaseProduct(request, response) {
     console.log('purchaseProduct');
     console.log('params', request.params);
-    let { isDebug, businessId, productType, clientId, productId, amount, tip } = request.params;
+    let { isDebug, businessId, productType, clientId, productId, amount, tip, special_note } = request.params;
 
     let client = await utils.getObjectById('User', clientId);
     var product;
@@ -61,7 +61,7 @@ async function purchaseProduct(request, response) {
 
         currency,
         product_name: product ? product.id : (locale == 'he' ? 'סכום חופשי' : 'Free Amount'),
-        sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip }),
+        sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip, special_note }),
         sale_name: client.get('name'),
 
         layout: 'micro_ltr',
@@ -114,9 +114,10 @@ async function purchaseProduct(request, response) {
 
 function getWebhookUrl(params) {
     console.log('getWebhookUrl params', params);
-    let { productType, product, business, client, amount, tip } = params;
+    let { productType, product, business, client, amount, tip, special_note } = params;
 
-    var webhookParams = '?businessId=' + business.id + '&buyerId=' + client.id + '&productType=' + productType + '&tip=' + tip;
+    var note = special_note ? special_note : "";
+    var webhookParams = '?businessId=' + business.id + '&buyerId=' + client.id + '&productType=' + productType + '&tip=' + tip + '&note=' + note;
 
     var webhookResult;
     switch (parseInt(productType)) {

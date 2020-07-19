@@ -23,7 +23,7 @@ function getObjectById(className, id) {
 async function savePayment(req) {
   console.log('savePayment');
 
-  let { productType, buyerId, businessId, productId } = req.query;
+  let { productType, buyerId, businessId, productId, note } = req.query;
 
   let tip = req.query.tip;
   if (tip >= 0)
@@ -80,17 +80,33 @@ async function savePayment(req) {
   payment.save(paymentParams, {
     success: function (res) {
       console.log('success createing payment!', res);
+
       try {
         //sendEmailsAboutPurchase(client, seller, paymentParams.price, paymentParams.productType, productObjectId);
         if (req.body.buyer_key) {
           utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
         }
+
+        var fullProduct = await getObjectById('RestaurantOrderSummary', productId);
+        var fullProductParams = {
+          paid: true,
+          paid_using: 1,
+          special_note: note ? note : ""
+        }
+        fullProduct.save(fullProductParams, {
+          success: function (orderSummary) {
+            console.log('success saving orderSummary!', orderSummary);
+          },
+          error: function (error) {
+            console.log('error createing orderSummary!', error);
+          }
+        });
       } catch (error) {
         console.log(error);
       }
     },
-    error: function (err) {
-      console.log('err createing payment!', err);
+    error: function (error) {
+      console.log('error createing payment!', error);
     }
   });
 }
