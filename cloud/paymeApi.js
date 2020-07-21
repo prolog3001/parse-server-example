@@ -115,10 +115,10 @@ async function purchaseProduct(request, response) {
 
 function getWebhookUrl(params) {
     console.log('getWebhookUrl params', params);
-    let { productType, product, business, client, amount, tip, special_note } = params;
+    let { productType, product, business, client, amount, tip, note } = params;
 
-    var note = special_note ? special_note : "";
-    var webhookParams = '?businessId=' + business.id + '&buyerId=' + client.id + '&productType=' + productType + '&tip=' + tip + '&note=' + note;
+    var special_note = note ? note : "";
+    var webhookParams = '?businessId=' + business.id + '&buyerId=' + client.id + '&productType=' + productType + '&tip=' + tip + '&note=' + special_note;
 
     var webhookResult;
     switch (parseInt(productType)) {
