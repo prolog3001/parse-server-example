@@ -73,7 +73,8 @@ async function savePayment(req) {
     sub_payme_code: req.body.sub_payme_code,
 
     payme_sale_id: req.body.payme_sale_id,
-    payme_sale_code: req.body.payme_sale_code
+    payme_sale_code: req.body.payme_sale_code,
+    special_note: note ? decodeURI(note) : ""
   }
 
   payment.save(paymentParams, {
@@ -87,8 +88,7 @@ async function savePayment(req) {
         var fullProduct = await getObjectById('RestaurantOrderSummary', productId);
         var fullProductParams = {
           paid: true,
-          paid_using: 1,
-          special_note: note ? decodeURI(note) : ""
+          paid_using: 1
         }
         fullProduct.save(fullProductParams, {
           success: function (orderSummary) {
