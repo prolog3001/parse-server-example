@@ -24,6 +24,7 @@ async function purchaseProduct(request, response) {
     let client = await utils.getObjectById('User', clientId);
     var product;
     var business;
+    var note = encodeURI(special_note);
 
     switch (parseInt(productType)) {
         case 0://Free AMount
@@ -61,7 +62,7 @@ async function purchaseProduct(request, response) {
 
         currency,
         product_name: product ? product.id : (locale == 'he' ? 'סכום חופשי' : 'Free Amount'),
-        sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip, special_note }),
+        sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip, note }),
         sale_name: client.get('name'),
 
         layout: 'micro_ltr',

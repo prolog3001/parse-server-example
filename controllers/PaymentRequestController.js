@@ -88,7 +88,7 @@ async function savePayment(req) {
         var fullProductParams = {
           paid: true,
           paid_using: 1,
-          special_note: note ? note : ""
+          special_note: note ? decodeURI(note) : ""
         }
         fullProduct.save(fullProductParams, {
           success: function (orderSummary) {
