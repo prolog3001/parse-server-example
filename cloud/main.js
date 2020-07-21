@@ -115,6 +115,22 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                 console.log("Error", error);
                             }
                           });
+
+                          if(!orderSummary.get("table") || orderSummary.get("table") === undefined){
+                            console.log("order created without a table", orderSummary);
+                            var Table = Parse.Object.extend('Table');
+                            var dummyTable = Table.createWithoutData("nLY3h2iPv6");
+
+                            orderSummary.save({"table": dummyTable}, {
+                                success: async function (result) {
+                                    console.log("Success saving after order created without a table", result);
+                                    
+                                },
+                                error: async function (error) {
+                                    console.log("Error", error);
+                                }
+                              });
+                          }
                     } else{
                         console.log("request.object.existed()", request.object.existed());
                     }
