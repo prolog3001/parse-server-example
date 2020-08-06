@@ -166,6 +166,7 @@ function getFullUsersFromIds(request, response) {
   for (var i = 0; i < users.length; i++) {
     console.log("#### User Id Before Filtering " + users[i]);
   }
+  userQuery.limit(users.length);
   userQuery.find({
     useMasterKey: true, //This is for the new version
     success: function(users) {
