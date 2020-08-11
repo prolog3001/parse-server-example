@@ -65,11 +65,11 @@ Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 Parse.Cloud.afterSave(Parse.User, function (request) {
     console.log("aftersave fired");
 
-    if (/**!request.user.existed() ||**/ request.user.id == "1HWENCBwPr") {
+    if (/**!request.object.existed() ||**/ request.object.id == "1HWENCBwPr") {
         console.log("New User Created");
 
-        if (request.user.get("name") && request.user.get("name").length > 0 &&
-            request.user.get("email") && request.user.get("email").length > 0) {
+        if (request.object.get("name") && request.object.get("name").length > 0 &&
+            request.object.get("email") && request.object.get("email").length > 0) {
 
             console.log("New User has email and name");
 
@@ -82,7 +82,7 @@ Parse.Cloud.afterSave(Parse.User, function (request) {
             var fromName = "Dreamdiner";
             var fromString = fromName + " <" + fromEmail + ">";
 
-            var toString = request.user.get("name") + " <" + request.user.get("email") + ">"
+            var toString = request.object.get("name") + " <" + request.object.get("email") + ">"
 
             var emailSubject = "Welcome to Dreamdiner";
 
