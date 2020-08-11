@@ -1,4 +1,3 @@
-// var twilio = require('twilio')('AC086829ceac7f22890d88dd553860b529', 'cda23fe1665fbbe70d024c990e4e30d5');
 
 module.exports = {
   // addCreditsToUsers: function (request, response) {
