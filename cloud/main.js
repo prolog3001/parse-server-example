@@ -62,14 +62,15 @@ Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
 Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 
 //Welcome email
-Parse.Cloud.afterSave(Parse.User, function (request) {
+Parse.Cloud.afterSave(Parse.User, async function (request) {
     console.log("aftersave fired");
 
     if (/**!request.object.existed() ||**/ request.object.id == "1HWENCBwPr") {
         console.log("New User Created");
+        var user = await utils.getObjectById('User', request.object.id);
 
-        if (request.object.get("name") && request.object.get("name").length > 0 &&
-            request.object.get("email") && request.object.get("email").length > 0) {
+        if (user.get("name") && user.get("name").length > 0 &&
+            user.get("email") && user.get("email").length > 0) {
 
             console.log("New User has email and name");
 
@@ -82,7 +83,7 @@ Parse.Cloud.afterSave(Parse.User, function (request) {
             var fromName = "Dreamdiner";
             var fromString = fromName + " <" + fromEmail + ">";
 
-            var toString = request.object.get("name") + " <" + request.object.get("email") + ">"
+            var toString = user.get("name") + " <" + user.get("email") + ">"
 
             var emailSubject = "Welcome to Dreamdiner";
 
