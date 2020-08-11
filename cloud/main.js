@@ -47,10 +47,10 @@ Parse.Cloud.define("forceDeliverOpenedOrders", orders.forceDeliverOpenedOrders);
 Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 
-Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
-Parse.Cloud.job("readyPushTest", background.readyPushTest);
-Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
-Parse.Cloud.job("ratePushTest", background.ratePushTest);
+// Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
+// Parse.Cloud.job("readyPushTest", background.readyPushTest);
+// Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
+// Parse.Cloud.job("ratePushTest", background.ratePushTest);
 
 Parse.Cloud.define("deleteTATables", background.deleteTATables);
 Parse.Cloud.job("deleteTATables", background.deleteTATables);
