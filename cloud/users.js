@@ -1,6 +1,9 @@
 // var twilio = require('twilio')('AC086829ceac7f22890d88dd553860b529', 'cda23fe1665fbbe70d024c990e4e30d5');
 
 module.exports = {
+  addCreditsToUsers: function (request, response) {
+    addCreditsToUsers(request, response);
+  },
   sendVerificationCode: function (request, response) {
     sendVerificationCode(request, response);
   },
@@ -35,6 +38,57 @@ module.exports = {
     paymentRequestSettled(request, response);
   }
 };
+
+function addCreditsToUsers(request, response) {
+  var params = request.params;
+
+  var users = params.userIds;
+
+  var userQuery = new Parse.Query(Parse.User);
+
+  if(params.userIds && params.userIds.length > 0){
+    userQuery.containedIn("objectId", params.userIds);
+    userQuery.limit(users.length);
+  } else{
+    userQuery.limit(10000);
+  }
+
+  userQuery.include("business");
+  userQuery.exists("business");
+  userQuery.exists("blocked", true);
+  userQuery.find({
+    useMasterKey: true,
+    success: function(users) {
+      console.log("Found..." + users.length);
+
+      var businesses = [];
+
+      for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        var business = user.get("business");
+        business.increment((params.creditType || "orders_accumulate"), (params.credits || 20));
+        businesses.push(business);
+      }
+
+      console.log("Save businesses..." + businesses.length);
+      Parse.Object.saveAll(businesses, {
+        useMasterKey: true,
+        success: function (updatedBusinesses) {
+          console.log("#### Saved businesses  " + updatedBusinesses.length);
+          response.success("added credits to users");
+        },
+        error: function (error) {
+          console.log("Wasnt able to save  " + error);
+          response.success(error);
+        }
+      });
+    },
+
+    error: function(error) {
+      response.error(error);
+    }
+  });
+}
 
 function sendVerificationCode(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
@@ -162,7 +216,6 @@ function getFullUsersFromIds(request, response) {
   //Filter only users with thier ids in it
   var userQuery = new Parse.Query(Parse.User);
   userQuery.containedIn("objectId", users);
-  userQuery.include("preferences");
   for (var i = 0; i < users.length; i++) {
     console.log("#### User Id Before Filtering " + users[i]);
   }

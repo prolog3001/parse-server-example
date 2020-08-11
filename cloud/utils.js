@@ -207,7 +207,6 @@ function getObjectsInRelation(relationObject, includes) {
           }
 
       }
-      query.include('preferences');
       query.find().then(function (res) {
           resolve(res);
       }, function (err) {
