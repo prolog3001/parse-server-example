@@ -61,6 +61,54 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
 Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 
+//Welcome email
+Parse.Cloud.afterSave(Parse.User, function (request) {
+    console.log("aftersave fired");
+
+    if (/**!request.user.existed() ||**/ request.user.id == "ifq5RRMWOm") {
+        console.log("New User Created");
+
+        if (request.user.get("name") && request.user.get("name").length > 0 &&
+            request.user.get("email") && request.user.get("email").length > 0) {
+
+            console.log("New User has email and name");
+
+            var simpleMailgunAdapter = require('mailgun-js')({
+                apiKey: process.env.MAILGUN_KEY || '',
+                domain: process.env.DOMAIN || 'Dreamdiner.io'
+            });
+
+            var fromEmail = "Dreamdiner.io@gmail.com";
+            var fromName = "Dreamdiner";
+            var fromString = fromName + " <" + fromEmail + ">";
+
+            var toString = request.user.get("name") + " <" + request.user.get("email") + ">"
+
+            var emailSubject = "Welcome to Dreamdiner";
+
+            var fs = require('fs');
+            var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+
+            var data = {
+                from: fromString,
+                to: toString,
+                subject: emailSubject,
+                html: emailBody
+            };
+
+            simpleMailgunAdapter.messages().send(data, function (error, body) {
+                if (error) {
+                    console.log("got an error in sendEmail: " + error);
+                    response.error(error);
+                } else {
+                    console.log("email sent to " + toEmail + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+                    response.success("Email sent!");
+                }
+            });
+        }
+    }
+});
+
 //Business low orders count
 Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
     var orderSummaryPointer = request.object;
@@ -92,12 +140,12 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                         console.log("New orderSummary object");
                         console.log("items_accumulate: " + business.get("items_accumulate"));
 
-                        var newAccumulate = (business.get("items_accumulate")-1);
+                        var newAccumulate = (business.get("items_accumulate") - 1);
                         console.log("new items_accumulate: " + newAccumulate);
 
                         var min = business.get("items_accumulate_min") > 0 ? business.get("items_accumulate_min") : 50;
                         // business.increment("items_accumulate", -1);
-                        business.save({"items_accumulate": newAccumulate}, {
+                        business.save({ "items_accumulate": newAccumulate }, {
                             success: async function (result) {
                                 console.log("Success saving after order decrement", result);
 
@@ -109,7 +157,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                     params["userTokens"] = [business.get("admin").get("fcm_token")];
                                     params["business_id"] = business.id;
                                     await push.pushLowOrders(params);
-                                } else{
+                                } else {
                                     console.log("no need to send low orders push");
                                     console.log("new items_accumulate: " + result.get("items_accumulate"));
                                 }
@@ -117,38 +165,38 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                             error: async function (error) {
                                 console.log("Error", error);
                             }
-                          });
+                        });
 
-                          if(!orderSummary.get("table") || orderSummary.get("table") === undefined){
+                        if (!orderSummary.get("table") || orderSummary.get("table") === undefined) {
                             console.log("order created without a table", orderSummary);
                             var Table = Parse.Object.extend('Table');
                             var dummyTable = Table.createWithoutData("nLY3h2iPv6");
 
-                            orderSummary.save({"table": dummyTable}, {
+                            orderSummary.save({ "table": dummyTable }, {
                                 success: async function (result) {
                                     console.log("Success saving after order created without a table", result);
-                                    
+
                                 },
                                 error: async function (error) {
                                     console.log("Error", error);
                                 }
-                              });
-                          }
-                    } else{
+                            });
+                        }
+                    } else {
                         console.log("request.object.existed()", request.object.existed());
                     }
 
                     console.log("notified_client", orderSummary.get("notified_client"));
-                    if(orderSummary.get("notified_client")){
+                    if (orderSummary.get("notified_client")) {
                         console.log("Already notified on order summary");
                         return;
                     }
 
                     if (orderSummary.get("item_orders") &&
                         (orderSummary.get("item_orders_ready") &&
-                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length) ||
+                            orderSummary.get("item_orders").length == orderSummary.get("item_orders_ready").length) ||
                         (orderSummary.get("item_orders_delivered") &&
-                        orderSummary.get("item_orders").length == orderSummary.get("item_orders_delivered").length)) {
+                            orderSummary.get("item_orders").length == orderSummary.get("item_orders_delivered").length)) {
 
                         //PUSH All Orders Ready
                         console.log("Notify on ready items");
