@@ -187,7 +187,7 @@ function getObjectById(className, id, includes) {
       }
       query.equalTo('objectId', id);
       query.limit(1);
-      query.find().then(function (res) {
+      query.find({useMasterKey: true}).then(function (res) {
           resolve(res[0]);
       }, function (err) {
           console.log('err when finding object', err)
