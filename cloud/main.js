@@ -65,7 +65,7 @@ Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 Parse.Cloud.afterSave(Parse.User, function (request) {
     console.log("aftersave fired");
 
-    if (/**!request.user.existed() ||**/ request.user.id == "ifq5RRMWOm") {
+    if (/**!request.user.existed() ||**/ request.user.id == "1HWENCBwPr") {
         console.log("New User Created");
 
         if (request.user.get("name") && request.user.get("name").length > 0 &&
