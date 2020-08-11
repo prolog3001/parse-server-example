@@ -65,7 +65,7 @@ Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 Parse.Cloud.afterSave(Parse.User, async function (request) {
     console.log("aftersave fired");
 
-    if (/**!request.object.existed() ||**/ request.object.id == "1HWENCBwPr") {
+    if (!request.object.existed() /**|| request.object.id == "1HWENCBwPr"**/) {
         console.log("New User Created");
         var user = await utils.getObjectById('User', request.object.id);
         console.log("New User id: " + user.id);
@@ -105,7 +105,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                     console.log("got an error in sendEmail: " + error);
                     response.error(error);
                 } else {
-                    console.log("email sent to " + toEmail + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+                    console.log("email sent to " +  user.get("email") + " " + new Date().format("mmmm dd, yyyy HH:MM"));
                     response.success("Email sent!");
                 }
             });
