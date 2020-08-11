@@ -7,8 +7,8 @@ var background = require('./background.js');
 var i18n = require('i18n');
 var paymeApi = require('./paymeApi.js');
 
-// Parse.Cloud.define("addCreditsToUsers", users.addCreditsToUsers);
-// Parse.Cloud.job("addCreditsToUsers", users.addCreditsToUsers);
+Parse.Cloud.define("addCreditsToUsers", users.addCreditsToUsers);
+Parse.Cloud.job("addCreditsToUsers", users.addCreditsToUsers);
 
 Parse.Cloud.define("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.job("sendVerificationCode", users.sendVerificationCode);

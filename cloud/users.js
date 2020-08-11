@@ -1,8 +1,8 @@
 
 module.exports = {
-  // addCreditsToUsers: function (request, response) {
-  //   addCreditsToUsers(request, response);
-  // },
+  addCreditsToUsers: function (request, response) {
+    addCreditsToUsers(request, response);
+  },
   sendVerificationCode: function (request, response) {
     sendVerificationCode(request, response);
   },
@@ -38,56 +38,56 @@ module.exports = {
   }
 };
 
-// function addCreditsToUsers(request, response) {
-//   var params = request.params;
+function addCreditsToUsers(request, response) {
+  var params = request.params;
 
-//   var users = params.userIds;
+  var users = params.userIds;
 
-//   var userQuery = new Parse.Query(Parse.User);
+  var userQuery = new Parse.Query(Parse.User);
 
-//   if(params.userIds && params.userIds.length > 0){
-//     userQuery.containedIn("objectId", params.userIds);
-//     userQuery.limit(users.length);
-//   } else{
-//     userQuery.limit(10000);
-//   }
+  if(params.userIds && params.userIds.length > 0){
+    userQuery.containedIn("objectId", params.userIds);
+    userQuery.limit(users.length);
+  } else{
+    userQuery.limit(10000);
+  }
 
-//   userQuery.include("business");
-//   userQuery.exists("business");
-//   userQuery.exists("blocked", true);
-//   userQuery.find({
-//     useMasterKey: true,
-//     success: function(users) {
-//       console.log("Found..." + users.length);
+  userQuery.include("business");
+  userQuery.exists("business");
+  userQuery.exists("blocked", true);
+  userQuery.find({
+    useMasterKey: true,
+    success: function(users) {
+      console.log("Found..." + users.length);
 
-//       var businesses = [];
+      var businesses = [];
 
-//       for (var i = 0; i < users.length; i++) {
-//         var user = users[i];
-//         var business = user.get("business");
-//         business.increment((params.creditType || "orders_accumulate"), (params.credits || 20));
-//         businesses.push(business);
-//       }
+      for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        var business = user.get("business");
+        business.increment((params.creditType || "orders_accumulate"), (params.credits || 20));
+        businesses.push(business);
+      }
 
-//       console.log("Save businesses..." + businesses.length);
-//       Parse.Object.saveAll(businesses, {
-//         useMasterKey: true,
-//         success: function (updatedBusinesses) {
-//           console.log("#### Saved businesses  " + updatedBusinesses.length);
-//           response.success("added credits to users");
-//         },
-//         error: function (error) {
-//           console.log("Wasnt able to save  " + error);
-//           response.success(error);
-//         }
-//       });
-//     },
+      console.log("Save businesses..." + businesses.length);
+      Parse.Object.saveAll(businesses, {
+        useMasterKey: true,
+        success: function (updatedBusinesses) {
+          console.log("#### Saved businesses  " + updatedBusinesses.length);
+          response.success("added credits to users");
+        },
+        error: function (error) {
+          console.log("Wasnt able to save  " + error);
+          response.success(error);
+        }
+      });
+    },
 
-//     error: function(error) {
-//       response.error(error);
-//     }
-//   });
-// }
+    error: function(error) {
+      response.error(error);
+    }
+  });
+}
 
 function sendVerificationCode(request, response) {
   var verificationCode = Math.floor(Math.random() * 899999 + 100000);
