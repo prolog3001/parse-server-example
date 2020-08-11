@@ -68,6 +68,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
     if (/**!request.object.existed() ||**/ request.object.id == "1HWENCBwPr") {
         console.log("New User Created");
         var user = await utils.getObjectById('User', request.object.id);
+        console.log("New User id: " + user.id);
 
         if (user.get("name") && user.get("name").length > 0 &&
             user.get("email") && user.get("email").length > 0) {
@@ -106,6 +107,8 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                     response.success("Email sent!");
                 }
             });
+        } else{
+            console.log("New User has NO email and name");
         }
     }
 });
