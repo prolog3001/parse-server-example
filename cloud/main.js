@@ -69,6 +69,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
         console.log("New User Created");
         var user = await utils.getObjectById('User', request.object.id);
         console.log("New User id: " + user.id);
+        console.log("New User name: " + user.get("name"));
 
         if (user.get("name") && user.get("name").length > 0 &&
             user.get("email") && user.get("email").length > 0) {
