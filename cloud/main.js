@@ -359,7 +359,7 @@ Parse.Cloud.afterSave("Rating", async function (request) {
                         if (rating.get("waiter_rating") <= 2) {
                             //PUSH Low Rating
                             var params = {};
-                            params["userTokens"] = [business.get("admin").get("fcm_token")];
+                            params["userTokens"] = [rating.get("business").get("admin").get("fcm_token")];
                             params["star_number"] = rating.get("waiter_rating");
                             params["order_id"] = rating.get("restaurant_order_summary").id;
                             params["business_id"] = rating.get("business").id;
