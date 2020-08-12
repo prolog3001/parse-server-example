@@ -89,6 +89,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
 
             var fs = require('fs');
             var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+            emailBody = utils.replaceAll(emailBody, "admin_name", "Dreamdiner Test");
 
             var data = {
                 from: fromString,
@@ -107,11 +108,11 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                     console.log("got an error in sendEmail: " + error);
                     return;
                 } else {
-                    console.log("email sent to " +  user.get("email") + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+                    console.log("email sent to " + user.get("email") + " " + new Date().format("mmmm dd, yyyy HH:MM"));
                     return;
                 }
             });
-        } else{
+        } else {
             console.log("New User has NO email and name");
         }
     }

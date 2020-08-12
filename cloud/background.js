@@ -251,6 +251,7 @@ async function sendTestEmail(request, response) {
 
     var fs = require('fs');
     var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+    emailBody = utils.replaceAll(emailBody, "admin_name", "Dreamdiner Test");
 
     var data = {
       from: fromString,
