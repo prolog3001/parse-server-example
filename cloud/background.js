@@ -19,6 +19,9 @@ module.exports = {
   },
   ratePushTest: function (request, response) {
     ratePushTest(request, response);
+  },
+  sendTestEmail: function (request, response) {
+    sendTestEmail(request, response);
   }
 };
 
@@ -186,7 +189,7 @@ async function readyPushTest(request, response) {
 
     var params = {};
     params["userTokens"] = userIds;
-    params["business_name"] = "TEST BUSINESS NAME";   
+    params["business_name"] = "TEST BUSINESS NAME";
     params["order_id"] = "npt2mC7QJA";
     params["order_method"] = orderMethod;
     params["business_id"] = "OUPcvgIZAn";
@@ -230,6 +233,48 @@ async function ratePushTest(request, response) {
     console.log(error);
     if (response)
       response.error(error);
+    return error;
+  }
+}
+
+async function sendTestEmail(request, response) {
+  try {
+    var params = {};
+
+    var fromEmail = "Dreamdiner.io@gmail.com";
+    var fromName = "Dreamdiner";
+    var fromString = fromName + " <" + fromEmail + ">";
+
+    var toString = "Dreamdiner Test" + " <" + "Dreamdiner.io@gmail.com" + ">"
+
+    var emailSubject = "Welcome to Dreamdiner";
+
+    var fs = require('fs');
+    var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+
+    var data = {
+      from: fromString,
+      to: toString,
+      subject: emailSubject,
+      html: emailBody
+    };
+
+    var simpleMailgunAdapter = require('mailgun-js')({
+      apiKey: process.env.MAILGUN_KEY || '',
+      domain: process.env.DOMAIN || 'Dreamdiner.io'
+    });
+
+    simpleMailgunAdapter.messages().send(data, function (error, body) {
+      if (error) {
+        console.log("got an error in sendEmail: " + error);
+        return;
+      } else {
+        console.log("email sent to " + "Dreamdiner.io@gmail.com" + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+        return;
+      }
+    });
+  } catch (error) {
+    console.log(error);
     return error;
   }
 }

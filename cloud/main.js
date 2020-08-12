@@ -58,6 +58,8 @@ Parse.Cloud.job("deleteTATables", background.deleteTATables);
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 
+Parse.Cloud.job("sendTestEmail", background.sendTestEmail);
+
 Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
 Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 
@@ -77,11 +79,6 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
 
             console.log("New User has email and name");
 
-            var simpleMailgunAdapter = require('mailgun-js')({
-                apiKey: process.env.MAILGUN_KEY || '',
-                domain: process.env.DOMAIN || 'Dreamdiner.io'
-            });
-
             var fromEmail = "Dreamdiner.io@gmail.com";
             var fromName = "Dreamdiner";
             var fromString = fromName + " <" + fromEmail + ">";
@@ -100,13 +97,18 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                 html: emailBody
             };
 
+            var simpleMailgunAdapter = require('mailgun-js')({
+                apiKey: process.env.MAILGUN_KEY || '',
+                domain: process.env.DOMAIN || 'Dreamdiner.io'
+            });
+
             simpleMailgunAdapter.messages().send(data, function (error, body) {
                 if (error) {
                     console.log("got an error in sendEmail: " + error);
-                    response.error(error);
+                    return;
                 } else {
                     console.log("email sent to " +  user.get("email") + " " + new Date().format("mmmm dd, yyyy HH:MM"));
-                    response.success("Email sent!");
+                    return;
                 }
             });
         } else{
