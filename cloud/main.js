@@ -80,12 +80,12 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             console.log("New User has email and name");
 
             var fromEmail = "Dreamdiner.io@gmail.com";
-            var fromName = "Dreamdiner";
+            var fromName = "DreamDiner";
             var fromString = fromName + " <" + fromEmail + ">";
 
             var toString = user.get("name") + " <" + user.get("email") + ">"
 
-            var emailSubject = "Welcome to Dreamdiner";
+            var emailSubject = "Welcome to DreamDiner";
 
             var fs = require('fs');
             var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
