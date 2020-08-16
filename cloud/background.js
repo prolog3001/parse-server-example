@@ -271,7 +271,7 @@ async function sendTestEmail(request, response) {
         console.log("got an error in sendEmail: " + error);
         return;
       } else {
-        console.log("email sent to " + process.env.MAILGUN_TEST_EMAIL + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+        console.log("email sent to " + process.env.MAILGUN_TEST_EMAIL);
         return;
       }
     });

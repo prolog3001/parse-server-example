@@ -108,7 +108,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                     console.log("got an error in sendEmail: " + error);
                     return;
                 } else {
-                    console.log("email sent to " + user.get("email") + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+                    console.log("email sent to " + user.get("email"));
                     return;
                 }
             });
