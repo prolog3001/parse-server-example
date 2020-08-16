@@ -263,7 +263,7 @@ async function sendTestEmail(request, response) {
 
     var simpleMailgunAdapter = require('mailgun-js')({
       apiKey: process.env.MAILGUN_KEY || '',
-      domain: process.env.DOMAIN || 'Dreamdiner.io'
+      domain: process.env.MAILGUN_DOMAIN
     });
 
     simpleMailgunAdapter.messages().send(data, function (error, body) {
