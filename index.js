@@ -43,7 +43,7 @@ var api = new ParseServer({
         options: {
             fromAddress: process.env.MAILGUN_FROM_ADDRESS,
             apiKey: process.env.MAILGUN_KEY,
-            domain: process.env.DOMAIN
+            domain: process.env.MAILGUN_DOMAIN
         }
     },
     // enableSingleSchemaCache: true
