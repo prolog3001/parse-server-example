@@ -242,11 +242,11 @@ async function sendTestEmail(request, response) {
   try {
     var params = {};
 
-    var fromEmail = "Dreamdiner.io@gmail.com";
+    var fromEmail = "info@dreamdiner.io";
     var fromName = "Dreamdiner";
     var fromString = fromName + " <" + fromEmail + ">";
 
-    var toString = "Dreamdiner Test" + " <" + "Dreamdiner.io@gmail.com" + ">"
+    var toString = "Dreamdiner Test" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
     var emailSubject = "Welcome to Dreamdiner";
 
@@ -271,7 +271,7 @@ async function sendTestEmail(request, response) {
         console.log("got an error in sendEmail: " + error);
         return;
       } else {
-        console.log("email sent to " + "Dreamdiner.io@gmail.com" + " " + new Date().format("mmmm dd, yyyy HH:MM"));
+        console.log("email sent to " + process.env.MAILGUN_TEST_EMAIL + " " + new Date().format("mmmm dd, yyyy HH:MM"));
         return;
       }
     });

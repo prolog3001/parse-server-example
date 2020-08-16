@@ -79,7 +79,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
 
             console.log("New User has email and name");
 
-            var fromEmail = "Dreamdiner.io@gmail.com";
+            var fromEmail = "info@dreamdiner.io";
             var fromName = "DreamDiner";
             var fromString = fromName + " <" + fromEmail + ">";
 
