@@ -52,10 +52,10 @@ function addCreditsToUsers(request, response) {
     userQuery.limit(users.length);
   } else {
     //DEBUG ONLY
-    userQuery.equalTo("email", process.env.MAILGUN_TEST_EMAIL);
-    userQuery.limit(1);
+    // userQuery.equalTo("email", process.env.MAILGUN_TEST_EMAIL);
+    // userQuery.limit(1);
 
-    // userQuery.limit(10000);
+    userQuery.limit(10000);
   }
 
   userQuery.include("business");
@@ -75,7 +75,7 @@ function addCreditsToUsers(request, response) {
         var userBusinesses = user.get("businesses");
 
         if (userBusinesses && userBusinesses.length > 0) {
-          console.log("userBusinesses" + userBusinesses.length);
+          console.log("userBusinesses " + userBusinesses.length);
           businesses = userBusinesses;
         }
 
@@ -84,7 +84,8 @@ function addCreditsToUsers(request, response) {
 
       for (var i = 0; i < businesses.length; i++) {
         var business = businesses[i];
-        business.increment((params.creditType || "orders_accumulate"), (params.credits || 20));
+        if (business && business.id)
+          business.increment((params.creditType || "orders_accumulate"), (params.credits || 25));
       }
 
       console.log("Save businesses..." + businesses.length);
