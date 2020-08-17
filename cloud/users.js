@@ -84,7 +84,7 @@ function addCreditsToUsers(request, response) {
 
       for (var i = 0; i < businesses.length; i++) {
         var business = businesses[i];
-        if (business && business.id)
+        if (business)
           business.increment((params.creditType || "orders_accumulate"), (params.credits || 25));
       }
 
