@@ -57,6 +57,7 @@ function addCreditsToUsers(request, response) {
   }
 
   userQuery.include("business");
+  userQuery.include("businesses");
   userQuery.exists("business");
   userQuery.exists("blocked", true);
   userQuery.find({
@@ -69,8 +70,16 @@ function addCreditsToUsers(request, response) {
       for (var i = 0; i < users.length; i++) {
         var user = users[i];
         var business = user.get("business");
-        business.increment((params.creditType || "orders_accumulate"), (params.credits || 20));
         businesses.push(business);
+        
+        if (userBusinesses && userBusinesses.length > 0) {
+          businesses.concat(userBusinesses);
+        }
+      }
+
+      for (var i = 0; i < businesses.length; i++) {
+        var business = businesses[i];
+        business.increment((params.creditType || "orders_accumulate"), (params.credits || 20));
       }
 
       console.log("Save businesses..." + businesses.length);
