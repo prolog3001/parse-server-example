@@ -39,6 +39,8 @@ module.exports = {
 };
 
 function addCreditsToUsers(request, response) {
+  console.log("addCreditsToUsers");
+
   var params = request.params;
 
   var users = params.userIds;
@@ -72,11 +74,11 @@ function addCreditsToUsers(request, response) {
         var business = user.get("business");
         var userBusinesses = user.get("businesses");
 
-        businesses.push(business);
-
         if (userBusinesses && userBusinesses.length > 0) {
-          businesses.concat(userBusinesses);
+          businesses = userBusinesses;
         }
+
+        businesses.push(business);
       }
 
       for (var i = 0; i < businesses.length; i++) {
@@ -230,9 +232,9 @@ function getFullUsersFromIds(request, response) {
   //Filter only users with thier ids in it
   var userQuery = new Parse.Query(Parse.User);
   userQuery.containedIn("objectId", users);
-  for (var i = 0; i < users.length; i++) {
-    console.log("#### User Id Before Filtering " + users[i]);
-  }
+  // for (var i = 0; i < users.length; i++) {
+  //   console.log("#### User Id Before Filtering " + users[i]);
+  // }
   userQuery.limit(users.length);
   userQuery.find({
     useMasterKey: true, //This is for the new version
