@@ -59,7 +59,7 @@ function addCreditsToUsers(request, response) {
   userQuery.include("business");
   userQuery.include("businesses");
   userQuery.exists("business");
-  userQuery.exists("blocked", true);
+  userQuery.notEqualTo("blocked", true);
   userQuery.find({
     useMasterKey: true,
     success: function (users) {
