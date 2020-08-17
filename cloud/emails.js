@@ -65,8 +65,8 @@ async function sendNewsletter(request, response) {
 
     //DEBUG ONLY
     userQuery.equalTo("email", process.env.MAILGUN_TEST_EMAIL);
+    userQuery.limit(1);
 
-    userQuery.limit(1000);
     userQuery.find({
       useMasterKey: true,
       success: function (users) {
