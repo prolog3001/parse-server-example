@@ -1,6 +1,5 @@
 var push = require('./push.js');
 var i18n = require('i18n');
-var utils = require('./utils.js');
 
 module.exports = {
   deleteTATables: function (request, response) {
@@ -20,9 +19,6 @@ module.exports = {
   },
   ratePushTest: function (request, response) {
     ratePushTest(request, response);
-  },
-  sendTestEmail: function (request, response) {
-    sendTestEmail(request, response);
   }
 };
 
@@ -234,49 +230,6 @@ async function ratePushTest(request, response) {
     console.log(error);
     if (response)
       response.error(error);
-    return error;
-  }
-}
-
-async function sendTestEmail(request, response) {
-  try {
-    var params = {};
-
-    var fromEmail = "info@dreamdiner.io";
-    var fromName = "Dreamdiner";
-    var fromString = fromName + " <" + fromEmail + ">";
-
-    var toString = "Dreamdiner Test" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
-
-    var emailSubject = "Welcome to Dreamdiner";
-
-    var fs = require('fs');
-    var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
-    emailBody = utils.replaceAll(emailBody, "admin_name", "Dreamdiner Test");
-
-    var data = {
-      from: fromString,
-      to: toString,
-      subject: emailSubject,
-      html: emailBody
-    };
-
-    var simpleMailgunAdapter = require('mailgun-js')({
-      apiKey: process.env.MAILGUN_KEY || '',
-      domain: process.env.MAILGUN_DOMAIN
-    });
-
-    simpleMailgunAdapter.messages().send(data, function (error, body) {
-      if (error) {
-        console.log("got an error in sendEmail: " + error);
-        return;
-      } else {
-        console.log("email sent to " + process.env.MAILGUN_TEST_EMAIL);
-        return;
-      }
-    });
-  } catch (error) {
-    console.log(error);
     return error;
   }
 }

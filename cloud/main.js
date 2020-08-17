@@ -2,6 +2,7 @@ var users = require('./users.js');
 var utils = require('./utils.js');
 var orders = require('./orders.js');
 var push = require('./push.js');
+var emails = require('./emails.js');
 var tables = require('./tables.js');
 var background = require('./background.js');
 var i18n = require('i18n');
@@ -47,6 +48,10 @@ Parse.Cloud.define("forceDeliverOpenedOrders", orders.forceDeliverOpenedOrders);
 Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 
+Parse.Cloud.define("sendNewsletter", emails.sendNewsletter);
+Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
+Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
+
 // Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
 // Parse.Cloud.job("readyPushTest", background.readyPushTest);
 // Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
@@ -57,8 +62,6 @@ Parse.Cloud.job("deleteTATables", background.deleteTATables);
 
 Parse.Cloud.define("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
-
-Parse.Cloud.job("sendTestEmail", background.sendTestEmail);
 
 Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
 Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
@@ -89,7 +92,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
 
             var fs = require('fs');
             var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
-            emailBody = utils.replaceAll(emailBody, "admin_name", "Dreamdiner Test");
+            emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");
 
             var data = {
                 from: fromString,

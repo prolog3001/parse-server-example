@@ -15,7 +15,7 @@ var api = new ParseServer({
     databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
     cloud: __dirname + '/cloud/main.js',
     appId: process.env.APP_ID,
-    appName: 'Dreamdiner',
+    appName: 'DreamDiner',
     masterKey: process.env.MASTER_KEY,
     serverURL: process.env.SERVER_URL, // Don't forget to change to https if needed
     publicServerURL: process.env.PUBLIC_SERVER_URL,
@@ -53,7 +53,7 @@ var api = new ParseServer({
 });
 
 var app = express();
-app.use(cookieParser("Dreamdiner"));
+app.use(cookieParser("DreamDiner"));
 
 // Serve the Parse API on the /parse URL prefix
 var mountPath = process.env.PARSE_MOUNT || '/parse';
