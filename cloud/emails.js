@@ -60,6 +60,7 @@ async function sendNewsletter(request, response) {
     var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_newsletter.html', "utf-8");
 
     var userQuery = new Parse.Query(Parse.User);
+    userQuery.exists("business");
     userQuery.exists("email");
     userQuery.notEqualTo("blocked", true);
 
@@ -97,7 +98,11 @@ async function sendNewsletter(request, response) {
 async function sendBulkEmail(emailSubject, emailBody, users) {
   try {
     console.log("sendBulkEmail..." + users.length);
-    console.log("sendBulkEmail..." + emailBody);
+    // console.log("sendBulkEmail..." + emailBody);
+    if(users.length == 0){
+      console.log("sendBulkEmail cancel");
+      return;
+    }
 
     var fromEmail = "info@dreamdiner.io";
     var fromName = "DreamDiner";
