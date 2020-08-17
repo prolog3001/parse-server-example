@@ -45,11 +45,15 @@ function addCreditsToUsers(request, response) {
 
   var userQuery = new Parse.Query(Parse.User);
 
-  if(params.userIds && params.userIds.length > 0){
+  if (params.userIds && params.userIds.length > 0) {
     userQuery.containedIn("objectId", params.userIds);
     userQuery.limit(users.length);
-  } else{
-    userQuery.limit(10000);
+  } else {
+    //DEBUG ONLY
+    userQuery.equalTo("email", process.env.MAILGUN_TEST_EMAIL);
+    userQuery.limit(1);
+
+    // userQuery.limit(10000);
   }
 
   userQuery.include("business");
@@ -57,7 +61,7 @@ function addCreditsToUsers(request, response) {
   userQuery.exists("blocked", true);
   userQuery.find({
     useMasterKey: true,
-    success: function(users) {
+    success: function (users) {
       console.log("Found..." + users.length);
 
       var businesses = [];
@@ -83,7 +87,7 @@ function addCreditsToUsers(request, response) {
       });
     },
 
-    error: function(error) {
+    error: function (error) {
       response.error(error);
     }
   });
@@ -96,9 +100,9 @@ function sendVerificationCode(request, response) {
   const to = request.params ? (request.params.phoneNumber ? request.params.phoneNumber : undefined) : undefined
   const text = "Your verification code is " + verificationCode
 
-  if(!request.params){
+  if (!request.params) {
     text = text + " (NO PARAMS)"
-  } else if(!request.params.phoneNumber){
+  } else if (!request.params.phoneNumber) {
     text = text + " (NO PHONE NUMBER)"
   }
 
@@ -106,20 +110,20 @@ function sendVerificationCode(request, response) {
   console.log("Send verification from", from);
   console.log("Send verification text", text);
 
-  if(!to)
-  return
+  if (!to)
+    return
 
   Parse.Cloud.run("sendSMS", {
     to,
     from,
     text
   })
-  .then(function(result) {
-    console.log("result :" + JSON.stringify(result))
-    response.success(verificationCode);
-  }, function(error) {
-    response.error(error);
-  });
+    .then(function (result) {
+      console.log("result :" + JSON.stringify(result))
+      response.success(verificationCode);
+    }, function (error) {
+      response.error(error);
+    });
   return;
 }
 
@@ -134,37 +138,37 @@ function sendTableOrderSMS(request, response) {
   console.log("Send SMS text", text);
   console.log("Send SMS business", business);
 
-  if(!to)
-  return
+  if (!to)
+    return
 
   var businessQuery = new Parse.Query("Business");
   businessQuery.equalTo("objectId", business);
   businessQuery.find({
     useMasterKey: true, //This is for the new version
-    success: function(businesses) {
+    success: function (businesses) {
       console.log("Found..." + businesses.length);
       var thisBusiness = businesses[0];
       console.log("SMS left to business..." + thisBusiness.get("orders_accumulate"));
 
-      if(thisBusiness.get("orders_accumulate") > 0){
+      if (thisBusiness.get("orders_accumulate") > 0) {
         Parse.Cloud.run("sendSMS", {
-              to,
-              from,
-              text
-            })
-            .then(function(result) {
-              console.log("result :" + JSON.stringify(result))
-              response.success(thisBusiness.get("orders_accumulate"));
-            }, function(error) {
-              console.log("Error saving message" + error);
-              response.error(-1);
-            });
-      } else{
+          to,
+          from,
+          text
+        })
+          .then(function (result) {
+            console.log("result :" + JSON.stringify(result))
+            response.success(thisBusiness.get("orders_accumulate"));
+          }, function (error) {
+            console.log("Error saving message" + error);
+            response.error(-1);
+          });
+      } else {
         console.log("Error no SMS left");
         response.error(-1);
       }
     },
-    error: function(error) {
+    error: function (error) {
       console.log("error" + error);
       response.error(error);
     }
@@ -179,10 +183,10 @@ function blockUser(request, response) {
   user.set("blocked", true);
   user.save(null, {
     useMasterKey: true,
-    success: function() {
+    success: function () {
       response.success("User was blocked from admin");
     },
-    error: function(error) {
+    error: function (error) {
       response.error("Error saving message" + error.code);
     }
   });
@@ -196,10 +200,10 @@ function unBlockUser(request, response) {
   user.set("blocked", false);
   user.save(null, {
     useMasterKey: true,
-    success: function() {
+    success: function () {
       response.success("User was unblocked from admin");
     },
-    error: function(error) {
+    error: function (error) {
       response.error("Error saving message" + error.code);
     }
   });
@@ -221,7 +225,7 @@ function getFullUsersFromIds(request, response) {
   userQuery.limit(users.length);
   userQuery.find({
     useMasterKey: true, //This is for the new version
-    success: function(users) {
+    success: function (users) {
       console.log("Found..." + users.length);
       var emailsArray = [];
       for (var i = 0; i < users.length; i++) {
@@ -231,7 +235,7 @@ function getFullUsersFromIds(request, response) {
       //response.success(emailsArray);
     },
 
-    error: function(error) {
+    error: function (error) {
       response.error(error);
     }
   });
@@ -249,14 +253,14 @@ function getFullUserInstallationsFromIds(request, response) {
   query.descending('updatedAt')
   query.find({
     useMasterKey: true, //This is for the new version
-    success: function(results) {
+    success: function (results) {
       for (var i = 0; i < results.length; i++) {
         console.log("iterating over Installations");
       }
       console.log("Finished iterating over Installations");
       response.success(results);
     },
-    error: function(error) {
+    error: function (error) {
       response.error(error);
     }
   });
@@ -277,16 +281,16 @@ function createNewUser(request, response) {
   var password = "pass";
   var user = new Parse.User();
   email = email.toLowerCase();
-  if(sellerPaymeId){
+  if (sellerPaymeId) {
     user.set({
       username: email,
       first_name: firstName,
       last_name: lastName,
       password,
       email,
-      payme_seller_id : sellerPaymeId
+      payme_seller_id: sellerPaymeId
     });
-  }else{
+  } else {
     user.set({
       username: email,
       first_name: firstName,
@@ -298,7 +302,7 @@ function createNewUser(request, response) {
 
   user.signUp(null, {
     useMasterKey: true,
-    success: function(user) {
+    success: function (user) {
       console.log('success', user);
       user.setPassword(user.id);
       user.save(null, { useMasterKey: true }).then((user) => {
@@ -309,14 +313,14 @@ function createNewUser(request, response) {
         response.error(error.message);
       });
     },
-    error: function(user, error) {
+    error: function (user, error) {
       console.log('error', error);
       response.error(error);
     }
   });
 }
 
-function saveBusinessSellerId(request, response){
+function saveBusinessSellerId(request, response) {
   var params = request.params;
   console.log("saveBusinessSellerId");
   console.log("phone", params.businessId);
@@ -325,24 +329,24 @@ function saveBusinessSellerId(request, response){
   var userQuery = new Parse.Query("Business");
   userQuery.equalTo("objectId", businessId);
   userQuery.find({
-    success: function(businesses) {
+    success: function (businesses) {
       try {
-        if(businesses && businesses.length > 0){
+        if (businesses && businesses.length > 0) {
           var newIsraeliSeller = businesses[0];
           console.log("found business", newIsraeliSeller.id);
           newIsraeliSeller.set("seller_payme_id", params.seller_payme_id);
           newIsraeliSeller.save(null, {
             useMasterKey: true,
-            success: function(user) {
+            success: function (user) {
               console.log("Saved Businesss Seller Id");
               response.success('success');
             },
-            error: function(error) {
+            error: function (error) {
               console.log(error);
               response.error(error);
             }
           });
-        } else{
+        } else {
           console.log("no user business, create one!");
           createNewUser(request, response)
           console.log("created new user");
@@ -352,7 +356,7 @@ function saveBusinessSellerId(request, response){
         response.error(error);
       }
     },
-    error: function(error) {
+    error: function (error) {
       response.error(error);
     }
   });
@@ -371,23 +375,23 @@ function saveAndroidUserDeviceToken(request, response) {
   installationQuery.equalTo('objectId', installation[0]);
   installationQuery.find({
     useMasterKey: true,
-    success: function(installations) {
+    success: function (installations) {
       console.log("#### Successfully retrieved Installation" + installations.length);
       var userInstallation = installations[0];
       userInstallation.set("deviceToken", token);
       userInstallation.save(null, {
         useMasterKey: true,
-        success: function(listing) {
+        success: function (listing) {
           console.log("#### Saved Token");
           response.success('success');
         },
-        error: function(error) {
+        error: function (error) {
           console.log("#### Did Not Save Token...");
           response.error(error);
         }
       });
     },
-    error: function(error) {
+    error: function (error) {
       console.log("#### Error: " + error.code + " " + error.message);
       response.error(error);
     },
@@ -417,43 +421,43 @@ function createPaymentRequest(request, response) {
     });
 
     var query = new Parse.Query("PaymentRequest");
-    query.equalTo('buyer',buyerObject);
-    query.equalTo('seller',sellerObject);
+    query.equalTo('buyer', buyerObject);
+    query.equalTo('seller', sellerObject);
 
     var productObject;
     switch (productType) {
       case 0:
-      query.exists('amount'); //Free amount
-      query.notEqualTo('settled',true); //For Session
-      break;
+        query.exists('amount'); //Free amount
+        query.notEqualTo('settled', true); //For Session
+        break;
       case 1:
-      var Session = Parse.Object.extend("MSession");
-      productObject = new Session({
-        id: productObjectId
-      });
-      query.equalTo('session',productObject); //For Session
-      break;
+        var Session = Parse.Object.extend("MSession");
+        productObject = new Session({
+          id: productObjectId
+        });
+        query.equalTo('session', productObject); //For Session
+        break;
       case 2:
-      var Ticket = Parse.Object.extend("Ticket");
-      productObject = new Ticket({
-        id: productObjectId
-      });
-      query.equalTo('ticket',productObject); //For Ticket
-      break;
+        var Ticket = Parse.Object.extend("Ticket");
+        productObject = new Ticket({
+          id: productObjectId
+        });
+        query.equalTo('ticket', productObject); //For Ticket
+        break;
       case 3:
-      var Membership = Parse.Object.extend("Membership");
-      productObject = new Membership({
-        id: productObjectId
-      });
-      query.equalTo('membership',productObject); //For Membership
-      break;
+        var Membership = Parse.Object.extend("Membership");
+        productObject = new Membership({
+          id: productObjectId
+        });
+        query.equalTo('membership', productObject); //For Membership
+        break;
       default:
-      break;
+        break;
     }
     query.find({
       useMasterKey: true,
-      success: function(paymentRequests) {
-        if(paymentRequests !== null && paymentRequests.length > 0){
+      success: function (paymentRequests) {
+        if (paymentRequests !== null && paymentRequests.length > 0) {
           response.success("Payment Request from you to this client for this product already exists");
         }
         else {
@@ -461,36 +465,36 @@ function createPaymentRequest(request, response) {
 
             var PaymentRequest = Parse.Object.extend("PaymentRequest");
             var paymentRequestObject = new PaymentRequest();
-            paymentRequestObject.set('buyer',buyerObject);
-            paymentRequestObject.set('seller',sellerObject);
-            paymentRequestObject.set('product_type',productType);
+            paymentRequestObject.set('buyer', buyerObject);
+            paymentRequestObject.set('seller', sellerObject);
+            paymentRequestObject.set('product_type', productType);
             switch (productType) {
               case 0:
-              break;
-              case 1: paymentRequestObject.set('session',productObject); //For Session
-              break;
-              case 2: paymentRequestObject.set('ticket',productObject); //For Ticket
-              break;
-              case 3: paymentRequestObject.set('membership',productObject); //For Membership
-              break;
+                break;
+              case 1: paymentRequestObject.set('session', productObject); //For Session
+                break;
+              case 2: paymentRequestObject.set('ticket', productObject); //For Ticket
+                break;
+              case 3: paymentRequestObject.set('membership', productObject); //For Membership
+                break;
               default:
-              break;
+                break;
             }
           } catch (error) {
             console.log(error);
             response.error(error);
           }
 
-          paymentRequestObject.save().then(function(paymentRequest) {
+          paymentRequestObject.save().then(function (paymentRequest) {
             console.log("New Payment Request Object - succeedded with objectId " + paymentRequest.id);
             response.success("Payment Request successfully created");
-          }, function(error) {
+          }, function (error) {
             console.log("Returning Error - " + error);
             response.error(error);
           });
         }
       },
-      error: function(error) {
+      error: function (error) {
         console.log(error);
         response.error(error);
       },
@@ -521,58 +525,58 @@ function paymentRequestSettled(request, response) {
   });
 
   var query = new Parse.Query("PaymentRequest");
-  query.equalTo('buyer',buyerObject);
-  query.equalTo('seller',sellerObject);
+  query.equalTo('buyer', buyerObject);
+  query.equalTo('seller', sellerObject);
 
   var productObject;
   switch (productType) {
     case 0:
-    console.log("free amount");
-    query.exists('amount'); //For Session//Free amount
-    query.notEqualTo('settled',true); //For Session
-    break;
+      console.log("free amount");
+      query.exists('amount'); //For Session//Free amount
+      query.notEqualTo('settled', true); //For Session
+      break;
     case 1:
-    console.log("session");
-    var Session = Parse.Object.extend("MSession");
-    productObject = new Session({
-      id: productObjectId
-    });
-    query.equalTo('session',productObject); //For Session
-    break;
+      console.log("session");
+      var Session = Parse.Object.extend("MSession");
+      productObject = new Session({
+        id: productObjectId
+      });
+      query.equalTo('session', productObject); //For Session
+      break;
     case 2:
-    console.log("ticket");
-    var Ticket = Parse.Object.extend("Ticket");
-    productObject = new Ticket({
-      id: productObjectId
-    });
-    query.equalTo('ticket',productObject); //For Ticket
-    break;
+      console.log("ticket");
+      var Ticket = Parse.Object.extend("Ticket");
+      productObject = new Ticket({
+        id: productObjectId
+      });
+      query.equalTo('ticket', productObject); //For Ticket
+      break;
     case 3:
-    console.log("membership");
-    var Membership = Parse.Object.extend("Membership");
-    productObject = new Membership({
-      id: productObjectId
-    });
-    query.equalTo('membership',productObject); //For Membership
-    break;
+      console.log("membership");
+      var Membership = Parse.Object.extend("Membership");
+      productObject = new Membership({
+        id: productObjectId
+      });
+      query.equalTo('membership', productObject); //For Membership
+      break;
     default:
-    console.log("none");
-    break;
+      console.log("none");
+      break;
   }
   query.find({
     useMasterKey: true,
-    success: function(paymentRequests) {
-      if(paymentRequests !== null && paymentRequests.length > 0){
+    success: function (paymentRequests) {
+      if (paymentRequests !== null && paymentRequests.length > 0) {
         var paymentRequest = paymentRequests[0];
         console.log("paymentRequest ", paymentRequest.id);
-        paymentRequest.set("is_settled",true);
+        paymentRequest.set("is_settled", true);
         paymentRequest.save(null, {
           useMasterKey: true,
-          success: function(paymentRequest) {
+          success: function (paymentRequest) {
             console.log("Payment Request settled");
             response.success("Payment Request settled");
           },
-          error: function(error) {
+          error: function (error) {
             console.log(error);
             response.error(error);
           }
@@ -582,7 +586,7 @@ function paymentRequestSettled(request, response) {
         response.success("Payment Request does not exist for this seller/buyer/product combination");
       }
     },
-    error: function(error) {
+    error: function (error) {
       console.log("error");
       response.error(error);
     },
