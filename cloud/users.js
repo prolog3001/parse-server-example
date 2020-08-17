@@ -75,6 +75,7 @@ function addCreditsToUsers(request, response) {
         var userBusinesses = user.get("businesses");
 
         if (userBusinesses && userBusinesses.length > 0) {
+          console.log("userBusinesses" + userBusinesses.length);
           businesses = userBusinesses;
         }
 
