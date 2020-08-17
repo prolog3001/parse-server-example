@@ -70,8 +70,10 @@ function addCreditsToUsers(request, response) {
       for (var i = 0; i < users.length; i++) {
         var user = users[i];
         var business = user.get("business");
+        var userBusinesses = user.get("businesses");
+
         businesses.push(business);
-        
+
         if (userBusinesses && userBusinesses.length > 0) {
           businesses.concat(userBusinesses);
         }
