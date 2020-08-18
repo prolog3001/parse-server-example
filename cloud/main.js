@@ -1,4 +1,5 @@
 var users = require('./users.js');
+var businesses = require('./businesses.js');
 var utils = require('./utils.js');
 var orders = require('./orders.js');
 var push = require('./push.js');
@@ -8,15 +9,15 @@ var background = require('./background.js');
 var i18n = require('i18n');
 var paymeApi = require('./paymeApi.js');
 
+Parse.Cloud.define("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
+Parse.Cloud.job("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
+
 Parse.Cloud.define("addCreditsToUsers", users.addCreditsToUsers);
 Parse.Cloud.job("addCreditsToUsers", users.addCreditsToUsers);
-
 Parse.Cloud.define("sendVerificationCode", users.sendVerificationCode);
 Parse.Cloud.job("sendVerificationCode", users.sendVerificationCode);
-
 Parse.Cloud.define("sendTableOrderSMS", users.sendTableOrderSMS);
 Parse.Cloud.job("sendTableOrderSMS", users.sendTableOrderSMS);
-
 Parse.Cloud.define("blockUser", users.blockUser);
 Parse.Cloud.define("unBlockUser", users.unBlockUser);
 Parse.Cloud.define("getFullUsersFromIds", users.getFullUsersFromIds);

@@ -43,13 +43,13 @@ function addCreditsToUsers(request, response) {
 
   var params = request.params;
 
-  var users = params.userIds;
+  var userIds = params.userIds;
 
   var userQuery = new Parse.Query(Parse.User);
 
-  if (params.userIds && params.userIds.length > 0) {
-    userQuery.containedIn("objectId", params.userIds);
-    userQuery.limit(users.length);
+  if (userIds && userIds.length > 0) {
+    userQuery.containedIn("objectId", userIds);
+    userQuery.limit(userIds.length);
   } else {
     //DEBUG ONLY
     // userQuery.equalTo("email", process.env.MAILGUN_TEST_EMAIL);
