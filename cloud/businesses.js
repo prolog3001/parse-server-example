@@ -26,7 +26,7 @@ function addCreditsToBusinesses(request, response) {
   }
 
   businessQuery.exists("admin");
-  businessQuery.equalTo((params.creditType || "orders_accumulate"), 0);
+  businessQuery.doesNotExist((params.creditType || "orders_accumulate"));
   businessQuery.find({
     useMasterKey: true,
     success: function (businesses) {
