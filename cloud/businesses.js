@@ -19,10 +19,10 @@ function addCreditsToBusinesses(request, response) {
     businessQuery.limit(businessIds.length);
   } else {
     //DEBUG ONLY
-    businessQuery.equalTo("objectId", "OUPcvgIZAn");
-    businessQuery.limit(1);
+    // businessQuery.equalTo("objectId", "OUPcvgIZAn");
+    // businessQuery.limit(1);
 
-    // businessQuery.limit(10000);
+    businessQuery.limit(10000);
   }
 
   businessQuery.exists("admin");
