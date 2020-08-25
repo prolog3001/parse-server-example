@@ -212,7 +212,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                             // restaurantOrderSummaryQuery.limit(1000);
                             restaurantOrderSummaryQuery.count({
                                 success: async function (count) {
-                                    log('number of orders in current z', count)
+                                    console.log('number of orders in current z', count)
                                     orderSummary.save({ "internal_id": (count+1) }, {
                                         success: async function (result) {
                                             console.log("Success saving after order created without a number", result);
