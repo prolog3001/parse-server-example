@@ -209,9 +209,9 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                 console.log("No last z...");
                             }
 
-                            restaurantOrderSummaryQuery.limit(1000);
+                            // restaurantOrderSummaryQuery.limit(1000);
                             restaurantOrderSummaryQuery.count({
-                                success: (count) => {
+                                success: async function (count) {
                                     log('number of orders in current z', count)
                                     orderSummary.save({ "internal_id": (count+1) }, {
                                         success: async function (result) {
@@ -222,7 +222,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                         }
                                     });
                                 },
-                                error: function (error) {
+                                error: async function (error) {
                                     log('orders in current z', error)
                                 }
                             });
