@@ -195,6 +195,38 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                                 }
                             });
                         }
+
+                        if (!orderSummary.get("internal_id") || orderSummary.get("internal_id") < 0) {
+                            console.log("order created without a number", orderSummary);
+                            
+                            var restaurantOrderSummaryQuery = new Parse.Query("RestaurantOrderSummary");
+                            restaurantOrderSummaryQuery.equalTo("business", business);
+
+                            if (business.get("last_z")) {
+                                console.log("Has last z: " + business.get("last_z"));
+                                restaurantOrderSummaryQuery.greaterThanOrEqualTo("createdAt", business.get("last_z"));
+                            } else {
+                                console.log("No last z...");
+                            }
+
+                            // restaurantOrderSummaryQuery.limit(1000);
+                            restaurantOrderSummaryQuery.count({
+                                success: async function (count) {
+                                    console.log('number of orders in current z', count)
+                                    orderSummary.save({ "internal_id": (count+1) }, {
+                                        success: async function (result) {
+                                            console.log("Success saving after order created without a number", result);
+                                        },
+                                        error: async function (error) {
+                                            console.log("Error", error);
+                                        }
+                                    });
+                                },
+                                error: async function (error) {
+                                    log('orders in current z', error)
+                                }
+                            });
+                        }
                     } else {
                         console.log("request.object.existed()", request.object.existed());
                     }
