@@ -94,6 +94,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             var fs = require('fs');
             var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
             emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
+            emailBody = utils.replaceAll(emailBody, "admin_email", user.get("email"));
 
             var data = {
                 from: fromString,

@@ -3,6 +3,9 @@ var i18n = require('i18n');
 var utils = require('./utils.js');
 
 module.exports = {
+  sendNewHostEmail: function (request, response) {
+    sendNewHostEmail(request, response);
+  },
   sendTestEmail: function (request, response) {
     sendTestEmail(request, response);
   },
@@ -48,6 +51,62 @@ async function sendTestEmail(request, response) {
         return;
       }
     });
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
+async function sendNewHostEmail(request, response) {
+  try {
+    var params = request.params;
+
+    var user = await utils.getObjectById('User', params.userId);
+    console.log("New User id: " + user.id);
+    console.log("New User name: " + user.get("name"));
+    console.log("New User email: " + user.get("email"));
+
+    if (user.get("name") && user.get("name").length > 0 &&
+        user.get("email") && user.get("email").length > 0) {
+
+        console.log("New Host has email and name");
+
+        var fromEmail = "info@dreamdiner.io";
+        var fromName = "DreamDiner";
+        var fromString = fromName + " <" + fromEmail + ">";
+
+        var toString = user.get("name") + " <" + user.get("email") + ">"
+
+        var emailSubject = "Welcome to the Table Planner";
+
+        var fs = require('fs');
+        var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_host_added.html', "utf-8");
+        emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
+
+        var data = {
+            from: fromString,
+            to: toString,
+            subject: emailSubject,
+            html: emailBody
+        };
+
+        var simpleMailgunAdapter = require('mailgun-js')({
+            apiKey: process.env.MAILGUN_KEY || '',
+            domain: process.env.MAILGUN_DOMAIN
+        });
+
+        simpleMailgunAdapter.messages().send(data, function (error, body) {
+            if (error) {
+                console.log("got an error in sendEmail: " + error);
+                return;
+            } else {
+                console.log("email sent to " + user.get("email"));
+                return;
+            }
+        });
+    } else {
+        console.log("New User has NO email and name");
+    }
   } catch (error) {
     console.log(error);
     return error;
