@@ -8,14 +8,14 @@ var cookieParser = require('cookie-parser');
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
-    console.log('DATABASE_URI not specified, falling back to localhost.');
+    console.log('Sandbox: DATABASE_URI not specified, falling back to localhost.');
 }
 
 var api = new ParseServer({
     databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
     cloud: __dirname + '/cloud/main.js',
     appId: process.env.APP_ID,
-    appName: 'DreamDiner',
+    appName: 'DreamDiner Sandbox',
     masterKey: process.env.MASTER_KEY,
     serverURL: process.env.SERVER_URL, // Don't forget to change to https if needed
     publicServerURL: process.env.PUBLIC_SERVER_URL,
@@ -53,7 +53,7 @@ var api = new ParseServer({
 });
 
 var app = express();
-app.use(cookieParser("DreamDiner"));
+app.use(cookieParser("DreamDiner Sandbox"));
 
 // Serve the Parse API on the /parse URL prefix
 var mountPath = process.env.PARSE_MOUNT || '/parse';
