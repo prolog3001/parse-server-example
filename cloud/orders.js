@@ -16,6 +16,9 @@ module.exports = {
   },
   forceCloseOpenedOrders: function (request, response) {
     forceCloseOpenedOrders(request, response);
+  },
+  combineOrders: function (request, response) {
+    combineOrders(request, response);
   }
 };
 
@@ -546,6 +549,90 @@ async function forceCloseOpenedOrders(request, response) {
       } else {
         console.log("#### We have NO opened orders from 12 hours back or more");
         response.error('We have NO opened orders from 12 hours back or more');
+      }
+    },
+    error: function () {
+      response.error('Wasnt able to find opened orders');
+    }
+  });
+}
+
+async function combineOrders(request, response) {
+  console.log("combineOrders");
+
+  var childOrderIds = request.params.childOrderIds;
+  var motherOrderId = request.params.motherOrderId;
+  childOrderIds.push(motherOrderId);
+
+  var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+  openedOrdersQuery.containedIn("objectId", childOrderIds);
+  openedOrdersQuery.limit(childOrderIds.length);
+  openedOrdersQuery.find({
+    useMasterKey: true,
+    success: async function (orderSummaries) {
+      console.log("#### Orders to Combine " + orderSummaries.length);
+
+      var childOrders = [];
+      var motherOrder;
+
+      for (var i = orderSummaries.length-1; i >=0; i--) {
+        try {
+          if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
+            console.log("orderSummary is null..");
+            continue;
+          }
+
+          if (orderSummaries[i].id == motherOrderId) {
+            console.log("motherOrder: " + motherOrderId);
+            motherOrder = orderSummaries[i];
+            orderSummaries.splice(i, 1);
+          } else{
+            childOrders.push(orderSummaries[i])
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      for (var i = childOrders.length-1; i >=0; i--) {
+        try {
+          if (!childOrders[i] || childOrders[i] === null || childOrders[i] === undefined) {
+            console.log("childOrders is null..");
+            continue;
+          }
+
+          childOrders[i].set("mother_order", motherOrder);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      // motherOrder.set("child_orders", childOrders);
+
+      if (childOrders.length > 0) {
+        console.log("Try to save all - " + childOrders.length);
+        Parse.Object.saveAll(childOrders, {
+          useMasterKey: true,
+          success: function (childOrders) {
+            console.log("#### Saved Order Summary Array  " + childOrders.length);
+            motherOrder.save({ "child_orders": childOrders }, {
+              success: async function (motherOrder) {
+                  console.log("Success saving after order combine", motherOrder);
+                  response.success("Success saving after order combine", motherOrder);
+              },
+              error: async function (error) {
+                  console.log("Error saving after order combine", error);
+              }
+          });
+          },
+          error: function (error) {
+            console.log("Wasnt able to child orders  " + error);
+            response.error('Wasnt able to child orders');
+          }
+        });
+      } else {
+        console.log("#### We have NO opened orders");
+        response.error('We have NO opened orders');
       }
     },
     error: function () {
