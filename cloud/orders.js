@@ -602,6 +602,7 @@ async function combineOrders(request, response) {
           }
 
           childOrders[i].set("mother_order", motherOrder);
+          childOrders[i].set("paid", true);
         } catch (error) {
           console.error(error);
         }
