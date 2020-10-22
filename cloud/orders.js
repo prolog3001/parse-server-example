@@ -608,7 +608,7 @@ async function combineOrders(request, response) {
         }
       }
 
-      motherOrder.set("child_orders", childOrders);
+      // motherOrder.set("child_orders", childOrders);
 
       if (childOrders.length > 0) {
         console.log("Try to save all - " + childOrders.length);
@@ -616,7 +616,7 @@ async function combineOrders(request, response) {
           useMasterKey: true,
           success: function (childOrders) {
             console.log("#### Saved Order Summary Array  " + childOrders.length);
-            motherOrder.save({
+            motherOrder.save({ "child_orders": childOrders }, {
               success: async function (motherOrder) {
                   console.log("Success saving after order combine", motherOrder);
                   response.success("Success saving after order combine", motherOrder);
