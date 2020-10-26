@@ -35,8 +35,9 @@ async function forceOrderedOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  } else{
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
-  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
@@ -128,8 +129,9 @@ async function forceProgressOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  } else{
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
-  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
@@ -221,8 +223,9 @@ async function forceReadyOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  } else{
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
-  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
@@ -314,8 +317,9 @@ async function forceDeliverOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  } else{
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
-  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
@@ -411,8 +415,9 @@ async function forcePayOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  } else{
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
-  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   openedOrdersQuery.notEqualTo("paid", true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
@@ -481,8 +486,9 @@ async function forceCloseOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
+  } else{
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
-  openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   // openedOrdersQuery.notEqualTo("paid", true);
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
