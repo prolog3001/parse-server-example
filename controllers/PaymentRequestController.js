@@ -1,4 +1,6 @@
+const { getObjectByIdWithInclude } = require('../cloud/utils.js');
 const utils = require('../cloud/utils.js');
+const Orders = require('../cloud/orders.js');
 
 const PAYMENT_CLASS_NAME = 'Payment';
 const PAYMENT_FIELD_NAME = 'payment';
@@ -85,7 +87,7 @@ async function savePayment(req) {
           utils.saveBuyerKeyToUser(req.query.buyerId, req.body.buyer_key);
         }
 
-        var fullProduct = await getObjectById('RestaurantOrderSummary', productId);
+        var fullProduct = await getObjectByIdWithInclude('RestaurantOrderSummary', child_orders, productId);
         var fullProductParams = {
           paid: true,
           paid_using: 1
@@ -93,6 +95,13 @@ async function savePayment(req) {
         fullProduct.save(fullProductParams, {
           success: function (orderSummary) {
             console.log('success saving orderSummary!', orderSummary);
+            var orderSummaries = [];
+            orderSummaries.push(fullProduct)
+            try {
+              Orders.markChildOrdersAsPaid(orderSummaries)
+            } catch (error) {
+              
+            }
           },
           error: function (error) {
             console.log('error createing orderSummary!', error);
