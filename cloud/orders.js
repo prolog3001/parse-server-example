@@ -420,7 +420,7 @@ async function forcePayOpenedOrders(request, response) {
   }
   openedOrdersQuery.notEqualTo("paid", true);
   openedOrdersQuery.include("item_orders");
-  openedOrdersQuery.include("item_orders");
+  openedOrdersQuery.include("child_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
   openedOrdersQuery.include("item_orders_delivered");
@@ -432,6 +432,7 @@ async function forcePayOpenedOrders(request, response) {
       // console.log("#### Orders to Close " + JSON.stringify(orderSummaries));
 
       var clonedOrderSummary = [];
+      var childOrders = [];
 
       for (var i = 0; i < orderSummaries.length; i++) {
         try {
@@ -444,9 +445,48 @@ async function forcePayOpenedOrders(request, response) {
           orderSummaries[i].set("discount_percentage", 1);
 
           clonedOrderSummary.push(orderSummaries[i]);
+
+          if(orderSummaries[i].get("child_orders"))
+            childOrders.concat(orderSummaries[i].get("child_orders"))
         } catch (error) {
           console.error(error);
         }
+      }
+
+      for (var i = childOrders.length-1; i >=0; i--) {
+        try {
+          if (!childOrders[i] || childOrders[i] === null || childOrders[i] === undefined) {
+            console.log("childOrders is null..");
+            continue;
+          }
+
+          childOrders[i].set("paid", true);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      if (childOrders.length > 0) {
+        console.log("Try to save all children - " + childOrders.length);
+        Parse.Object.saveAll(childOrders, {
+          useMasterKey: true,
+          success: function (childOrders) {
+            console.log("#### Saved Order Summary Array  " + childOrders.length);
+            motherOrder.save({ "child_orders": childOrders }, {
+              success: async function (motherOrder) {
+                  console.log("Success saving after order pay", motherOrder);
+              },
+              error: async function (error) {
+                  console.log("Error saving after order pay", error);
+              }
+          });
+          },
+          error: function (error) {
+            console.log("Wasnt able to child orders  " + error);
+          }
+        });
+      } else {
+        console.log("#### We have NO child orders");
       }
 
       if (clonedOrderSummary.length > 0) {
@@ -490,7 +530,6 @@ async function forceCloseOpenedOrders(request, response) {
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   // openedOrdersQuery.notEqualTo("paid", true);
-  openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders");
   openedOrdersQuery.include("item_orders_in_progress");
   openedOrdersQuery.include("item_orders_ready");
