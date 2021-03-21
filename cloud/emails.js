@@ -159,11 +159,11 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
 
     var recipients = [];
 
-    if(!emailSubject){
+    if(!emailSubject || !emailSubject.length){
       emailSubject = "Welcome to DreamDiner";
     }
 
-    if(!emailBody){
+    if(!emailBody || !emailBody.length){
       var fs = require('fs');
       emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
       emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");
@@ -182,6 +182,9 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
       }
     }
 
+    console.log("bulk email fromEmail", fromEmail);
+    console.log("bulk email recipients", recipients);
+    console.log("bulk email emailSubject", emailSubject);
     var data = {
       from: fromEmail,
       to: recipients,
