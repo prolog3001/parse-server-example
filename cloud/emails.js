@@ -161,12 +161,12 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
     var recipients = [];
 
     if(!emailSubject){
-      var emailSubject = "Welcome to DreamDiner";
+      emailSubject = "Welcome to DreamDiner";
     }
 
     if(!emailBody){
       var fs = require('fs');
-      var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+      emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
       emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");
     }
 
