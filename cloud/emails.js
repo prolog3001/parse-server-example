@@ -31,7 +31,7 @@ async function sendTestEmail(request, response) {
 
     var data = {
       from: fromString,
-      to: toString,
+      to: process.env.MAILGUN_TEST_EMAIL,
       subject: emailSubject,
       html: emailBody
     };
