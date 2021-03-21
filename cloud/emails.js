@@ -11,6 +11,9 @@ module.exports = {
   },
   sendNewsletter: function (request, response) {
     sendNewsletter(request, response);
+  },
+  sendBulkEmail: function (request, response) {
+    sendBulkEmail(request, response);
   }
 };
 
@@ -83,20 +86,14 @@ async function sendNewHostEmail(request, response) {
         html: emailBody
       };
 
-      var simpleMailgunAdapter = require('mailgun-js')({
-        apiKey: process.env.MAILGUN_KEY || '',
-        domain: process.env.MAILGUN_DOMAIN
-      });
-
-      simpleMailgunAdapter.messages().send(data, function (error, body) {
-        if (error) {
-          console.log("got an error in sendEmail: " + error);
-          return;
-        } else {
-          console.log("email sent to " + user.get("email"));
-          return;
-        }
-      });
+      const sgMail = require('@sendgrid/mail')
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+      sgMail.send(data)
+        .then(() => {
+          console.log('Email sent')
+        }).catch((error) => {
+          console.error(error)
+        })
     } else {
       console.log("New User has NO email and name");
     }
@@ -152,53 +149,91 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
     console.log("sendBulkEmail..." + users.length);
     // console.log("sendBulkEmail..." + emailBody);
     if (users.length == 0) {
-      console.log("sendBulkEmail cancel");
-      return;
+      console.log("sendBulkEmail dummy");
+      // return;
     }
 
     var fromEmail = "info@dreamdiner.io";
     var fromName = "DreamDiner";
     var fromString = fromName + " <" + fromEmail + ">";
 
-    var simpleMailgunAdapter = require('mailgun-js')({
-      apiKey: process.env.MAILGUN_KEY || '',
-      domain: process.env.MAILGUN_DOMAIN
-    });
-
     var recipients = [];
-    var recipientVars = {};
 
-    for (var i = 0; i < users.length; i++) {
-      var user = users[i];
-
-      var recepient = user.get("email");
-      var recepientVar = {
-        id: user.id,
-        subject: emailSubject,
-        name: user.get("name")
-      };
-
-      recipients.push(recepient);
-      recipientVars[recepient] = recepientVar;
+    if(!emailSubject){
+      var emailSubject = "Welcome to DreamDiner";
     }
 
-    var envelope = {
-      from: fromString,
+    if(!emailBody){
+      var fs = require('fs');
+      var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+      emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");
+    }
+
+    if (!users || !users.length) {
+      recipients.push('matan1@mailinator.com')
+      recipients.push('matan2@mailinator.com')
+      recipients.push('matan3@mailinator.com')
+      recipients.push('matan4@mailinator.com')
+    } else {
+      for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        var recepient = user.get("email");
+        recipients.push(recepient);
+      }
+    }
+
+    var data = {
+      from: fromEmail,
       to: recipients,
-      subject: '%recipient.subject%',
-      html: emailBody,
-      'recipient-variables': recipientVars,
+      subject: emailSubject,
+      html: emailBody
     };
 
-    simpleMailgunAdapter.messages().send(envelope, function (error, body) {
-      if (error) {
-        console.log("got an error in sendBulkEmail: " + error);
-        return error;
-      } else {
+    const sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.sendMultiple(data)
+      .then(() => {
         console.log("bulk email sent");
-        return "bulk email sent";
-      }
-    });
+      }).catch((error) => {
+        console.log("got an error in sendBulkEmail: " + error);
+      })
+
+    // var simpleMailgunAdapter = require('mailgun-js')({
+    //   apiKey: process.env.MAILGUN_KEY || '',
+    //   domain: process.env.MAILGUN_DOMAIN
+    // });
+
+    // for (var i = 0; i < users.length; i++) {
+    //   var user = users[i];
+
+    //   var recepient = user.get("email");
+    //   var recepientVar = {
+    //     id: user.id,
+    //     subject: emailSubject,
+    //     name: user.get("name")
+    //   };
+
+    //   recipients.push(recepient);
+    //   recipientVars[recepient] = recepientVar;
+    // }
+
+    // var envelope = {
+    //   from: fromString,
+    //   to: recipients,
+    //   subject: '%recipient.subject%',
+    //   html: emailBody,
+    //   'recipient-variables': recipientVars,
+    // };
+
+    // simpleMailgunAdapter.messages().send(envelope, function (error, body) {
+    //   if (error) {
+    //     console.log("got an error in sendBulkEmail: " + error);
+    //     return error;
+    //   } else {
+    //     console.log("bulk email sent");
+    //     return "bulk email sent";
+    //   }
+    // });
   } catch (error) {
     console.log(error);
     return error;

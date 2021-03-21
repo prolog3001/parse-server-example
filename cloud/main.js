@@ -53,9 +53,11 @@ Parse.Cloud.define("combineOrders", orders.combineOrders);
 Parse.Cloud.define("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.define("sendNewsletter", emails.sendNewsletter);
 Parse.Cloud.define("sendNewHostEmail", emails.sendNewHostEmail);
+Parse.Cloud.define("sendBulkEmail", emails.sendBulkEmail);
 Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
+Parse.Cloud.job("sendBulkEmail", emails.sendBulkEmail);
 
 // Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
 // Parse.Cloud.job("readyPushTest", background.readyPushTest);
