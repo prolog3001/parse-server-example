@@ -89,6 +89,9 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
 
             console.log("New User has email and name");
 
+            //Check if planner or admin and choose correct email template
+            //Add new user to SG contacts
+
             var fromEmail = "info@dreamdiner.io";
             var fromName = "DreamDiner";
             var fromString = fromName + " <" + fromEmail + ">";
@@ -109,20 +112,14 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                 html: emailBody
             };
 
-            var simpleMailgunAdapter = require('mailgun-js')({
-                apiKey: process.env.MAILGUN_KEY || '',
-                domain: process.env.MAILGUN_DOMAIN
-            });
-
-            simpleMailgunAdapter.messages().send(data, function (error, body) {
-                if (error) {
-                    console.log("got an error in sendEmail: " + error);
-                    return;
-                } else {
-                    console.log("email sent to " + user.get("email"));
-                    return;
-                }
-            });
+            const sgMail = require('@sendgrid/mail')
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+            sgMail.send(data)
+                .then(() => {
+                    console.log('Email sent')
+                }).catch((error) => {
+                    console.error(error)
+                })
         } else {
             console.log("New User has NO email and name");
         }
@@ -205,7 +202,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
 
                         if (!orderSummary.get("internal_id") || orderSummary.get("internal_id") < 0) {
                             console.log("order created without a number", orderSummary);
-                            
+
                             var restaurantOrderSummaryQuery = new Parse.Query("RestaurantOrderSummary");
                             restaurantOrderSummaryQuery.equalTo("business", business);
 
@@ -220,7 +217,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                             restaurantOrderSummaryQuery.count({
                                 success: async function (count) {
                                     console.log('number of orders in current z', count)
-                                    orderSummary.save({ "internal_id": (count+1) }, {
+                                    orderSummary.save({ "internal_id": (count + 1) }, {
                                         success: async function (result) {
                                             console.log("Success saving after order created without a number", result);
                                         },
