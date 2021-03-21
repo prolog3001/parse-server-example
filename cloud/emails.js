@@ -156,7 +156,6 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
 
     var fromEmail = "info@dreamdiner.io";
     var fromName = "DreamDiner";
-    var fromString = fromName + " <" + fromEmail + ">";
 
     var recipients = [];
 
@@ -189,6 +188,7 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
       subject: emailSubject,
       html: emailBody
     };
+    console.log("bulk email data", data);
 
     const sgMail = require('@sendgrid/mail')
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
