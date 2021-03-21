@@ -146,11 +146,12 @@ async function sendNewsletter(request, response) {
 
 async function sendBulkEmail(emailSubject, emailBody, users) {
   try {
-    console.log("sendBulkEmail..." + users.length);
     // console.log("sendBulkEmail..." + emailBody);
-    if (users.length == 0) {
+    if (!users || users.length == 0) {
       console.log("sendBulkEmail dummy");
       // return;
+    } else{
+      console.log("sendBulkEmail..." + users.length);
     }
 
     var fromEmail = "info@dreamdiner.io";
