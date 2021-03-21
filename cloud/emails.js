@@ -37,20 +37,14 @@ async function sendTestEmail(request, response) {
       html: emailBody
     };
 
-    var simpleMailgunAdapter = require('mailgun-js')({
-      apiKey: process.env.MAILGUN_KEY || '',
-      domain: process.env.MAILGUN_DOMAIN
-    });
-
-    simpleMailgunAdapter.messages().send(data, function (error, body) {
-      if (error) {
-        console.log("got an error in sendEmail: " + error);
-        return;
-      } else {
-        console.log("email sent to " + process.env.MAILGUN_TEST_EMAIL);
-        return;
-      }
-    });
+    const sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.send(data)
+      .then(() => {
+        console.log('Email sent')
+      }).catch((error) => {
+        console.error(error)
+      })
   } catch (error) {
     console.log(error);
     return error;
@@ -67,45 +61,45 @@ async function sendNewHostEmail(request, response) {
     console.log("New User email: " + user.get("email"));
 
     if (user.get("name") && user.get("name").length > 0 &&
-        user.get("email") && user.get("email").length > 0) {
+      user.get("email") && user.get("email").length > 0) {
 
-        console.log("New Host has email and name");
+      console.log("New Host has email and name");
 
-        var fromEmail = "info@dreamdiner.io";
-        var fromName = "DreamDiner";
-        var fromString = fromName + " <" + fromEmail + ">";
+      var fromEmail = "info@dreamdiner.io";
+      var fromName = "DreamDiner";
+      var fromString = fromName + " <" + fromEmail + ">";
 
-        var toString = user.get("name") + " <" + user.get("email") + ">"
+      var toString = user.get("name") + " <" + user.get("email") + ">"
 
-        var emailSubject = "Welcome to the Table Planner";
+      var emailSubject = "Welcome to the Table Planner";
 
-        var fs = require('fs');
-        var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_host_added.html', "utf-8");
-        emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
+      var fs = require('fs');
+      var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_host_added.html', "utf-8");
+      emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
 
-        var data = {
-            from: fromString,
-            to: toString,
-            subject: emailSubject,
-            html: emailBody
-        };
+      var data = {
+        from: fromString,
+        to: toString,
+        subject: emailSubject,
+        html: emailBody
+      };
 
-        var simpleMailgunAdapter = require('mailgun-js')({
-            apiKey: process.env.MAILGUN_KEY || '',
-            domain: process.env.MAILGUN_DOMAIN
-        });
+      var simpleMailgunAdapter = require('mailgun-js')({
+        apiKey: process.env.MAILGUN_KEY || '',
+        domain: process.env.MAILGUN_DOMAIN
+      });
 
-        simpleMailgunAdapter.messages().send(data, function (error, body) {
-            if (error) {
-                console.log("got an error in sendEmail: " + error);
-                return;
-            } else {
-                console.log("email sent to " + user.get("email"));
-                return;
-            }
-        });
+      simpleMailgunAdapter.messages().send(data, function (error, body) {
+        if (error) {
+          console.log("got an error in sendEmail: " + error);
+          return;
+        } else {
+          console.log("email sent to " + user.get("email"));
+          return;
+        }
+      });
     } else {
-        console.log("New User has NO email and name");
+      console.log("New User has NO email and name");
     }
   } catch (error) {
     console.log(error);
@@ -158,7 +152,7 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
   try {
     console.log("sendBulkEmail..." + users.length);
     // console.log("sendBulkEmail..." + emailBody);
-    if(users.length == 0){
+    if (users.length == 0) {
       console.log("sendBulkEmail cancel");
       return;
     }
