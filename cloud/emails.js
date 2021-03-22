@@ -49,12 +49,13 @@ function addUserToMailingList(user, type) {
 
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
-    
-    axios({
-      method: "PUT",
+
+    let result = await axios({
+      method: 'put',
       url: "https://api.sendgrid.com/v3/marketing/contacts",
+      data: params,
       headers: {
-        'content-type': 'application/json',
+        'Accept': 'application/json', 'Content-Type': 'application/json',
         authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
       },
       body: {
@@ -68,11 +69,34 @@ function addUserToMailingList(user, type) {
           }
         ]
       }
-    }).then((response) => {
-      console.log('addUserToMailingList', response)
-    }).catch((error) => {
+    }).catch(error => {
       console.error('addUserToMailingList', error)
     })
+    console.log('addUserToMailingList', result)
+
+    // axios({
+    //   method: "PUT",
+    //   url: "https://api.sendgrid.com/v3/marketing/contacts",
+    //   headers: {
+    //     'content-type': 'application/json',
+    //     authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
+    //   },
+    //   body: {
+    //     "list_ids": [
+    //       type
+    //     ],
+    //     "contacts": [
+    //       {
+    //         "email": email,
+    //         "first_name": name
+    //       }
+    //     ]
+    //   }
+    // }).then((response) => {
+    //   console.log('addUserToMailingList', response)
+    // }).catch((error) => {
+    //   console.error('addUserToMailingList', error)
+    // })
 
   } catch (error) {
     console.error('addUserToMailingList', error)
