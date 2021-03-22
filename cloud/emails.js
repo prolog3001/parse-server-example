@@ -10,9 +10,7 @@ const CONTACT_TYPES = {
 }
 
 module.exports = {
-  addUserToMailingList: function (user, type) {
-    addUserToMailingList(user, type);
-  },
+  addUserToMailingList,
   sendNewHostEmail: function (request, response) {
     sendNewHostEmail(request, response);
   },
