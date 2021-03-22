@@ -2,6 +2,7 @@ var push = require('./push.js');
 var i18n = require('i18n');
 var utils = require('./utils.js');
 const axios = require('axios');
+var request = require("request");
 
 const CONTACT_TYPES = {
   Users_Admin: '13bce981-1bec-46f4-8bed-33fe99c64c26',
@@ -48,29 +49,57 @@ function addUserToMailingList(user, type) {
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
 
-    axios({
-      method: "PUT",
-      url: "https://api.sendgrid.com/v3/marketing/contacts",
-      headers: {
+    // axios({
+    //   method: "PUT",
+    //   url: "https://api.sendgrid.com/v3/marketing/contacts",
+    //   headers: {
+    //     'content-type': 'application/json',
+    //     authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
+    //   },
+    //   body: {
+    //     list_ids: [
+    //       type
+    //     ],
+    //     contacts: [
+    //       {
+    //         "email": email,
+    //         "first_name": name
+    //       }
+    //     ]
+    //   }
+    // }).then((response) => {
+    //   console.log('addUserToMailingList', response)
+    // }).catch((error) => {
+    //   console.error('addUserToMailingList', error)
+    // })
+
+    var options = {
+      method: 'PUT',
+      url: 'https://api.sendgrid.com/v3/marketing/contacts',
+      headers:
+      {
         'content-type': 'application/json',
         authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
       },
       body: {
-        "list_ids": [
-          type
-        ],
-        "contacts": [
+        list_ids: [type],
+        contacts: [
           {
             "email": email,
             "first_name": name
           }
         ]
+      },
+      json: true
+    };
+    
+    request(options, function (error, response, body) {
+      if (error) {
+        console.error('addUserToMailingList', error)
+        return;
       }
-    }).then((response) => {
-      console.log('addUserToMailingList', response)
-    }).catch((error) => {
-      console.error('addUserToMailingList', error)
-    })
+      console.log('addUserToMailingList', body)
+    });
 
   } catch (error) {
     console.error('addUserToMailingList', error)
