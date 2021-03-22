@@ -55,8 +55,8 @@ function addUserToMailingList(user, type) {
       ],
       "contacts": [
         {
-          "email": user.get('email'),
-          "first_name": user.get('name')
+          "email": user.email ? user.email : user.get('email'),
+          "first_name": user.name ? user.name : user.get('name')
         }
       ]
     }
