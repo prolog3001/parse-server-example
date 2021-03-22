@@ -1,8 +1,18 @@
 var push = require('./push.js');
 var i18n = require('i18n');
 var utils = require('./utils.js');
+const axios = require('axios');
+
+const CONTACT_TYPES = {
+  Users_Admin: '13bce981-1bec-46f4-8bed-33fe99c64c26',
+  Users_Planner: '9e0ae9bd-e366-480c-b91a-a0d6a1f0f4f2',
+  Users_Client: '322fb624-e73a-4bd5-b0c5-c62b30fd0366'
+}
 
 module.exports = {
+  addUserToMailingList: function (user, type) {
+    addUserToMailingList(user, type);
+  },
   sendNewHostEmail: function (request, response) {
     sendNewHostEmail(request, response);
   },
@@ -14,8 +24,48 @@ module.exports = {
   },
   sendBulkEmail: function (request, response) {
     sendBulkEmail(request, response);
-  }
+  },
+  CONTACT_TYPES
 };
+
+function addUserToMailingList(user, type) {
+  console.log('addUserToMailingList', user)
+  console.log('addUserToMailingList', type)
+
+  if(!user){
+    user = {
+      email: "matandahan@gmail.com",
+      first_name: 'Matan'
+    }
+  }
+
+  if (!type)
+    type = CONTACT_TYPES.Users_Planner;
+
+  axios({
+    method: "PUT",
+    url: "https://api.sendgrid.com/v3/marketing/contacts",
+    headers:{
+      'content-type': 'application/json',
+      authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
+    },
+    body:{
+      "list_ids": [
+        type
+      ],
+      "contacts": [
+        {
+          "email": user.get('email'),
+          "first_name": user.get('name')
+        }
+      ]
+    }
+  }).then((response) {
+      console.log('addUserToMailingList', response)
+    }).catch((error) => {
+      console.error('addUserToMailingList', error)
+    })
+}
 
 async function sendTestEmail(request, response) {
   try {
@@ -150,7 +200,7 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
     if (!users || users.length == 0) {
       console.log("sendBulkEmail dummy");
       // return;
-    } else{
+    } else {
       console.log("sendBulkEmail..." + users.length);
     }
 
@@ -159,11 +209,11 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
 
     var recipients = [];
 
-    if(!emailSubject || !emailSubject.length){
+    if (!emailSubject || !emailSubject.length) {
       emailSubject = "Welcome to DreamDiner";
     }
 
-    if(!emailBody || !emailBody.length){
+    if (!emailBody || !emailBody.length) {
       var fs = require('fs');
       emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
       emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");

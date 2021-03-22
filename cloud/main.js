@@ -50,10 +50,12 @@ Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 Parse.Cloud.define("combineOrders", orders.combineOrders);
 
+Parse.Cloud.define("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.define("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.define("sendNewsletter", emails.sendNewsletter);
 Parse.Cloud.define("sendNewHostEmail", emails.sendNewHostEmail);
 Parse.Cloud.define("sendBulkEmail", emails.sendBulkEmail);
+Parse.Cloud.job("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
@@ -91,6 +93,11 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
 
             //Check if planner or admin and choose correct email template
             //Add new user to SG contacts
+            if (user.get("email").includes("Mailinator")) {
+                emails.addUserToMailingList(user, emails.CONTACT_TYPES.Users_Admin)
+            } else {
+                emails.addUserToMailingList(user, emails.CONTACT_TYPES.Users_Planner)
+            }
 
             var fromEmail = "info@dreamdiner.io";
             var fromName = "DreamDiner";

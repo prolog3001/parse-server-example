@@ -110,3 +110,18 @@ ParseServer.createLiveQueryServer(httpServer);
 setInterval(function() {
     Parse.Cloud.run('deleteTATables', {});
 }, 3600000); //60 * 60 * 1000)
+
+// Daily New Users Report
+setInterval(function() {
+    // Parse.Cloud.run('reportDailyNewUsers', {});
+}, 86,400,000); //24 * 60 * 60 * 1000)
+
+// Daily New Orders Report
+setInterval(function() {
+    // Parse.Cloud.run('reportDailyNewOrders', {});
+}, 86,500,000); //24 * 60 * 60 * 1000)
+
+// Daily Delivered SMS Report
+setInterval(function() {
+    // Parse.Cloud.run('reportDailySMSSent', {});
+}, 86,700,000); //24 * 60 * 60 * 1000)
