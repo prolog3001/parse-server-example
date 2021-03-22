@@ -46,7 +46,6 @@ function addUserToMailingList(user, type) {
     listIds.push(type)
 
     console.log('addUserToMailingList user', user)
-    console.log('addUserToMailingList type', type)
 
     var email = (user.email ? user.email : user.get('email'));
     var name = (user.name ? user.name : user.get('name'));
@@ -69,10 +68,12 @@ function addUserToMailingList(user, type) {
       {
         list_ids: listIds,
         contacts:
-          [{
-            email: email,
-            first_name: name
-          }]
+          [
+            {
+              'email',
+              'first_name': name
+            }
+          ]
       },
       json: true
     };
@@ -83,7 +84,7 @@ function addUserToMailingList(user, type) {
         console.log('addUserToMailingList error', error)
       }
 
-      console.log(body);
+      console.log('addUserToMailingList success', body);
     });
   } catch (error) {
     console.error('addUserToMailingList', error)
