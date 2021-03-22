@@ -50,6 +50,38 @@ function addUserToMailingList(user, type) {
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
 
+    var data = JSON.stringify({
+      "list_ids": [
+        type
+      ],
+      "contacts": [
+        {
+          
+          "email": email,
+          "first_name": name
+        }
+      ]
+    });
+    console.log('addUserToMailingList data', data)
+
+    var auth = "Bearer " + process.env.SENDGRID_API_KEY;
+    console.log('addUserToMailingList auth', auth)
+
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === this.DONE) {
+        console.log(this.responseText);
+      }
+    });
+
+    xhr.open("PUT", "https://api.sendgrid.com/v3/marketing/contacts");
+    xhr.setRequestHeader("authorization", auth);
+    xhr.setRequestHeader("content-type", "application/json");
+
+    xhr.send(data);
+
     // axios({
     //   method: "PUT",
     //   url: "https://api.sendgrid.com/v3/marketing/contacts",
@@ -102,40 +134,40 @@ function addUserToMailingList(user, type) {
     //   console.log('addUserToMailingList', body)
     // });
 
-    var options = {
-      "method": "PUT",
-      "hostname": "api.sendgrid.com",
-      "port": null,
-      "path": "/v3/marketing/contacts",
-      "headers": {
-        "authorization": "Bearer " + process.env.SENDGRID_API_KEY,
-        "content-type": "application/json"
-      }
-    };
+    // var options = {
+    //   "method": "PUT",
+    //   "hostname": "api.sendgrid.com",
+    //   "port": null,
+    //   "path": "/v3/marketing/contacts",
+    //   "headers": {
+    //     "authorization": "Bearer " + process.env.SENDGRID_API_KEY,
+    //     "content-type": "application/json"
+    //   }
+    // };
 
-    var req = http.request(options, function (res) {
-      var chunks = [];
+    // var req = http.request(options, function (res) {
+    //   var chunks = [];
 
-      res.on("data", function (chunk) {
-        chunks.push(chunk);
-      });
+    //   res.on("data", function (chunk) {
+    //     chunks.push(chunk);
+    //   });
 
-      res.on("end", function () {
-        var body = Buffer.concat(chunks);
-        console.log(body.toString());
-      });
-    });
+    //   res.on("end", function () {
+    //     var body = Buffer.concat(chunks);
+    //     console.log(body.toString());
+    //   });
+    // });
 
-    req.write(JSON.stringify({
-      list_ids: ['string'],
-      contacts:
-        [{
-          email: email,
-          first_name: name,
-          custom_fields: {}
-        }]
-    }));
-    req.end();
+    // req.write(JSON.stringify({
+    //   list_ids: ['string'],
+    //   contacts:
+    //     [{
+    //       email: email,
+    //       first_name: name,
+    //       custom_fields: {}
+    //     }]
+    // }));
+    // req.end();
   } catch (error) {
     console.error('addUserToMailingList', error)
   }
