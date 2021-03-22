@@ -53,7 +53,6 @@ async function addUserToMailingList(user, type) {
     let result = await axios({
       method: 'put',
       url: "https://api.sendgrid.com/v3/marketing/contacts",
-      data: params,
       headers: {
         'Accept': 'application/json', 'Content-Type': 'application/json',
         authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
