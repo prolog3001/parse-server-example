@@ -60,7 +60,7 @@ function addUserToMailingList(user, type) {
         }
       ]
     }
-  }).then((response) {
+  }).then((response) => {
       console.log('addUserToMailingList', response)
     }).catch((error) => {
       console.error('addUserToMailingList', error)
