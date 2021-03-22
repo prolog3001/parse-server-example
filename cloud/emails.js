@@ -33,9 +33,11 @@ function addUserToMailingList(user, type) {
   console.log('addUserToMailingList', type)
 
   if(!user){
+    console.log('addUserToMailingList', 'dummy user')
+  
     user = {
       email: "matandahan@gmail.com",
-      first_name: 'Matan'
+      name: 'Matan'
     }
   }
 
@@ -55,8 +57,8 @@ function addUserToMailingList(user, type) {
       ],
       "contacts": [
         {
-          "email": user.email ? user.email : user.get('email'),
-          "first_name": user.name ? user.name : user.get('name')
+          "email": (user.email ? user.email : user.get('email')),
+          "first_name": (user.name ? user.name : user.get('name'))
         }
       ]
     }
