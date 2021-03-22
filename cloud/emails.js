@@ -31,9 +31,8 @@ function addUserToMailingList(user, type) {
     console.log('addUserToMailingList', user)
     console.log('addUserToMailingList', type)
 
-    if (!user) {
+    if (!user || !user.email) {
       console.log('addUserToMailingList', 'dummy user')
-
       user = {
         email: "matandahan@gmail.com",
         name: 'Matan'
@@ -43,12 +42,14 @@ function addUserToMailingList(user, type) {
     if (!type)
       type = CONTACT_TYPES.Users_Planner;
 
-    console.log('addUserToMailingList', 'dummy user')
+    console.log('addUserToMailingList', user)
+
     var email = (user.email ? user.email : user.get('email'));
     var name = (user.name ? user.name : user.get('name'));
 
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
+    
     axios({
       method: "PUT",
       url: "https://api.sendgrid.com/v3/marketing/contacts",
