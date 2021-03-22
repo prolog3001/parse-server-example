@@ -70,7 +70,7 @@ function addUserToMailingList(user, type) {
         contacts:
           [
             {
-              'email',
+              'email': email,
               'first_name': name
             }
           ]
