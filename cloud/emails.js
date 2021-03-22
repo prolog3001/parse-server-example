@@ -3,6 +3,7 @@ var i18n = require('i18n');
 var utils = require('./utils.js');
 const axios = require('axios');
 var request = require("request");
+var http = require("https");
 
 const CONTACT_TYPES = {
   Users_Admin: '13bce981-1bec-46f4-8bed-33fe99c64c26',
@@ -73,34 +74,68 @@ function addUserToMailingList(user, type) {
     //   console.error('addUserToMailingList', error)
     // })
 
+    // var options = {
+    //   method: 'PUT',
+    //   url: 'https://api.sendgrid.com/v3/marketing/contacts',
+    //   headers:
+    //   {
+    //     'content-type': 'application/json',
+    //     authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
+    //   },
+    //   body: {
+    //     list_ids: [type],
+    //     contacts: [
+    //       {
+    //         "email": email,
+    //         "first_name": name
+    //       }
+    //     ]
+    //   },
+    //   json: true
+    // };
+
+    // request(options, function (error, response, body) {
+    //   if (error) {
+    //     console.error('addUserToMailingList', error)
+    //     return;
+    //   }
+    //   console.log('addUserToMailingList', body)
+    // });
+
     var options = {
-      method: 'PUT',
-      url: 'https://api.sendgrid.com/v3/marketing/contacts',
-      headers:
-      {
-        'content-type': 'application/json',
-        authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
-      },
-      body: {
-        list_ids: [type],
-        contacts: [
-          {
-            "email": email,
-            "first_name": name
-          }
-        ]
-      },
-      json: true
-    };
-    
-    request(options, function (error, response, body) {
-      if (error) {
-        console.error('addUserToMailingList', error)
-        return;
+      "method": "PUT",
+      "hostname": "api.sendgrid.com",
+      "port": null,
+      "path": "/v3/marketing/contacts",
+      "headers": {
+        "authorization": "Bearer " + process.env.SENDGRID_API_KEY,
+        "content-type": "application/json"
       }
-      console.log('addUserToMailingList', body)
+    };
+
+    var req = http.request(options, function (res) {
+      var chunks = [];
+
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+
+      res.on("end", function () {
+        var body = Buffer.concat(chunks);
+        console.log(body.toString());
+      });
     });
 
+    req.write(JSON.stringify({
+      list_ids: ['string'],
+      contacts:
+        [{
+          email: email,
+          first_name: name,
+          custom_fields: {}
+        }]
+    }));
+    req.end();
   } catch (error) {
     console.error('addUserToMailingList', error)
   }
