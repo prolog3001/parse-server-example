@@ -26,7 +26,7 @@ module.exports = {
   CONTACT_TYPES
 };
 
-function addUserToMailingList(user, type) {
+async function addUserToMailingList(user, type) {
   try {
     console.log('addUserToMailingList', user)
     console.log('addUserToMailingList', type)
