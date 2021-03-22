@@ -94,9 +94,9 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             //Check if planner or admin and choose correct email template
             //Add new user to SG contacts
             if (user.get("email").includes("Mailinator")) {
-                emails.addUserToMailingList(user, emails.CONTACT_TYPES.Users_Admin)
+                // emails.addUserToMailingList(user, emails.CONTACT_TYPES['Users_Admin'])
             } else {
-                emails.addUserToMailingList(user, emails.CONTACT_TYPES.Users_Planner)
+                emails.addUserToMailingList(user, emails.CONTACT_TYPES['Users_Planner'])
             }
 
             var fromEmail = "info@dreamdiner.io";

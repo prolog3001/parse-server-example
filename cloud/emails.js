@@ -30,6 +30,8 @@ module.exports = {
 
 function addUserToMailingList(user, type) {
   try {
+    var listIds = [];
+
     if (!user || !user.email) {
       console.log('addUserToMailingList', 'dummy user')
       user = {
@@ -38,11 +40,13 @@ function addUserToMailingList(user, type) {
       }
     }
 
-    if (!type)
-      type = CONTACT_TYPES.Users_Planner;
+    if (!type || !type.length)
+      type = CONTACT_TYPES['Users_Planner'];
 
-    console.log('addUserToMailingList', user)
-    console.log('addUserToMailingList', type)
+    listIds.push(type)
+
+    console.log('addUserToMailingList user', user)
+    console.log('addUserToMailingList type', type)
 
     var email = (user.email ? user.email : user.get('email'));
     var name = (user.name ? user.name : user.get('name'));
@@ -50,124 +54,37 @@ function addUserToMailingList(user, type) {
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
 
-    var data = JSON.stringify({
-      "list_ids": [
-        type
-      ],
-      "contacts": [
-        {
-          
-          "email": email,
-          "first_name": name
-        }
-      ]
-    });
-    console.log('addUserToMailingList data', data)
-
     var auth = "Bearer " + process.env.SENDGRID_API_KEY;
-    console.log('addUserToMailingList auth', auth)
+    // console.log('addUserToMailingList auth', auth)
 
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
+    var options = {
+      method: 'PUT',
+      url: 'https://api.sendgrid.com/v3/marketing/contacts',
+      headers:
+      {
+        'content-type': 'application/json',
+        authorization: auth
+      },
+      body:
+      {
+        list_ids: listIds,
+        contacts:
+          [{
+            email: email,
+            first_name: name
+          }]
+      },
+      json: true
+    };
+    console.log('addUserToMailingList options', options)
 
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === this.DONE) {
-        console.log(this.responseText);
+    request(options, function (error, response, body) {
+      if (error) {
+        console.log('addUserToMailingList error', error)
       }
+
+      console.log(body);
     });
-
-    xhr.open("PUT", "https://api.sendgrid.com/v3/marketing/contacts");
-    xhr.setRequestHeader("authorization", auth);
-    xhr.setRequestHeader("content-type", "application/json");
-
-    xhr.send(data);
-
-    // axios({
-    //   method: "PUT",
-    //   url: "https://api.sendgrid.com/v3/marketing/contacts",
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
-    //   },
-    //   body: {
-    //     list_ids: [
-    //       type
-    //     ],
-    //     contacts: [
-    //       {
-    //         "email": email,
-    //         "first_name": name
-    //       }
-    //     ]
-    //   }
-    // }).then((response) => {
-    //   console.log('addUserToMailingList', response)
-    // }).catch((error) => {
-    //   console.error('addUserToMailingList', error)
-    // })
-
-    // var options = {
-    //   method: 'PUT',
-    //   url: 'https://api.sendgrid.com/v3/marketing/contacts',
-    //   headers:
-    //   {
-    //     'content-type': 'application/json',
-    //     authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
-    //   },
-    //   body: {
-    //     list_ids: [type],
-    //     contacts: [
-    //       {
-    //         "email": email,
-    //         "first_name": name
-    //       }
-    //     ]
-    //   },
-    //   json: true
-    // };
-
-    // request(options, function (error, response, body) {
-    //   if (error) {
-    //     console.error('addUserToMailingList', error)
-    //     return;
-    //   }
-    //   console.log('addUserToMailingList', body)
-    // });
-
-    // var options = {
-    //   "method": "PUT",
-    //   "hostname": "api.sendgrid.com",
-    //   "port": null,
-    //   "path": "/v3/marketing/contacts",
-    //   "headers": {
-    //     "authorization": "Bearer " + process.env.SENDGRID_API_KEY,
-    //     "content-type": "application/json"
-    //   }
-    // };
-
-    // var req = http.request(options, function (res) {
-    //   var chunks = [];
-
-    //   res.on("data", function (chunk) {
-    //     chunks.push(chunk);
-    //   });
-
-    //   res.on("end", function () {
-    //     var body = Buffer.concat(chunks);
-    //     console.log(body.toString());
-    //   });
-    // });
-
-    // req.write(JSON.stringify({
-    //   list_ids: ['string'],
-    //   contacts:
-    //     [{
-    //       email: email,
-    //       first_name: name,
-    //       custom_fields: {}
-    //     }]
-    // }));
-    // req.end();
   } catch (error) {
     console.error('addUserToMailingList', error)
   }
