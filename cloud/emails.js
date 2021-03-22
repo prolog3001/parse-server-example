@@ -26,11 +26,8 @@ module.exports = {
   CONTACT_TYPES
 };
 
-async function addUserToMailingList(user, type) {
+function addUserToMailingList(user, type) {
   try {
-    console.log('addUserToMailingList', user)
-    console.log('addUserToMailingList', type)
-
     if (!user || !user.email) {
       console.log('addUserToMailingList', 'dummy user')
       user = {
@@ -43,6 +40,7 @@ async function addUserToMailingList(user, type) {
       type = CONTACT_TYPES.Users_Planner;
 
     console.log('addUserToMailingList', user)
+    console.log('addUserToMailingList', type)
 
     var email = (user.email ? user.email : user.get('email'));
     var name = (user.name ? user.name : user.get('name'));
@@ -50,11 +48,11 @@ async function addUserToMailingList(user, type) {
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
 
-    let result = await axios({
-      method: 'put',
+    axios({
+      method: "PUT",
       url: "https://api.sendgrid.com/v3/marketing/contacts",
       headers: {
-        'Accept': 'application/json', 'Content-Type': 'application/json',
+        'content-type': 'application/json',
         authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
       },
       body: {
@@ -68,34 +66,11 @@ async function addUserToMailingList(user, type) {
           }
         ]
       }
-    }).catch(error => {
+    }).then((response) => {
+      console.log('addUserToMailingList', response)
+    }).catch((error) => {
       console.error('addUserToMailingList', error)
     })
-    console.log('addUserToMailingList', result)
-
-    // axios({
-    //   method: "PUT",
-    //   url: "https://api.sendgrid.com/v3/marketing/contacts",
-    //   headers: {
-    //     'content-type': 'application/json',
-    //     authorization: 'Bearer ' + process.env.SENDGRID_API_KEY
-    //   },
-    //   body: {
-    //     "list_ids": [
-    //       type
-    //     ],
-    //     "contacts": [
-    //       {
-    //         "email": email,
-    //         "first_name": name
-    //       }
-    //     ]
-    //   }
-    // }).then((response) => {
-    //   console.log('addUserToMailingList', response)
-    // }).catch((error) => {
-    //   console.error('addUserToMailingList', error)
-    // })
 
   } catch (error) {
     console.error('addUserToMailingList', error)
