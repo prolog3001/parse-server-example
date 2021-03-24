@@ -4,6 +4,7 @@ var routes = require('./controllers/routes');
 var bodyParser = require('body-parser');
 var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
+var schedule = require('node-schedule');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
