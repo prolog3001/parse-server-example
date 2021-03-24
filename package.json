@@ -25,6 +25,7 @@
     "moment-timezone": "^0.5.14",
     "nexmo": "2.4.0",
     "node-pushnotifications": "^1.1.8",
+    "node-schedule": "^2.0.0",
     "parse": "~1.8.0",
     "parse-server": "2.8.4",
     "sharp": "0.20.1",

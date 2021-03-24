@@ -64,7 +64,7 @@ app.use(mountPath, api);
 routes(app);
 
 i18n.configure({
-    locales:['en', 'he'],
+    locales: ['en', 'he'],
     directory: __dirname + '/cloud/locales',
     defaultLocale: 'en',
     cookie: 'i18n'
@@ -77,13 +77,13 @@ var mountPath = process.env.PARSE_MOUNT || '/parse';
 app.use(mountPath, api);
 
 // Parse Server plays nicely with the rest of your web routes
-app.get('/', function(req, res) {
-    if(req.cookies.i18n == undefined)
+app.get('/', function (req, res) {
+    if (req.cookies.i18n == undefined)
         res.setLocale('en')
     else
         res.setLocale(req.cookies.i18n);
 
-    res.render('main', {i18n: res})
+    res.render('main', { i18n: res })
     res.status(200).send('I dream of planning tables!');
 });
 
@@ -94,7 +94,7 @@ app.get('/en', function (req, res) {
 
 var port = process.env.PORT || 1337;
 var httpServer = require('http').createServer(app);
-httpServer.listen(port, function() {
+httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
 });
 
@@ -107,21 +107,32 @@ ParseServer.createLiveQueryServer(httpServer);
 // }, 21600000); //6 * 60 * 60 * 1000)
 
 // Deleting of TA tables
-setInterval(function() {
+setInterval(function () {
     Parse.Cloud.run('deleteTATables', {});
 }, 3600000); //60 * 60 * 1000)
 
 // Daily New Users Report
-setInterval(function() {
-    // Parse.Cloud.run('reportDailyNewUsers', {});
-}, 86,400,000); //24 * 60 * 60 * 1000)
+// setInterval(function () {
+// Parse.Cloud.run('reportDailyNewUsers', {});
+// }, 86400000); //24 * 60 * 60 * 1000)
 
 // Daily New Orders Report
-setInterval(function() {
-    // Parse.Cloud.run('reportDailyNewOrders', {});
-}, 86,500,000); //24 * 60 * 60 * 1000)
+// setInterval(function () {
+// Parse.Cloud.run('reportDailyNewOrders', {});
+// }, 86500000); //24 * 60 * 60 * 1000)
 
 // Daily Delivered SMS Report
-setInterval(function() {
-    // Parse.Cloud.run('reportDailySMSSent', {});
-}, 86,700,000); //24 * 60 * 60 * 1000)
+// setInterval(function () {
+// Parse.Cloud.run('reportDailySMSSent', {});
+// }, 86700000); //24 * 60 * 60 * 1000)
+
+{
+    const rule = new schedule.RecurrenceRule();
+    rule.hour = 23;
+    rule.minute = 0;
+
+    const job = schedule.scheduleJob(rule, function () {
+        console.log('Dreamdiner Cron Job at 23:00');
+        Parse.Cloud.run('reportDaily', {});
+    });
+}

@@ -4,6 +4,7 @@ var utils = require('./utils.js');
 const axios = require('axios');
 var request = require("request");
 var http = require("https");
+const moment = require('moment');
 
 const CONTACT_TYPES = {
   Users_Admin: '13bce981-1bec-46f4-8bed-33fe99c64c26',
@@ -12,6 +13,7 @@ const CONTACT_TYPES = {
 }
 
 module.exports = {
+  reportDaily,
   addUserToMailingList,
   sendNewHostEmail: function (request, response) {
     sendNewHostEmail(request, response);
@@ -27,6 +29,72 @@ module.exports = {
   },
   CONTACT_TYPES
 };
+
+async function reportDaily(request, response) {
+  try {
+    var oneDayAgo = new Date();
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+
+    var businessesFromLastDayQuery = new Parse.Query("Business");
+    businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+    businessesFromLastDayQuery.limit(10000);
+    var businesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
+    console.log('Daily Email businesses:', businesses.length)
+
+    var usersFromLastDayQuery = new Parse.Query("_User");
+    usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+    usersFromLastDayQuery.limit(10000);
+    var users = await usersFromLastDayQuery.find({ useMasterKey: true });
+    console.log('Daily Email users:', users.length)
+
+    var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+    openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+    openedOrdersQuery.limit(10000);
+    var orders = await openedOrdersQuery.find({ useMasterKey: true });
+    console.log('Daily Email orders:', orders.length)
+
+    var purchasesQuery = new Parse.Query("Purchase");
+    purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+    purchasesQuery.limit(10000);
+    var purchases = await purchasesQuery.find({ useMasterKey: true });
+    console.log('Daily Email purchases:', purchases.length)
+
+    var params = {};
+    var fromEmail = "info@dreamdiner.io";
+    var fromName = "DreamDiner";
+    var fromString = fromName + " <" + fromEmail + ">";
+
+    var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
+
+    var emailSubject = "Daily Dreamdiner System Report";
+
+    var fs = require('fs');
+    var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_dailymail.html', "utf-8");
+    emailBody = utils.replaceAll(emailBody, "date", moment(oneDayAgo).format('MM/DD/YYYY'));
+    emailBody = utils.replaceAll(emailBody, "businesses", businesses ? businesses.length : 0);
+    emailBody = utils.replaceAll(emailBody, "users", users ? users.length : 0);
+    emailBody = utils.replaceAll(emailBody, "orders", orders ? orders.length : 0);
+    emailBody = utils.replaceAll(emailBody, "purchases", purchases ? purchases.length : 0);
+
+    var data = {
+      from: fromString,
+      to: process.env.MAILGUN_TEST_EMAIL,
+      subject: emailSubject,
+      html: emailBody
+    };
+
+    const sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.send(data)
+      .then(() => {
+        console.log('Daily Email sent')
+      }).catch((error) => {
+        console.error('Daily Email', error)
+      })
+  } catch (error) {
+    console.error('Daily Email', error)
+  }
+}
 
 function addUserToMailingList(user, type) {
   try {
@@ -77,7 +145,7 @@ function addUserToMailingList(user, type) {
       },
       json: true
     };
-    console.log('addUserToMailingList options', options)
+    // console.log('addUserToMailingList options', options)
 
     request(options, function (error, response, body) {
       if (error) {
