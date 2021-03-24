@@ -33,7 +33,7 @@ module.exports = {
 async function reportDaily(request, response) {
   try {
     var oneDayAgo = new Date();
-    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    oneDayAgo.setDate(oneDayAgo.getDate() - 20);
 
     var businessesFromLastDayQuery = new Parse.Query("Business");
     businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
