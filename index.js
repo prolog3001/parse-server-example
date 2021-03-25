@@ -115,8 +115,8 @@ rule.minute = 59;
 
 let time = [
     '0'/*seconds*/,
-    '55'/*min*/,
-    '5'/*hours*/,
+    '00'/*min*/,
+    '21'/*hours*/,
     '*'/*days*/,
     '*'/*month*/,
     '*'/*day of week*/
