@@ -132,7 +132,16 @@ rule.dayOfWeek = [0,1,2,3,4,5,6];
 rule.hour = 4;
 rule.minute = 59;
 
-const job = schedule.scheduleJob(rule, function () {
+let time = [
+    '0'/*seconds*/,
+    '10'/*min*/,
+    '5'/*hours*/,
+    '*'/*days*/,
+    '*'/*month*/,
+    '*'/*day of week*/
+].join(' '); // every minute multiple of 5
+
+const job = schedule.scheduleJob(time, function () {
     console.log('Dreamdiner Cron Job at 23:00');
     Parse.Cloud.run('reportDaily', {});
 });
