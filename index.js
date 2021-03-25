@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 var schedule = require('node-schedule');
-
+var lastSentDailyReportEmail = undefined;
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
@@ -134,7 +134,7 @@ rule.minute = 59;
 
 let time = [
     '0'/*seconds*/,
-    '14'/*min*/,
+    '28'/*min*/,
     '5'/*hours*/,
     '*'/*days*/,
     '*'/*month*/,
@@ -144,5 +144,6 @@ let time = [
 const job = schedule.scheduleJob(time, function () {
     console.log('Dreamdiner Cron Job at 23:00');
     Parse.Cloud.run('reportDaily', {});
+    lastSentDailyReportEmail = new Date();
 });
 
