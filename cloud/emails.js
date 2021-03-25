@@ -4,7 +4,14 @@ var utils = require('./utils.js');
 const axios = require('axios');
 var request = require("request");
 var http = require("https");
-const moment = require('moment');
+var moment = require('moment');
+var sgMail = require('@sendgrid/mail')
+
+const WELCOME_TEMPLATE_TYPES = {
+  Welcome_Admin: 'd-d0429d0016c041009bef1389a8ee215a',
+  Welcome_Planner: 'd-d0429d0016c041009bef1389a8ee215a',
+  Welcome_Client: 'd-d0429d0016c041009bef1389a8ee215a'
+}
 
 const CONTACT_TYPES = {
   Users_Admin: '13bce981-1bec-46f4-8bed-33fe99c64c26',
@@ -15,11 +22,9 @@ const CONTACT_TYPES = {
 module.exports = {
   reportDaily,
   addUserToMailingList,
+  sendNewUserEmail,
   sendNewHostEmail: function (request, response) {
     sendNewHostEmail(request, response);
-  },
-  sendTestEmail: function (request, response) {
-    sendTestEmail(request, response);
   },
   sendNewsletter: function (request, response) {
     sendNewsletter(request, response);
@@ -27,13 +32,16 @@ module.exports = {
   sendBulkEmail: function (request, response) {
     sendBulkEmail(request, response);
   },
+  sendTestEmail: function (request, response) {
+    sendTestEmail(request, response);
+  },
   CONTACT_TYPES
 };
 
-async function reportDaily(request, response) {
+async function reportDaily() {
   try {
     var oneDayAgo = new Date();
-    oneDayAgo.setDate(oneDayAgo.getDate() - 20);
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
     var businessesFromLastDayQuery = new Parse.Query("Business");
     businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -83,7 +91,6 @@ async function reportDaily(request, response) {
       html: emailBody
     };
 
-    const sgMail = require('@sendgrid/mail')
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
     sgMail.send(data)
       .then(() => {
@@ -159,36 +166,84 @@ function addUserToMailingList(user, type) {
   }
 }
 
-async function sendTestEmail(request, response) {
+async function sendNewUserEmail(user, type) {
   try {
-    var params = {};
-    var fromEmail = "info@dreamdiner.io";
-    var fromName = "DreamDiner";
-    var fromString = fromName + " <" + fromEmail + ">";
+    if ((user.name && user.email) || (user.get("name") && user.get("email"))) {
 
-    var toString = "DreamDiner Test" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
+      console.log("sendNewUserEmail name: " + (user.name ? user.name : user.get("name")));
+      console.log("sendNewUserEmail email: " + (user.email ? user.email : user.get("email")));
 
-    var emailSubject = "Welcome to DreamDiner";
+      var listIds = [];
 
-    var fs = require('fs');
-    var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
-    emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");
+      if (!type || !type.length)
+        type = WELCOME_TEMPLATE_TYPES['Welcome_Planner'];
 
-    var data = {
-      from: fromString,
-      to: process.env.MAILGUN_TEST_EMAIL,
-      subject: emailSubject,
-      html: emailBody
-    };
+      listIds.push(type)
 
-    const sgMail = require('@sendgrid/mail')
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-    sgMail.send(data)
-      .then(() => {
-        console.log('Email sent')
-      }).catch((error) => {
-        console.error(error)
-      })
+      if (!user || !user.email) {
+        console.log('addUserToMailingList', 'dummy user')
+        user = {
+          email: "matandahan@gmail.com",
+          name: 'Matan'
+        }
+      }
+
+
+      var fromEmail = "info@dreamdiner.io";
+      // var fromName = "DreamDiner";
+      // var fromString = fromName + " <" + fromEmail + ">";
+
+      // var toString = user.get("name") + " <" + user.get("email") + ">"
+
+      // var emailSubject = "Welcome to DreamDiner";
+
+      // var fs = require('fs');
+      // var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+      // emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
+      // emailBody = utils.replaceAll(emailBody, "admin_email", user.get("email"));
+
+      // var data = {
+      //   from: fromString,
+      //   to: toString,
+      //   subject: emailSubject,
+      //   html: emailBody
+      // };
+
+      var data = {
+        "from": {
+          "email": fromEmail
+        },
+        "personalizations": [
+          {
+            "to": [
+              {
+                "email": user.email ? user.email : user.get("email")
+              }
+            ],
+            "dynamic_template_data": {
+              "items": [
+                {
+                  "name": user.name ? user.name : user.get("name"),
+                }
+              ],
+              "name": user.name ? user.name : user.get("name")
+            }
+          }
+        ],
+        "template_id": listIds
+      };
+      console.log("sendNewUserEmail", data);
+
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+      sgMail.send(data)
+        .then(() => {
+          console.log('Email sent')
+        }).catch((error) => {
+          console.error(error)
+        })
+    } else {
+      console.log("New User has NO email and name");
+    }
   } catch (error) {
     console.log(error);
     return error;
@@ -228,7 +283,6 @@ async function sendNewHostEmail(request, response) {
         html: emailBody
       };
 
-      const sgMail = require('@sendgrid/mail')
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
       sgMail.send(data)
         .then(() => {
@@ -335,7 +389,6 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
     };
     console.log("bulk email data", data);
 
-    const sgMail = require('@sendgrid/mail')
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
     sgMail.sendMultiple(data)
       .then(() => {
@@ -343,43 +396,41 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
       }).catch((error) => {
         console.log("got an error in sendBulkEmail: " + error);
       })
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
 
-    // var simpleMailgunAdapter = require('mailgun-js')({
-    //   apiKey: process.env.MAILGUN_KEY || '',
-    //   domain: process.env.MAILGUN_DOMAIN
-    // });
+async function sendTestEmail(request, response) {
+  try {
+    var params = {};
+    var fromEmail = "info@dreamdiner.io";
+    var fromName = "DreamDiner";
+    var fromString = fromName + " <" + fromEmail + ">";
 
-    // for (var i = 0; i < users.length; i++) {
-    //   var user = users[i];
+    var toString = "DreamDiner Test" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
-    //   var recepient = user.get("email");
-    //   var recepientVar = {
-    //     id: user.id,
-    //     subject: emailSubject,
-    //     name: user.get("name")
-    //   };
+    var emailSubject = "Welcome to DreamDiner";
 
-    //   recipients.push(recepient);
-    //   recipientVars[recepient] = recepientVar;
-    // }
+    var fs = require('fs');
+    var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
+    emailBody = utils.replaceAll(emailBody, "admin_name", "DreamDiner Test");
 
-    // var envelope = {
-    //   from: fromString,
-    //   to: recipients,
-    //   subject: '%recipient.subject%',
-    //   html: emailBody,
-    //   'recipient-variables': recipientVars,
-    // };
+    var data = {
+      from: fromString,
+      to: process.env.MAILGUN_TEST_EMAIL,
+      subject: emailSubject,
+      html: emailBody
+    };
 
-    // simpleMailgunAdapter.messages().send(envelope, function (error, body) {
-    //   if (error) {
-    //     console.log("got an error in sendBulkEmail: " + error);
-    //     return error;
-    //   } else {
-    //     console.log("bulk email sent");
-    //     return "bulk email sent";
-    //   }
-    // });
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    sgMail.send(data)
+      .then(() => {
+        console.log('Email sent')
+      }).catch((error) => {
+        console.error(error)
+      })
   } catch (error) {
     console.log(error);
     return error;

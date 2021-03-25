@@ -50,18 +50,20 @@ Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 Parse.Cloud.define("combineOrders", orders.combineOrders);
 
+Parse.Cloud.define("reportDaily", emails.reportDaily);
 Parse.Cloud.define("addUserToMailingList", emails.addUserToMailingList);
-Parse.Cloud.define("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.define("sendNewsletter", emails.sendNewsletter);
+Parse.Cloud.define("sendNewUserEmail", emails.sendNewUserEmail);
 Parse.Cloud.define("sendNewHostEmail", emails.sendNewHostEmail);
 Parse.Cloud.define("sendBulkEmail", emails.sendBulkEmail);
-Parse.Cloud.define("reportDaily", emails.reportDaily);
+Parse.Cloud.define("sendTestEmail", emails.sendTestEmail);
+Parse.Cloud.job("reportDaily", emails.reportDaily);
 Parse.Cloud.job("addUserToMailingList", emails.addUserToMailingList);
-Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
+Parse.Cloud.job("sendNewUserEmail", emails.sendNewUserEmail);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
 Parse.Cloud.job("sendBulkEmail", emails.sendBulkEmail);
-Parse.Cloud.job("reportDaily", emails.reportDaily);
+Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
 
 // Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
 // Parse.Cloud.job("readyPushTest", background.readyPushTest);
@@ -101,34 +103,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                 emails.addUserToMailingList(user, emails.CONTACT_TYPES['Users_Planner'])
             }
 
-            var fromEmail = "info@dreamdiner.io";
-            var fromName = "DreamDiner";
-            var fromString = fromName + " <" + fromEmail + ">";
-
-            var toString = user.get("name") + " <" + user.get("email") + ">"
-
-            var emailSubject = "Welcome to DreamDiner";
-
-            var fs = require('fs');
-            var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
-            emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
-            emailBody = utils.replaceAll(emailBody, "admin_email", user.get("email"));
-
-            var data = {
-                from: fromString,
-                to: toString,
-                subject: emailSubject,
-                html: emailBody
-            };
-
-            const sgMail = require('@sendgrid/mail')
-            sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-            sgMail.send(data)
-                .then(() => {
-                    console.log('Email sent')
-                }).catch((error) => {
-                    console.error(error)
-                })
+            emails.sendNewUserEmail(user)
         } else {
             console.log("New User has NO email and name");
         }

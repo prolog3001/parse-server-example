@@ -127,13 +127,13 @@ setInterval(function () {
 // Parse.Cloud.run('reportDailySMSSent', {});
 // }, 86700000); //24 * 60 * 60 * 1000)
 
-{
-    const rule = new schedule.RecurrenceRule();
-    rule.hour = 23;
-    rule.minute = 0;
+const rule = new schedule.RecurrenceRule();
+rule.dayOfWeek = [0,1,2,3,4,5,6];
+rule.hour = 5;
+rule.minute = 0;
 
-    const job = schedule.scheduleJob(rule, function () {
-        console.log('Dreamdiner Cron Job at 23:00');
-        Parse.Cloud.run('reportDaily', {});
-    });
-}
+const job = schedule.scheduleJob(rule, function () {
+    console.log('Dreamdiner Cron Job at 23:00');
+    Parse.Cloud.run('reportDaily', {});
+});
+
