@@ -6,6 +6,7 @@ var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 var schedule = require('node-schedule');
 
+global.lastSentDailyReportEmail = undefined;
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
@@ -107,7 +108,6 @@ ParseServer.createLiveQueryServer(httpServer);
 //     Parse.Cloud.run('deleteTATables', {});
 // }, 3600000); //60 * 60 * 1000)
 
-app.locals.lastSentDailyReportEmail = undefined;
 const rule = new schedule.RecurrenceRule();
 rule.dayOfWeek = [0,1,2,3,4,5,6];
 rule.hour = 4;

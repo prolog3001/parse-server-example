@@ -40,13 +40,13 @@ module.exports = {
 
 async function reportDaily() {
   try {
-    console.error('Daily Email Check', app.locals.lastSentDailyReportEmail)
+    console.error('Daily Email Check', global.lastSentDailyReportEmail)
     
-    if (!app.locals.lastSentDailyReportEmail ||
-      !moment(app.locals.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
+    if (!global.lastSentDailyReportEmail ||
+      !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
         console.log('Daily Email Not Same Day, Needs to Send Today')
 
-      app.locals.lastSentDailyReportEmail = new Date();
+        global.lastSentDailyReportEmail = new Date();
       var oneDayAgo = new Date();
       oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
