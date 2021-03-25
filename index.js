@@ -5,7 +5,8 @@ var bodyParser = require('body-parser');
 var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 var schedule = require('node-schedule');
-var lastSentDailyReportEmail = undefined;
+app.locals.lastSentDailyReportEmail = undefined;
+
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
@@ -102,30 +103,10 @@ httpServer.listen(port, function () {
 // This will enable the Live Query real-time server
 ParseServer.createLiveQueryServer(httpServer);
 
-// Closing of opened orders
-// setInterval(function() {
-//     Parse.Cloud.run('closeOpenedOrders', {});
-// }, 21600000); //6 * 60 * 60 * 1000)
-
 // Deleting of TA tables
-setInterval(function () {
-    Parse.Cloud.run('deleteTATables', {});
-}, 3600000); //60 * 60 * 1000)
-
-// Daily New Users Report
 // setInterval(function () {
-// Parse.Cloud.run('reportDailyNewUsers', {});
-// }, 86400000); //24 * 60 * 60 * 1000)
-
-// Daily New Orders Report
-// setInterval(function () {
-// Parse.Cloud.run('reportDailyNewOrders', {});
-// }, 86500000); //24 * 60 * 60 * 1000)
-
-// Daily Delivered SMS Report
-// setInterval(function () {
-// Parse.Cloud.run('reportDailySMSSent', {});
-// }, 86700000); //24 * 60 * 60 * 1000)
+//     Parse.Cloud.run('deleteTATables', {});
+// }, 3600000); //60 * 60 * 1000)
 
 const rule = new schedule.RecurrenceRule();
 rule.dayOfWeek = [0,1,2,3,4,5,6];
@@ -144,6 +125,6 @@ let time = [
 const job = schedule.scheduleJob(time, function () {
     console.log('Dreamdiner Cron Job at 23:00');
     Parse.Cloud.run('reportDaily', {});
-    lastSentDailyReportEmail = new Date();
+    app.locals.lastSentDailyReportEmail = new Date();
 });
 
