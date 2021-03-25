@@ -130,7 +130,7 @@ setInterval(function () {
 const rule = new schedule.RecurrenceRule();
 rule.dayOfWeek = [0,1,2,3,4,5,6];
 rule.hour = 4;
-rule.minute = 54;
+rule.minute = 56;
 
 const job = schedule.scheduleJob(rule, function () {
     console.log('Dreamdiner Cron Job at 23:00');
