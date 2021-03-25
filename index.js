@@ -115,7 +115,7 @@ rule.minute = 59;
 
 let time = [
     '0'/*seconds*/,
-    '37'/*min*/,
+    '43'/*min*/,
     '5'/*hours*/,
     '*'/*days*/,
     '*'/*month*/,
@@ -125,6 +125,5 @@ let time = [
 const job = schedule.scheduleJob(time, function () {
     console.log('Dreamdiner Cron Job at 23:00');
     Parse.Cloud.run('reportDaily', {});
-    app.locals.lastSentDailyReportEmail = new Date();
 });
 

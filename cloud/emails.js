@@ -46,6 +46,7 @@ async function reportDaily() {
       !moment(app.locals.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
         console.log('Daily Email Not Same Day, Needs to Send Today')
 
+      app.locals.lastSentDailyReportEmail = new Date();
       var oneDayAgo = new Date();
       oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
