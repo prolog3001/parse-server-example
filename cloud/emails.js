@@ -91,17 +91,21 @@ async function reportDaily() {
       emailBody = utils.replaceAll(emailBody, "orders", orders ? orders.length : 0);
       emailBody = utils.replaceAll(emailBody, "purchases", purchases ? purchases.length : 0);
 
+      var sendAt = moment(new Date()).set('hour', 7).set('minute', 31);
+      // var sendAt = moment(new Date()).set('hour', 23).set('minute', 00);
+
       var data = {
         from: fromString,
         to: process.env.MAILGUN_TEST_EMAIL,
         subject: emailSubject,
-        html: emailBody
+        html: emailBody,
+        send_at: sendAt.unix()
       };
 
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
       sgMail.send(data)
         .then(() => {
-          console.log('Daily Email sent')
+          console.log('Daily Email will be sent at: ' + sendAt.unix())
         }).catch((error) => {
           console.error('Daily Email', error)
         })

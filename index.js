@@ -108,22 +108,27 @@ ParseServer.createLiveQueryServer(httpServer);
 //     Parse.Cloud.run('deleteTATables', {});
 // }, 3600000); //60 * 60 * 1000)
 
-const rule = new schedule.RecurrenceRule();
-rule.dayOfWeek = [0,1,2,3,4,5,6];
-rule.hour = 4;
-rule.minute = 59;
 
-let time = [
-    '0'/*seconds*/,
-    '00'/*min*/,
-    '21'/*hours*/,
-    '*'/*days*/,
-    '*'/*month*/,
-    '*'/*day of week*/
-].join(' '); // every minute multiple of 5
-
-const job = schedule.scheduleJob(time, function () {
-    console.log('Dreamdiner Cron Job at 23:00');
+setInterval(function () {
     Parse.Cloud.run('reportDaily', {});
-});
+}, 86400000); //24*60 * 60 * 1000)
+
+// const rule = new schedule.RecurrenceRule();
+// rule.dayOfWeek = [0,1,2,3,4,5,6];
+// rule.hour = 4;
+// rule.minute = 59;
+
+// let time = [
+//     '0'/*seconds*/,
+//     '00'/*min*/,
+//     '21'/*hours*/,
+//     '*'/*days*/,
+//     '*'/*month*/,
+//     '*'/*day of week*/
+// ].join(' '); // every minute multiple of 5
+
+// const job = schedule.scheduleJob(time, function () {
+//     console.log('Dreamdiner Cron Job at 23:00');
+//     Parse.Cloud.run('reportDaily', {});
+// });
 
