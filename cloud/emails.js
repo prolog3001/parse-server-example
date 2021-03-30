@@ -41,12 +41,12 @@ module.exports = {
 async function reportDaily() {
   try {
     console.error('Daily Email Check', global.lastSentDailyReportEmail)
-    
-    if (!global.lastSentDailyReportEmail ||
-      !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
-        console.log('Daily Email Not Same Day, Needs to Send Today')
 
-        global.lastSentDailyReportEmail = new Date();
+    // if (!global.lastSentDailyReportEmail ||
+    //   !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
+    //   console.log('Daily Email Not Same Day, Needs to Send Today')
+
+    //   global.lastSentDailyReportEmail = new Date();
       var oneDayAgo = new Date();
       oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
@@ -91,8 +91,7 @@ async function reportDaily() {
       emailBody = utils.replaceAll(emailBody, "orders", orders ? orders.length : 0);
       emailBody = utils.replaceAll(emailBody, "purchases", purchases ? purchases.length : 0);
 
-      // var sendAt = moment(new Date()).set('hour', 7).set('minute', 31);
-      var sendAt = moment(new Date()).set('hour', 23);
+      var sendAt = moment(new Date()).set({hour:10,minute:34,second:0,millisecond:0});
 
       var data = {
         from: fromString,
@@ -105,13 +104,14 @@ async function reportDaily() {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
       sgMail.send(data)
         .then(() => {
-          console.log('Daily Email will be sent at: ' + sendAt.unix())
+          console.log('Daily Email will be sent at: ' + sendAt)
+          console.log('Daily Email will be sent at unix: ' + sendAt.unix())
         }).catch((error) => {
           console.error('Daily Email', error)
         })
-    } else{
-      console.error('Daily Email sent already')
-    }
+    // } else {
+    //   console.error('Daily Email sent already')
+    // }
   } catch (error) {
     console.error('Daily Email', error)
   }
