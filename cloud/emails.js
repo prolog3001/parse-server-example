@@ -120,8 +120,9 @@ async function reportDaily() {
 function addUserToMailingList(user, type) {
   try {
     var listIds = [];
+    console.log('addUserToMailingList user', user)
 
-    if (!user || !user.email) {
+    if (!user) {
       console.log('addUserToMailingList', 'dummy user')
       user = {
         email: "matandahan@gmail.com",
