@@ -188,14 +188,14 @@ async function sendNewUserEmail(user, type) {
       console.log("sendNewUserEmail name: " + (user.name ? user.name : user.get("name")));
       console.log("sendNewUserEmail email: " + (user.email ? user.email : user.get("email")));
 
-      var listIds = [];
+      // var listIds = [];
 
       if (!type || !type.length)
         type = WELCOME_TEMPLATE_TYPES['Welcome_Planner'];
 
-      listIds.push(type)
+      // listIds.push(type)
 
-      if (!user || !user.email) {
+      if (!user) {
         console.log('addUserToMailingList', 'dummy user')
         user = {
           email: "matandahan@gmail.com",
@@ -205,8 +205,8 @@ async function sendNewUserEmail(user, type) {
 
 
       var fromEmail = "info@dreamdiner.io";
-      // var fromName = "DreamDiner";
-      // var fromString = fromName + " <" + fromEmail + ">";
+      var fromName = "DreamDiner";
+      var fromString = fromName + " <" + fromEmail + ">";
 
       // var toString = user.get("name") + " <" + user.get("email") + ">"
 
@@ -223,30 +223,58 @@ async function sendNewUserEmail(user, type) {
       //   subject: emailSubject,
       //   html: emailBody
       // };
+      console.log("sendNewUserEmail from", fromString);
+      console.log("sendNewUserEmail to", user.email ? user.email : user.get("email"));
+      console.log("sendNewUserEmail name", user.name ? user.name : user.get("name"));
+      console.log("sendNewUserEmail template_id", type);
 
       var data = {
-        "from": {
-          "email": fromEmail
-        },
-        "personalizations": [
+        "from":{
+          "email":fromString
+       },
+       "personalizations":[
           {
-            "to": [
-              {
-                "email": user.email ? user.email : user.get("email")
-              }
-            ],
-            "dynamic_template_data": {
-              "items": [
+             "to":[
                 {
-                  "name": user.name ? user.name : user.get("name"),
+                   "email":user.email ? user.email : user.get("email")
                 }
-              ],
-              "name": user.name ? user.name : user.get("name")
-            }
+             ],
+             "dynamic_template_data":{
+                "items":[
+                   {
+                      "name": user.name ? user.name : user.get("name")
+                   }
+                ],
+                "receipt":true
+              }
           }
-        ],
-        "template_id": listIds
-      };
+       ],
+       "template_id":"[" + type + "]"
+      }
+
+      // var data = {
+      //   "from": {
+      //     "email": fromEmail
+      //   },
+      //   "personalizations": [
+      //     {
+      //       "to": [
+      //         {
+      //           "email": user.email ? user.email : user.get("email")
+      //         }
+      //       ],
+      //       "dynamic_template_data": {
+      //         "items": [
+      //           {
+      //             "name": user.name ? user.name : user.get("name"),
+      //           }
+      //         ],
+      //         "name": user.name ? user.name : user.get("name")
+      //       }
+      //     }
+      //   ],
+      //   "template_id": listIds
+      // };
       console.log("sendNewUserEmail", data);
 
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
