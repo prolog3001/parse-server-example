@@ -185,8 +185,8 @@ async function sendNewUserEmail(user, type) {
   try {
     if ((user.name && user.email) || (user.get("name") && user.get("email"))) {
 
-      console.log("sendNewUserEmail name: " + (user.name ? user.name : user.get("name")));
-      console.log("sendNewUserEmail email: " + (user.email ? user.email : user.get("email")));
+      // console.log("sendNewUserEmail name: " + (user.name ? user.name : user.get("name")));
+      // console.log("sendNewUserEmail email: " + (user.email ? user.email : user.get("email")));
 
       // var listIds = [];
 
@@ -238,18 +238,10 @@ async function sendNewUserEmail(user, type) {
                 {
                    "email":user.email ? user.email : user.get("email")
                 }
-             ],
-             "dynamic_template_data":{
-                "items":[
-                   {
-                      "name": user.name ? user.name : user.get("name")
-                   }
-                ],
-                "receipt":true
-              }
+             ]
           }
        ],
-       "template_id":"[" + type + "]"
+       "template_id":type
       }
 
       // var data = {
