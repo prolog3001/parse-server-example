@@ -98,9 +98,9 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             //Check if planner or admin and choose correct email template
             //Add new user to SG contacts
             var contactType = emails.CONTACT_TYPES['Users_Planner'];
-            if(user.get("registered_from").includes("admin")){
+            if(user.get("registered_from") && user.get("registered_from").includes("admin")){
                 contactType = emails.CONTACT_TYPES['Users_Admin'];
-            } else if(user.get("registered_from").includes("client")){
+            } else if(user.get("registered_from") && user.get("registered_from").includes("client")){
                 contactType = emails.CONTACT_TYPES['Users_Client'];
             }
 
