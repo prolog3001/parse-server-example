@@ -18,6 +18,7 @@ var api = new ParseServer({
     cloud: __dirname + '/cloud/main.js',
     appId: process.env.APP_ID,
     appName: 'DreamDiner Sandbox',
+    verifyUserEmails: true,
     masterKey: process.env.MASTER_KEY,
     serverURL: process.env.SERVER_URL, // Don't forget to change to https if needed
     publicServerURL: process.env.PUBLIC_SERVER_URL,
