@@ -79,7 +79,7 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
 Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 
-Parse.Cloud.run('reportDaily', {});
+// Parse.Cloud.run('reportDaily', {});
 // setInterval(function () {
 //     Parse.Cloud.run('reportDaily', {});
 // }, 86400000); //24*60 * 60 * 1000)
