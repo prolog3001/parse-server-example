@@ -5,7 +5,6 @@ const axios = require('axios');
 var request = require("request");
 var http = require("https");
 var moment = require('moment');
-var sgMail = require('@sendgrid/mail')
 
 const WELCOME_TEMPLATE_TYPES = {
   Welcome_Admin: 'd-d0429d0016c041009bef1389a8ee215a',
@@ -108,6 +107,7 @@ async function reportDaily() {
     //   send_at: sendAt.unix()
     // };
 
+    var sgMail = require('@sendgrid/mail')
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
     sgMail.send(data)
       .then(() => {
@@ -277,6 +277,7 @@ async function sendNewUserEmail(user, type) {
       // };
       console.log("sendNewUserEmail", data);
 
+      var sgMail = require('@sendgrid/mail')
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
       sgMail.send(data)
         .then(() => {
@@ -326,6 +327,7 @@ async function sendNewHostEmail(request, response) {
         html: emailBody
       };
 
+      var sgMail = require('@sendgrid/mail')
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
       sgMail.send(data)
         .then(() => {
@@ -432,6 +434,7 @@ async function sendBulkEmail(emailSubject, emailBody, users) {
     };
     console.log("bulk email data", data);
 
+    var sgMail = require('@sendgrid/mail')
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
     sgMail.sendMultiple(data)
       .then(() => {
@@ -467,6 +470,7 @@ async function sendTestEmail(request, response) {
       html: emailBody
     };
 
+    var sgMail = require('@sendgrid/mail')
     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
     sgMail.send(data)
       .then(() => {

@@ -111,9 +111,9 @@ ParseServer.createLiveQueryServer(httpServer);
 
 
 Parse.Cloud.run('reportDaily', {});
-setInterval(function () {
-    Parse.Cloud.run('reportDaily', {});
-}, 86400000); //24*60 * 60 * 1000)
+// setInterval(function () {
+//     Parse.Cloud.run('reportDaily', {});
+// }, 86400000); //24*60 * 60 * 1000)
 
 // const rule = new schedule.RecurrenceRule();
 // rule.dayOfWeek = [0,1,2,3,4,5,6];
