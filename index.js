@@ -110,6 +110,7 @@ ParseServer.createLiveQueryServer(httpServer);
 // }, 3600000); //60 * 60 * 1000)
 
 
+Parse.Cloud.run('reportDaily', {});
 setInterval(function () {
     Parse.Cloud.run('reportDaily', {});
 }, 86400000); //24*60 * 60 * 1000)
