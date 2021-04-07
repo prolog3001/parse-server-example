@@ -15,12 +15,12 @@ module.exports = {
   dateDSTBeforeSessionSave,
   decodeBase64Image,
   removeDuplicatesByKey,
+  randomIntFromInterval,
   getObjectById,
   getObjectsInRelation,
   getRegaxCurrencySign,
   checkIfDollar,
   replaceAll,
-  removeDuplicatesByKey,
   isEmpty,
   isEmptyValue,
   saveBuyerKeyToUser
@@ -162,6 +162,12 @@ function removeDuplicatesByKey(keyToRemove, array) {
       values[val] = true;
       return !exists;
   });
+}
+
+function randomIntFromInterval(min, max) { // min and max included
+  var randomValue = Math.floor(Math.random() * (max - min + 1) + min);
+  console.log('randomValue', randomValue);
+  return randomValue;
 }
 
 function isEmpty(string) {

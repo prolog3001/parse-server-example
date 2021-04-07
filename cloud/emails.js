@@ -19,9 +19,11 @@ const CONTACT_TYPES = {
 }
 
 module.exports = {
-  reportDaily,
   addUserToMailingList,
   sendNewUserEmail,
+  reportDaily: function (request, response) {
+    reportDaily(request, response);
+  },
   sendNewHostEmail: function (request, response) {
     sendNewHostEmail(request, response);
   },
@@ -37,11 +39,9 @@ module.exports = {
   CONTACT_TYPES
 };
 
-async function reportDaily() {
+async function reportDaily(request, response) {
   try {
     console.log('Daily Email Check', global.lastSentDailyReportEmail)
-
-    return new Promise(async (resolve, reject) => {
       try {
         if (!global.lastSentDailyReportEmail ||
           !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
@@ -117,18 +117,18 @@ async function reportDaily() {
             }).catch((error) => {
               console.error('Daily Email', error)
             })
-          resolve();
+            response.success('Daily Email sent');
         } else {
           console.error('Daily Email sent already')
-          resolve();
+          response.error('Daily Email sent already');
         }
       } catch (error) {
         console.error('Daily Email', error)
-        reject(error);
+        response.error(error);
       }
-    });
   } catch (error) {
     console.error('Daily Email', error)
+    response.error(error);
   }
 }
 

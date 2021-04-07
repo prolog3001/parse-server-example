@@ -2,6 +2,7 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var routes = require('./controllers/routes');
 var bodyParser = require('body-parser');
+var utils = require('./cloud/utils');
 var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 var schedule = require('node-schedule');
@@ -99,21 +100,6 @@ var port = process.env.PORT || 1337;
 var httpServer = require('http').createServer(app);
 httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
-
-    Parse.Cloud.run('reportDaily', {}).then(result => {
-        console.log('success reportDaily');
-        setInterval(function () {
-            Parse.Cloud.run('reportDaily', {}).then(result => {
-                console.log('success reportDaily interval');
-            }).catch(error => {
-                console.log('error', error);
-            });
-        }, 3600000); //60 * 60 * 1000)
-        // }, 86400000); //24 * 60 * 60 * 1000)
-    }).catch(error => {
-        console.log('error', error);
-    });
-
 });
 
 // This will enable the Live Query real-time server
@@ -144,4 +130,12 @@ ParseServer.createLiveQueryServer(httpServer);
 //     console.log('Dreamdiner Cron Job at 23:00');
 //     Parse.Cloud.run('reportDaily', {});
 // });
+randomTick(() => Parse.Cloud.run('reportDaily', {}), 80000000, 86000000);   // 4m - 6m
+
+function randomTick(func, min, max) {
+    setTimeout(() => {
+      func();
+      randomTick(func, min, max);  // set up the next tick
+    }, utils.randomIntFromInterval(min, max));
+  }
 
