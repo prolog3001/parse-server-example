@@ -42,87 +42,89 @@ async function reportDaily() {
     console.log('Daily Email Check', global.lastSentDailyReportEmail)
 
     return new Promise(async (resolve, reject) => {
-      if (!global.lastSentDailyReportEmail ||
-        !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
-        console.log('Daily Email Not Same Day, Needs to Send Today')
+      try {
+        if (!global.lastSentDailyReportEmail ||
+          !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
+          console.log('Daily Email Not Same Day, Needs to Send Today')
 
-        global.lastSentDailyReportEmail = new Date();
-        var oneDayAgo = new Date();
-        oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+          global.lastSentDailyReportEmail = new Date();
+          var oneDayAgo = new Date();
+          oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
-        var businessesFromLastDayQuery = new Parse.Query("Business");
-        businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-        businessesFromLastDayQuery.limit(10000);
-        var businesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
-        console.log('Daily Email businesses:', businesses.length)
+          var businessesFromLastDayQuery = new Parse.Query("Business");
+          businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+          businessesFromLastDayQuery.limit(10000);
+          var businesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
+          console.log('Daily Email businesses:', businesses.length)
 
-        var usersFromLastDayQuery = new Parse.Query("_User");
-        usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-        usersFromLastDayQuery.limit(10000);
-        var users = await usersFromLastDayQuery.find({ useMasterKey: true });
-        console.log('Daily Email users:', users.length)
+          var usersFromLastDayQuery = new Parse.Query("_User");
+          usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+          usersFromLastDayQuery.limit(10000);
+          var users = await usersFromLastDayQuery.find({ useMasterKey: true });
+          console.log('Daily Email users:', users.length)
 
-        var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
-        openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-        openedOrdersQuery.limit(10000);
-        var orders = await openedOrdersQuery.find({ useMasterKey: true });
-        console.log('Daily Email orders:', orders.length)
+          var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+          openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+          openedOrdersQuery.limit(10000);
+          var orders = await openedOrdersQuery.find({ useMasterKey: true });
+          console.log('Daily Email orders:', orders.length)
 
-        var purchasesQuery = new Parse.Query("Purchase");
-        purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-        purchasesQuery.limit(10000);
-        var purchases = await purchasesQuery.find({ useMasterKey: true });
-        console.log('Daily Email purchases:', purchases.length)
+          var purchasesQuery = new Parse.Query("Purchase");
+          purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+          purchasesQuery.limit(10000);
+          var purchases = await purchasesQuery.find({ useMasterKey: true });
+          console.log('Daily Email purchases:', purchases.length)
 
-        var params = {};
-        var fromEmail = "info@dreamdiner.io";
-        var fromName = "DreamDiner";
-        var fromString = fromName + " <" + fromEmail + ">";
+          var params = {};
+          var fromEmail = "info@dreamdiner.io";
+          var fromName = "DreamDiner";
+          var fromString = fromName + " <" + fromEmail + ">";
 
-        var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
+          var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
-        var emailSubject = "Daily Dreamdiner System Report";
+          var emailSubject = "Daily Dreamdiner System Report";
 
-        var fs = require('fs');
-        var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_dailymail.html', "utf-8");
-        emailBody = utils.replaceAll(emailBody, "date", moment(oneDayAgo).format('MM/DD/YYYY'));
-        emailBody = utils.replaceAll(emailBody, "businesses", businesses ? businesses.length : 0);
-        emailBody = utils.replaceAll(emailBody, "users", users ? users.length : 0);
-        emailBody = utils.replaceAll(emailBody, "orders", orders ? orders.length : 0);
-        emailBody = utils.replaceAll(emailBody, "purchases", purchases ? purchases.length : 0);
+          var fs = require('fs');
+          var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_dailymail.html', "utf-8");
+          emailBody = utils.replaceAll(emailBody, "date", moment(oneDayAgo).format('MM/DD/YYYY'));
+          emailBody = utils.replaceAll(emailBody, "businesses", businesses ? businesses.length : 0);
+          emailBody = utils.replaceAll(emailBody, "users", users ? users.length : 0);
+          emailBody = utils.replaceAll(emailBody, "orders", orders ? orders.length : 0);
+          emailBody = utils.replaceAll(emailBody, "purchases", purchases ? purchases.length : 0);
 
-        // var sendAt = moment(new Date()).set({ hour: 10, minute: 34, second: 0, millisecond: 0 });
+          // var sendAt = moment(new Date()).set({ hour: 10, minute: 34, second: 0, millisecond: 0 });
 
-        var data = {
-          from: fromString,
-          to: process.env.MAILGUN_TEST_EMAIL,
-          subject: emailSubject,
-          html: emailBody
-        };
+          var data = {
+            from: fromString,
+            to: process.env.MAILGUN_TEST_EMAIL,
+            subject: emailSubject,
+            html: emailBody
+          };
 
-        // var data = {
-        //   from: fromString,
-        //   to: process.env.MAILGUN_TEST_EMAIL,
-        //   subject: emailSubject,
-        //   html: emailBody,
-        //   send_at: sendAt.unix()
-        // };
+          // var data = {
+          //   from: fromString,
+          //   to: process.env.MAILGUN_TEST_EMAIL,
+          //   subject: emailSubject,
+          //   html: emailBody,
+          //   send_at: sendAt.unix()
+          // };
 
-        var sgMail = require('@sendgrid/mail')
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-        sgMail.send(data)
-          .then(() => {
-            console.log('Daily Email will be sent at')
-            resolve();
-            // console.log('Daily Email will be sent at: ' + sendAt)
-            // console.log('Daily Email will be sent at unix: ' + sendAt.unix())
-          }).catch((error) => {
-            console.error('Daily Email', error)
-            reject();
-          })
-      } else {
-        console.error('Daily Email sent already')
-        resolve();
+          var sgMail = require('@sendgrid/mail')
+          sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+          sgMail.send(data)
+            .then(() => {
+              console.log('Daily Email sent')
+            }).catch((error) => {
+              console.error('Daily Email', error)
+            })
+          resolve();
+        } else {
+          console.error('Daily Email sent already')
+          resolve();
+        }
+      } catch (error) {
+        console.error('Daily Email', error)
+        reject(error);
       }
     });
   } catch (error) {
@@ -287,11 +289,14 @@ async function sendNewUserEmail(user, type) {
       sgMail.send(data)
         .then(() => {
           console.log('Email sent')
+          return;
         }).catch((error) => {
           console.error(error)
+          return error;
         })
     } else {
       console.log("New User has NO email and name");
+      return;
     }
   } catch (error) {
     console.log(error);
@@ -337,14 +342,13 @@ async function sendNewHostEmail(request, response) {
       sgMail.send(data)
         .then(() => {
           console.log('Email sent')
-          response.success("Email sent");
         }).catch((error) => {
           console.error(error)
-          response.error(error);
         })
+      response.success("Email sent");
     } else {
       console.log("New User has NO email and name");
-      response.error("New User has NO email and name");
+      response.success("New User has NO email and name");
     }
   } catch (error) {
     console.log(error);
