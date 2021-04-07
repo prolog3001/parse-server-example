@@ -6,7 +6,7 @@ var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 var schedule = require('node-schedule');
 
-global.lastSentDailyReportEmail = new Date();
+global.lastSentDailyReportEmail = undefined;
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
