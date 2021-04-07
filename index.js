@@ -6,7 +6,7 @@ var i18n = require('i18n');
 var cookieParser = require('cookie-parser');
 var schedule = require('node-schedule');
 
-global.lastSentDailyReportEmail = undefined;
+global.lastSentDailyReportEmail = new Date();
 var databaseUri = process.env.DATABASE_URI || process.env.MONGOLAB_URI;
 
 if (!databaseUri) {
@@ -99,20 +99,21 @@ var port = process.env.PORT || 1337;
 var httpServer = require('http').createServer(app);
 httpServer.listen(port, function () {
     console.log('parse-server-example running on port ' + port + '.');
-    
+
     Parse.Cloud.run('reportDaily', {}).then(result => {
         console.log('success reportDaily');
         setInterval(function () {
             Parse.Cloud.run('reportDaily', {}).then(result => {
                 console.log('success reportDaily interval');
-              }).catch(error => {
+            }).catch(error => {
                 console.log('error', error);
-              });
-        }, 86400000); //24*60 * 60 * 1000)
-      }).catch(error => {
+            });
+        }, 3600000); //60 * 60 * 1000)
+        // }, 86400000); //24 * 60 * 60 * 1000)
+    }).catch(error => {
         console.log('error', error);
-      });
-    
+    });
+
 });
 
 // This will enable the Live Query real-time server
