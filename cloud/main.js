@@ -99,10 +99,13 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             //Check if planner or admin and choose correct email template
             //Add new user to SG contacts
             var contactType = emails.CONTACT_TYPES['Users_Planner'];
+            
             if(user.get("registered_from") && user.get("registered_from").includes("admin")){
                 contactType = emails.CONTACT_TYPES['Users_Admin'];
+                emails.sendNewUserEmail(user)
             } else if(user.get("registered_from") && user.get("registered_from").includes("client")){
                 contactType = emails.CONTACT_TYPES['Users_Client'];
+                emails.sendNewUserEmail(user)
             }
 
             if (process.env.DEBUG && user.get("email").toLowerCase().includes("mailinator")) {
@@ -111,8 +114,6 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             } else if (!user.get("email").toLowerCase().includes("mailinator")){
                 emails.addUserToMailingList(user, contactType)
             }
-
-            emails.sendNewUserEmail(user)
         } else {
             console.log("New User has NO email and name");
         }
