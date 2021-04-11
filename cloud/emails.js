@@ -201,7 +201,15 @@ function addUserToMailingList(user, type) {
 
 async function sendNewUserEmail(user, type) {
   try {
-    if (!user || (user.name && user.email) || (user.get("name") && user.get("email"))) {
+    if (!user) {
+      console.log('sendNewUserEmail', 'dummy user')
+      user = {
+        email: "matandahan@gmail.com",
+        name: 'Matan'
+      }
+    }
+
+    if ((user.name && user.email) || (user.get("name") && user.get("email"))) {
 
       // console.log("sendNewUserEmail name: " + (user.name ? user.name : user.get("name")));
       // console.log("sendNewUserEmail email: " + (user.email ? user.email : user.get("email")));
@@ -212,15 +220,6 @@ async function sendNewUserEmail(user, type) {
         type = WELCOME_TEMPLATE_TYPES['Welcome_Planner'];
 
       // listIds.push(type)
-
-      if (!user) {
-        console.log('sendNewUserEmail', 'dummy user')
-        user = {
-          email: "matandahan@gmail.com",
-          name: 'Matan'
-        }
-      }
-
 
       var fromEmail = "info@dreamdiner.io";
       var fromName = "DreamDiner";
@@ -314,7 +313,7 @@ async function sendNewHostEmail(request, response) {
   try {
     var params = request.params;
 
-    var user = await utils.getObjectById('User', params ? params.userId : "YdvdN6Ktmv");
+    var user = await utils.getObjectById('User', params ? params.userId ? params.userId : "YdvdN6Ktmv" : "YdvdN6Ktmv");
 
     if (!user) {
       console.log('sendNewHostEmail', 'dummy user')

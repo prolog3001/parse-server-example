@@ -60,11 +60,7 @@ Parse.Cloud.define("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.job("reportDaily", emails.reportDaily);
 Parse.Cloud.job("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
-Parse.Cloud.job("sendNewUserEmail", emails.sendNewUserEmail({
-    email: "matandahan@gmail.com",
-    name: 'Matan'
-  }));
-
+Parse.Cloud.job("sendNewUserEmail", emails.sendNewUserEmail);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
 
 Parse.Cloud.job("sendBulkEmail", emails.sendBulkEmail);
