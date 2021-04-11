@@ -311,7 +311,7 @@ async function sendNewHostEmail(request, response) {
   try {
     var params = request.params;
 
-    var user = await utils.getObjectById('User', params ? params.userId : "");
+    var user = await utils.getObjectById('User', params ? params.userId : "YdvdN6Ktmv");
 
     if (!user) {
       console.log('sendNewHostEmail', 'dummy user')
