@@ -84,39 +84,54 @@ Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 Parse.Cloud.afterSave(Parse.User, async function (request) {
     console.log("aftersave fired");
 
-    if (!request.object.existed() /**|| request.object.id == "1HWENCBwPr"**/) {
-        console.log("New User Created");
-        var user = await utils.getObjectById('User', request.object.id);
-        console.log("New User id: " + user.id);
-        console.log("New User name: " + user.get("name"));
-        console.log("New User email: " + user.get("email"));
-
-        if (user.get("name") && user.get("name").length > 0 &&
-            user.get("email") && user.get("email").length > 0) {
-
-            console.log("New User has email and name");
-
-            //Check if planner or admin and choose correct email template
-            //Add new user to SG contacts
-            var contactType = emails.CONTACT_TYPES['Users_Planner'];
-            
-            if(user.get("registered_from") && user.get("registered_from").includes("admin")){
-                contactType = emails.CONTACT_TYPES['Users_Admin'];
-                emails.sendNewUserEmail(user)
-            } else if(user.get("registered_from") && user.get("registered_from").includes("client")){
-                contactType = emails.CONTACT_TYPES['Users_Client'];
-                emails.sendNewUserEmail(user)
+    try {
+        if (!request.object.existed() /**|| request.object.id == "1HWENCBwPr"**/) {
+            console.log("New User Created");
+            var user = await utils.getObjectById('User', request.object.id);
+            console.log("New User id: " + user.id);
+            console.log("New User name: " + user.get("name"));
+            console.log("New User email: " + user.get("email"));
+    
+            if (user.get("name") && user.get("name").length > 0 &&
+                user.get("email") && user.get("email").length > 0) {
+    
+                console.log("New User has email and name");
+    
+                //Check if planner or admin and choose correct email template
+                //Add new user to SG contacts
+                var contactType;
+    
+                if (user.get("registered_from")) {
+                    if (user.get("registered_from").includes("admin")) {
+                        contactType = emails.CONTACT_TYPES['Users_Admin'];
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Admin'])
+                    } else if (user.get("registered_from").includes("planner")) {
+                        contactType = emails.CONTACT_TYPES['Users_Planner'];
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Planner'])
+                    } else if (user.get("registered_from").includes("waiter")) {
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Waiter'])
+                    } else if (user.get("registered_from").includes("kitchen")) {
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Kitchen'])
+                    } else if (user.get("registered_from").includes("client")) {
+                        contactType = emails.CONTACT_TYPES['Users_Client'];
+                    }
+                }
+    
+                if (!contactType)
+                    return
+    
+                if (process.env.DEBUG && user.get("email").toLowerCase().includes("mailinator")) {
+                    emails.addUserToMailingList(user, contactType)
+                    // emails.addUserToMailingList(user, emails.CONTACT_TYPES['Users_Admin'])
+                } else if (!user.get("email").toLowerCase().includes("mailinator")) {
+                    emails.addUserToMailingList(user, contactType)
+                }
+            } else {
+                console.log("New User has NO email and name");
             }
-
-            if (process.env.DEBUG && user.get("email").toLowerCase().includes("mailinator")) {
-                emails.addUserToMailingList(user, contactType)
-                // emails.addUserToMailingList(user, emails.CONTACT_TYPES['Users_Admin'])
-            } else if (!user.get("email").toLowerCase().includes("mailinator")){
-                emails.addUserToMailingList(user, contactType)
-            }
-        } else {
-            console.log("New User has NO email and name");
         }
+    } catch (error) {
+        console.error(error);
     }
 });
 

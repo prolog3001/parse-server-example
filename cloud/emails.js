@@ -7,9 +7,11 @@ var http = require("https");
 var moment = require('moment');
 
 const WELCOME_TEMPLATE_TYPES = {
-  Welcome_Admin: 'd-d0429d0016c041009bef1389a8ee215a',
-  Welcome_Planner: 'd-d0429d0016c041009bef1389a8ee215a',
-  Welcome_Client: 'd-d0429d0016c041009bef1389a8ee215a'
+  Welcome_Admin: 'd-23b5b380b5c24f12bfa97a63e4ee6e9b',
+  Welcome_Planner: 'd-ff4f1b46a134427d909c5637c0efa9ae',
+  Welcome_Planner_Host: 'd-f119b5958de84b28984082ff261bdca8',
+  Welcome_Waiter: 'd-fbb66e8a060446d691d7dce1701ca30c',
+  Welcome_Kitchen: 'd-f5007344dda74f8d9fc8a4270bc45459'
 }
 
 const CONTACT_TYPES = {
@@ -36,6 +38,7 @@ module.exports = {
   sendTestEmail: function (request, response) {
     sendTestEmail(request, response);
   },
+  WELCOME_TEMPLATE_TYPES,
   CONTACT_TYPES
 };
 
@@ -309,10 +312,15 @@ async function sendNewHostEmail(request, response) {
     var params = request.params;
 
     var user = await utils.getObjectById('User', params.userId);
-    console.log("New User", user);
+
+    if (!params.type || !params.type.length)
+      type = WELCOME_TEMPLATE_TYPES['Welcome_Planner_Host'];
+
+    console.log("New Host", user);
     // console.log("New User id: " + user.id);
     // console.log("New User name: " + user.get("name"));
     // console.log("New User email: " + user.get("email"));
+    console.log("New Host type: " + type);
 
     if (user.get("name") && user.get("name").length > 0 &&
       user.get("email") && user.get("email").length > 0) {
@@ -325,18 +333,33 @@ async function sendNewHostEmail(request, response) {
 
       var toString = user.get("name") + " <" + user.get("email") + ">"
 
-      var emailSubject = "Welcome to the Table Planner";
-
-      var fs = require('fs');
-      var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_host_added.html', "utf-8");
-      emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
-
       var data = {
-        from: fromString,
-        to: toString,
-        subject: emailSubject,
-        html: emailBody
-      };
+        "from": {
+          "email": fromString
+        },
+        "personalizations": [
+          {
+            "to": [
+              {
+                "email": user.email ? user.email : user.get("email")
+              }
+            ]
+          }
+        ],
+        "template_id": type
+      }
+
+      // var emailSubject = "Welcome to the Table Planner";
+      // var fs = require('fs');
+      // var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_host_added.html', "utf-8");
+      // emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
+
+      // var data = {
+      //   from: fromString,
+      //   to: toString,
+      //   subject: emailSubject,
+      //   html: emailBody
+      // };
 
       var sgMail = require('@sendgrid/mail')
       sgMail.setApiKey(process.env.SENDGRID_API_KEY)
