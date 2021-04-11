@@ -256,7 +256,10 @@ async function sendNewUserEmail(user, type) {
               {
                 "email": user.email ? user.email : user.get("email")
               }
-            ]
+            ],
+            "dynamic_template_data":{
+              "name":user.name ? user.name : user.get("name")
+            },
           }
         ],
         "template_id": type
@@ -351,7 +354,10 @@ async function sendNewHostEmail(request, response) {
               {
                 "email": user.email ? user.email : user.get("email")
               }
-            ]
+            ],
+            "dynamic_template_data":{
+              "name":user.name ? user.name : user.get("name")
+            },
           }
         ],
         "template_id": type
