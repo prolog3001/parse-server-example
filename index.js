@@ -130,7 +130,7 @@ ParseServer.createLiveQueryServer(httpServer);
 //     console.log('Dreamdiner Cron Job at 23:00');
 //     Parse.Cloud.run('reportDaily', {});
 // });
-randomTick(() => Parse.Cloud.run('reportDaily', {}), 80000000, 86000000);   // 4m - 6m
+randomTick(() => Parse.Cloud.run('reportDaily', {}), 80000000, 90000000);   // 
 
 function randomTick(func, min, max) {
     setTimeout(() => {
