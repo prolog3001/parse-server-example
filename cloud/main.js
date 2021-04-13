@@ -102,18 +102,18 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                 //Add new user to SG contacts
                 var contactType;
     
-                if (user.get("registered_from")) {
-                    if (user.get("registered_from").includes("admin")) {
+                if (user.get("registered_using")) {
+                    if (user.get("registered_using").includes("admin")) {
                         contactType = emails.CONTACT_TYPES['Users_Admin'];
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Admin'])
-                    } else if (user.get("registered_from").includes("planner")) {
+                    } else if (user.get("registered_using").includes("planner")) {
                         contactType = emails.CONTACT_TYPES['Users_Planner'];
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Planner'])
-                    } else if (user.get("registered_from").includes("waiter")) {
+                    } else if (user.get("registered_using").includes("waiter")) {
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Waiter'])
-                    } else if (user.get("registered_from").includes("kitchen")) {
+                    } else if (user.get("registered_using").includes("kitchen")) {
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Kitchen'])
-                    } else if (user.get("registered_from").includes("client")) {
+                    } else if (user.get("registered_using").includes("client")) {
                         contactType = emails.CONTACT_TYPES['Users_Client'];
                     }
                 }
