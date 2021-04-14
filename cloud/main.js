@@ -108,7 +108,9 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Admin'])
                     } else if (user.get("registered_using").includes("planner")) {
                         contactType = emails.CONTACT_TYPES['Users_Planner'];
-                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Planner'])
+
+                        if(user.get("is_admin"))
+                            emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Planner'])
                     } else if (user.get("registered_using").includes("waiter")) {
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Waiter'])
                     } else if (user.get("registered_using").includes("kitchen")) {
