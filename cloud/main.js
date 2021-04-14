@@ -118,12 +118,12 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                     }
                 }
     
+                console.log("New User contactType", contactType);
                 if (!contactType)
                     return
     
-                if (process.env.DEBUG && user.get("email").toLowerCase().includes("mailinator")) {
+                if (process.env.DEBUG) {
                     emails.addUserToMailingList(user, contactType)
-                    // emails.addUserToMailingList(user, emails.CONTACT_TYPES['Users_Admin'])
                 } else if (!user.get("email").toLowerCase().includes("mailinator")) {
                     emails.addUserToMailingList(user, contactType)
                 }

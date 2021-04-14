@@ -105,6 +105,13 @@ httpServer.listen(port, function () {
 // This will enable the Live Query real-time server
 ParseServer.createLiveQueryServer(httpServer);
 
+
+//Keep server alive hack
+setInterval(function () {
+    console.log('keep server alive');
+}, 3500000); //60 * 60 * 1000)//less then an hour
+
+
 // Deleting of TA tables
 // setInterval(function () {
 //     Parse.Cloud.run('deleteTATables', {});

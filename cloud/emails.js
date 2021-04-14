@@ -155,8 +155,8 @@ function addUserToMailingList(user, type) {
 
     console.log('addUserToMailingList user', user)
 
-    var email = (user.email ? user.email : user.get('email'));
-    var name = (user.name ? user.name : user.get('name'));
+    var email = user.get('email');
+    var name = user.get('name');
 
     console.log('addUserToMailingList', email)
     console.log('addUserToMailingList', name)
@@ -209,41 +209,15 @@ async function sendNewUserEmail(user, type) {
       }
     }
 
-    if ((user.name && user.email) || (user.get("name") && user.get("email"))) {
-
-      // console.log("sendNewUserEmail name: " + (user.name ? user.name : user.get("name")));
-      // console.log("sendNewUserEmail email: " + (user.email ? user.email : user.get("email")));
-
-      // var listIds = [];
-
+    if ((user.get("name") && user.get("email"))) {
       if (!type || !type.length)
         type = WELCOME_TEMPLATE_TYPES['Welcome_Planner'];
-
-      // listIds.push(type)
 
       var fromEmail = "info@dreamdiner.io";
       var fromName = "DreamDiner";
       var fromString = fromName + " <" + fromEmail + ">";
 
-      // var toString = user.get("name") + " <" + user.get("email") + ">"
-
-      // var emailSubject = "Welcome to DreamDiner";
-
-      // var fs = require('fs');
-      // var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
-      // emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
-      // emailBody = utils.replaceAll(emailBody, "admin_email", user.get("email"));
-
-      // var data = {
-      //   from: fromString,
-      //   to: toString,
-      //   subject: emailSubject,
-      //   html: emailBody
-      // };
       console.log("sendNewUserEmail from", fromString);
-      console.log("sendNewUserEmail to", user.email ? user.email : user.get("email"));
-      console.log("sendNewUserEmail name", user.name ? user.name : user.get("name"));
-      console.log("sendNewUserEmail template_id", type);
 
       var data = {
         "from": {
@@ -253,40 +227,16 @@ async function sendNewUserEmail(user, type) {
           {
             "to": [
               {
-                "email": user.email ? user.email : user.get("email")
+                "email": user.get("email")
               }
             ],
             "dynamic_template_data":{
-              "name":user.name ? user.name : user.get("name")
+              "name":user.get("name")
             },
           }
         ],
         "template_id": type
       }
-
-      // var data = {
-      //   "from": {
-      //     "email": fromEmail
-      //   },
-      //   "personalizations": [
-      //     {
-      //       "to": [
-      //         {
-      //           "email": user.email ? user.email : user.get("email")
-      //         }
-      //       ],
-      //       "dynamic_template_data": {
-      //         "items": [
-      //           {
-      //             "name": user.name ? user.name : user.get("name"),
-      //           }
-      //         ],
-      //         "name": user.name ? user.name : user.get("name")
-      //       }
-      //     }
-      //   ],
-      //   "template_id": listIds
-      // };
       console.log("sendNewUserEmail", data);
 
       var sgMail = require('@sendgrid/mail')
@@ -351,11 +301,11 @@ async function sendNewHostEmail(request, response) {
           {
             "to": [
               {
-                "email": user.email ? user.email : user.get("email")
+                "email": user.get("email")
               }
             ],
             "dynamic_template_data":{
-              "name":user.name ? user.name : user.get("name")
+              "name":user.get("name")
             },
           }
         ],
