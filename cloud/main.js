@@ -50,6 +50,7 @@ Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 Parse.Cloud.define("combineOrders", orders.combineOrders);
 
+Parse.Cloud.define("resendEmailVerification", emails.resendEmailVerification);
 Parse.Cloud.define("reportDaily", emails.reportDaily);
 Parse.Cloud.define("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.define("sendNewsletter", emails.sendNewsletter);

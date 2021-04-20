@@ -23,6 +23,9 @@ const CONTACT_TYPES = {
 module.exports = {
   addUserToMailingList,
   sendNewUserEmail,
+  resendEmailVerification: function (request, response) {
+    resendEmailVerification(request, response);
+  },
   reportDaily: function (request, response) {
     reportDaily(request, response);
   },
@@ -41,6 +44,18 @@ module.exports = {
   WELCOME_TEMPLATE_TYPES,
   CONTACT_TYPES
 };
+
+function resendEmailVerification(request, response) {
+  console.log('requestEmailVerification?');
+  if(!request || !request.params || !request.params.email)
+  return
+
+  Parse.User.requestEmailVerification(request.params.email)
+    .then(() => {
+      console.log('requestEmailVerification');
+      response.success("Verification Email was Sent to You..");
+    });
+}
 
 async function reportDaily(request, response) {
   try {
