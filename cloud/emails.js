@@ -50,11 +50,19 @@ function resendEmailVerification(request, response) {
   if(!request || !request.params || !request.params.email)
   return
 
-  Parse.User.requestEmailVerification(request.params.email)
-    .then(() => {
-      console.log('requestEmailVerification');
-      response.success("Verification Email was Sent to You..");
-    });
+  var params = request.params;
+
+  var user = await utils.getObjectById('User', params ? params.user ? params.user.id : "YdvdN6Ktmv" : "YdvdN6Ktmv");
+
+  user.set("email", user.get("email"));
+  user.save();
+  console.log('requestEmailVerification');
+  response.success("Verification Email was Sent to You..");
+  // Parse.User.requestEmailVerification(request.params.email)
+  //   .then(() => {
+  //     console.log('requestEmailVerification');
+  //     response.success("Verification Email was Sent to You..");
+  //   });
 }
 
 async function reportDaily(request, response) {
