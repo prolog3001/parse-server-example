@@ -57,6 +57,8 @@ async function resendEmailVerification(request, response) {
   user.set("email", user.get("email"));
   user.save();
   console.log('requestEmailVerification');
+
+  if(response)
   response.success("Verification Email was Sent to You..");
   // Parse.User.requestEmailVerification(request.params.email)
   //   .then(() => {
