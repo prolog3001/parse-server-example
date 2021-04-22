@@ -54,7 +54,7 @@ async function resendEmailVerification(request, response) {
 
   var user = await utils.getObjectById('User', params ? params.user ? params.user.id : "YdvdN6Ktmv" : "YdvdN6Ktmv");
 
-  user.set("email", user.get("email"));
+  user.set("email", request.params.email);
   user.save();
   console.log('requestEmailVerification');
 
