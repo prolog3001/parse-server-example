@@ -8,6 +8,7 @@ var tables = require('./tables.js');
 var background = require('./background.js');
 var i18n = require('i18n');
 var paymeApi = require('./paymeApi.js');
+const { getMaxListeners } = require('winston-daily-rotate-file');
 
 Parse.Cloud.define("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
 Parse.Cloud.job("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
@@ -63,6 +64,17 @@ Parse.Cloud.job("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
 Parse.Cloud.job("sendNewUserEmail", emails.sendNewUserEmail);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
+Parse.Cloud.job("resendEmailVerification", async (request) =>  {
+    // params: passed in the job call
+    // headers: from the request that triggered the job
+    // log: the ParseServer logger passed in the request
+    // message: a function to update the status message of the job object
+    // const { params, headers, log, message } = request;
+    request.params.email = 'matandahan@gmail.com';
+    emails.resendEmailVerification(request);
+    return;
+});
+
 
 Parse.Cloud.job("sendBulkEmail", emails.sendBulkEmail);
 Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
