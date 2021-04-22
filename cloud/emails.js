@@ -45,7 +45,7 @@ module.exports = {
   CONTACT_TYPES
 };
 
-function resendEmailVerification(request, response) {
+async function resendEmailVerification(request, response) {
   console.log('requestEmailVerification?');
   if(!request || !request.params || !request.params.email)
   return
