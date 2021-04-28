@@ -19,9 +19,6 @@ module.exports = {
   },
   combineOrders: function (request, response) {
     combineOrders(request, response);
-  },
-  markChildOrdersAsPaid: function (orderSummaries) {
-    markChildOrdersAsPaid(orderSummaries);
   }
 };
 
@@ -38,7 +35,7 @@ async function forceOrderedOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
-  } else {
+  } else{
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   openedOrdersQuery.include("item_orders");
@@ -132,7 +129,7 @@ async function forceProgressOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
-  } else {
+  } else{
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   openedOrdersQuery.include("item_orders");
@@ -226,7 +223,7 @@ async function forceReadyOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
-  } else {
+  } else{
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   openedOrdersQuery.include("item_orders");
@@ -320,7 +317,7 @@ async function forceDeliverOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
-  } else {
+  } else{
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   openedOrdersQuery.include("item_orders");
@@ -418,7 +415,7 @@ async function forcePayOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
-  } else {
+  } else{
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   openedOrdersQuery.notEqualTo("paid", true);
@@ -490,7 +487,7 @@ async function forceCloseOpenedOrders(request, response) {
   openedOrdersQuery.equalTo("business", business);
   if (request.params.orderSummaryId) {
     openedOrdersQuery.equalTo("objectId", request.params.orderSummaryId);
-  } else {
+  } else{
     openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneWeekAgo);
   }
   // openedOrdersQuery.notEqualTo("paid", true);
@@ -584,7 +581,7 @@ async function combineOrders(request, response) {
       var childOrders = [];
       var motherOrder;
 
-      for (var i = orderSummaries.length - 1; i >= 0; i--) {
+      for (var i = orderSummaries.length-1; i >=0; i--) {
         try {
           if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
             console.log("orderSummary is null..");
@@ -594,8 +591,8 @@ async function combineOrders(request, response) {
           if (orderSummaries[i].id == motherOrderId) {
             console.log("motherOrder: " + motherOrderId);
             motherOrder = orderSummaries[i];
-            continue;
-          } else {
+            orderSummaries.splice(i, 1);
+          } else{
             childOrders.push(orderSummaries[i])
           }
         } catch (error) {
@@ -603,7 +600,7 @@ async function combineOrders(request, response) {
         }
       }
 
-      for (var i = childOrders.length - 1; i >= 0; i--) {
+      for (var i = childOrders.length-1; i >=0; i--) {
         try {
           if (!childOrders[i] || childOrders[i] === null || childOrders[i] === undefined) {
             console.log("childOrders is null..");
@@ -627,13 +624,13 @@ async function combineOrders(request, response) {
             console.log("#### Saved Order Summary Array  " + childOrders.length);
             motherOrder.save({ "child_orders": childOrders }, {
               success: async function (motherOrder) {
-                console.log("Success saving after order combine", motherOrder);
-                response.success("Success saving after order combine", motherOrder);
+                  console.log("Success saving after order combine", motherOrder);
+                  response.success("Success saving after order combine", motherOrder);
               },
               error: async function (error) {
-                console.log("Error saving after order combine", error);
+                  console.log("Error saving after order combine", error);
               }
-            });
+          });
           },
           error: function (error) {
             console.log("Wasnt able to child orders  " + error);
@@ -650,56 +647,3 @@ async function combineOrders(request, response) {
     }
   });
 }
-
-function markChildOrdersAsPaid(orderSummaries) {
-  try {
-    var childOrders = [];
-
-    for (var i = orderSummaries.length - 1; i >= 0; i--) {
-      try {
-        if (!orderSummaries[i] || orderSummaries[i] === null || orderSummaries[i] === undefined) {
-          console.log("orderSummary is null..");
-          continue;
-        }
-
-        if (orderSummaries[i].get("child_orders")) {
-          childOrders.concat(orderSummaries[i].get("child_orders"))
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    for (var i = childOrders.length - 1; i >= 0; i--) {
-      try {
-        if (!childOrders[i] || childOrders[i] === null || childOrders[i] === undefined) {
-          console.log("childOrders is null..");
-          continue;
-        }
-
-        childOrders[i].set("parent_order", motherOrder);
-        childOrders[i].set("paid", true);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    if (childOrders.length > 0) {
-      console.log("Try to save all children - " + childOrders.length);
-      Parse.Object.saveAll(childOrders, {
-        useMasterKey: true,
-        success: function (childOrders) {
-          console.log("#### Saved Child Order Summary Array  " + childOrders.length);
-        },
-        error: function (error) {
-          console.log("Wasnt able to child orders  " + error);
-        }
-      });
-    } else {
-      console.log("#### We have NO child orders");
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-

@@ -8,6 +8,7 @@ var tables = require('./tables.js');
 var background = require('./background.js');
 var i18n = require('i18n');
 var paymeApi = require('./paymeApi.js');
+const { getMaxListeners } = require('winston-daily-rotate-file');
 
 Parse.Cloud.define("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
 Parse.Cloud.job("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
@@ -50,16 +51,39 @@ Parse.Cloud.define("forcePayOpenedOrders", orders.forcePayOpenedOrders);
 Parse.Cloud.define("forceCloseOpenedOrders", orders.forceCloseOpenedOrders);
 Parse.Cloud.define("combineOrders", orders.combineOrders);
 
+Parse.Cloud.define("resendEmailVerification", emails.resendEmailVerification);
+Parse.Cloud.define("reportDaily", emails.reportDaily);
+Parse.Cloud.define("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.define("sendNewsletter", emails.sendNewsletter);
+Parse.Cloud.define("sendNewUserEmail", emails.sendNewUserEmail);
 Parse.Cloud.define("sendNewHostEmail", emails.sendNewHostEmail);
+Parse.Cloud.define("sendBulkEmail", emails.sendBulkEmail);
+Parse.Cloud.define("sendTestEmail", emails.sendTestEmail);
+Parse.Cloud.job("reportDaily", emails.reportDaily);
+Parse.Cloud.job("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
+Parse.Cloud.job("sendNewUserEmail", emails.sendNewUserEmail);
+Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
+Parse.Cloud.job("resendEmailVerification", async (request) =>  {
+    // params: passed in the job call
+    // headers: from the request that triggered the job
+    // log: the ParseServer logger passed in the request
+    // message: a function to update the status message of the job object
+    // const { params, headers, log, message } = request;
+    request.params.email = 'matandahan@gmail.com';
+    emails.resendEmailVerification(request);
+    return;
+});
+
+
+Parse.Cloud.job("sendBulkEmail", emails.sendBulkEmail);
 Parse.Cloud.job("sendTestEmail", emails.sendTestEmail);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
 
-// Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
-// Parse.Cloud.job("readyPushTest", background.readyPushTest);
-// Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
-// Parse.Cloud.job("ratePushTest", background.ratePushTest);
+Parse.Cloud.job("ordersPushTest", background.ordersPushTest);
+Parse.Cloud.job("readyPushTest", background.readyPushTest);
+Parse.Cloud.job("itemsPushTest", background.itemsPushTest);
+Parse.Cloud.job("ratePushTest", background.ratePushTest);
 
 Parse.Cloud.define("deleteTATables", background.deleteTATables);
 Parse.Cloud.job("deleteTATables", background.deleteTATables);
@@ -70,59 +94,61 @@ Parse.Cloud.job("closeOpenedOrders", background.closeOpenedOrders);
 Parse.Cloud.define("purchaseProduct", paymeApi.purchaseProduct);
 Parse.Cloud.define("refundProduct", paymeApi.refundProduct);
 
+
 //Welcome email
 Parse.Cloud.afterSave(Parse.User, async function (request) {
     console.log("aftersave fired");
 
-    if (!request.object.existed() /**|| request.object.id == "1HWENCBwPr"**/) {
-        console.log("New User Created");
-        var user = await utils.getObjectById('User', request.object.id);
-        console.log("New User id: " + user.id);
-        console.log("New User name: " + user.get("name"));
-        console.log("New User email: " + user.get("email"));
+    try {
+        if (!request.object.existed() /**|| request.object.id == "1HWENCBwPr"**/) {
+            console.log("New User Created");
+            var user = await utils.getObjectById('User', request.object.id);
+            console.log("New User id: " + user.id);
+            console.log("New User name: " + user.get("name"));
+            console.log("New User email: " + user.get("email"));
+    
+            if (user.get("name") && user.get("name").length > 0 &&
+                user.get("email") && user.get("email").length > 0) {
+    
+                console.log("New User has email and name");
+    
+                //Check if planner or admin and choose correct email template
+                //Add new user to SG contacts
+                var contactType;
+    
+                if (user.get("registered_using")) {
+                    if (user.get("registered_using").includes("admin")) {
+                        contactType = emails.CONTACT_TYPES['Users_Admin'];
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Admin'])
+                    } else if (user.get("registered_using").includes("planner")) {
+                        contactType = emails.CONTACT_TYPES['Users_Planner'];
 
-        if (user.get("name") && user.get("name").length > 0 &&
-            user.get("email") && user.get("email").length > 0) {
-
-            console.log("New User has email and name");
-
-            var fromEmail = "info@dreamdiner.io";
-            var fromName = "DreamDiner";
-            var fromString = fromName + " <" + fromEmail + ">";
-
-            var toString = user.get("name") + " <" + user.get("email") + ">"
-
-            var emailSubject = "Welcome to DreamDiner";
-
-            var fs = require('fs');
-            var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_welcome.html', "utf-8");
-            emailBody = utils.replaceAll(emailBody, "admin_name", user.get("name"));
-            emailBody = utils.replaceAll(emailBody, "admin_email", user.get("email"));
-
-            var data = {
-                from: fromString,
-                to: toString,
-                subject: emailSubject,
-                html: emailBody
-            };
-
-            var simpleMailgunAdapter = require('mailgun-js')({
-                apiKey: process.env.MAILGUN_KEY || '',
-                domain: process.env.MAILGUN_DOMAIN
-            });
-
-            simpleMailgunAdapter.messages().send(data, function (error, body) {
-                if (error) {
-                    console.log("got an error in sendEmail: " + error);
-                    return;
-                } else {
-                    console.log("email sent to " + user.get("email"));
-                    return;
+                        if(user.get("is_admin"))
+                            emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Planner'])
+                    } else if (user.get("registered_using").includes("waiter")) {
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Waiter'])
+                    } else if (user.get("registered_using").includes("kitchen")) {
+                        emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Kitchen'])
+                    } else if (user.get("registered_using").includes("client")) {
+                        contactType = emails.CONTACT_TYPES['Users_Client'];
+                    }
                 }
-            });
-        } else {
-            console.log("New User has NO email and name");
+    
+                console.log("New User contactType", contactType);
+                if (!contactType)
+                    return
+    
+                if (process.env.DEBUG) {
+                    emails.addUserToMailingList(user, contactType)
+                } else if (!user.get("email").toLowerCase().includes("mailinator")) {
+                    emails.addUserToMailingList(user, contactType)
+                }
+            } else {
+                console.log("New User has NO email and name");
+            }
         }
+    } catch (error) {
+        console.error(error);
     }
 });
 
@@ -202,7 +228,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
 
                         if (!orderSummary.get("internal_id") || orderSummary.get("internal_id") < 0) {
                             console.log("order created without a number", orderSummary);
-                            
+
                             var restaurantOrderSummaryQuery = new Parse.Query("RestaurantOrderSummary");
                             restaurantOrderSummaryQuery.equalTo("business", business);
 
@@ -217,7 +243,7 @@ Parse.Cloud.afterSave("RestaurantOrderSummary", async function (request) {
                             restaurantOrderSummaryQuery.count({
                                 success: async function (count) {
                                     console.log('number of orders in current z', count)
-                                    orderSummary.save({ "internal_id": (count+1) }, {
+                                    orderSummary.save({ "internal_id": (count + 1) }, {
                                         success: async function (result) {
                                             console.log("Success saving after order created without a number", result);
                                         },
