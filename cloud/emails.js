@@ -102,7 +102,7 @@ async function reportDaily(request, response) {
         if(!Number.isFinite(newBusinessePerc))
         newBusinessePerc = 0;
 
-        newBusinessePerc = "" + newBusinessePerc + "%";
+        newBusinessePerc = "" + newBusinessePerc.toFixed(2) + "%";
 
         var usersFromLastDayQuery = new Parse.Query("_User");
         // usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -120,7 +120,7 @@ async function reportDaily(request, response) {
         if(!Number.isFinite(newUsersPerc))
         newUsersPerc = 0;
 
-        newUsersPerc = "" + newUsersPerc + "%";
+        newUsersPerc = "" + newUsersPerc.toFixed(2) + "%";
 
         var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
         // openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -138,7 +138,7 @@ async function reportDaily(request, response) {
         if(!Number.isFinite(newOrdersPerc))
         newOrdersPerc = 0;
         
-        newOrdersPerc = "" + newOrdersPerc + "%";
+        newOrdersPerc = "" + newOrdersPerc.toFixed(2) + "%";
 
         var purchasesQuery = new Parse.Query("Purchase");
         // purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -156,7 +156,7 @@ async function reportDaily(request, response) {
         if(!Number.isFinite(newPurchasesPerc))
         newPurchasesPerc = 0;
 
-        newPurchasesPerc = "" + newPurchasesPerc + "%";
+        newPurchasesPerc = "" + newPurchasesPerc.toFixed(2) + "%";
         
         var params = {};
         var fromEmail = "info@dreamdiner.io";
