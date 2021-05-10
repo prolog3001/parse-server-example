@@ -99,7 +99,10 @@ async function reportDaily(request, response) {
         console.log('Daily Email businesses:', businesses.length)
 
         var newBusinessePerc = (businesses.length/allBusinesses.length)*100;
-        newBusinessePerc = "" + newBusinessePerc + "%";
+        if(!Number.isFinite(newBusinessePerc))
+        newBusinessePerc = 0;
+
+        newBusinessePerc = "" + newBusinessePerc.toFixed(2) + "%";
 
         var usersFromLastDayQuery = new Parse.Query("_User");
         // usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -114,7 +117,10 @@ async function reportDaily(request, response) {
         console.log('Daily Email users:', users.length)
 
         var newUsersPerc = (users.length/allUsers.length)*100;
-        newUsersPerc = "" + newUsersPerc + "%";
+        if(!Number.isFinite(newUsersPerc))
+        newUsersPerc = 0;
+
+        newUsersPerc = "" + newUsersPerc.toFixed(2) + "%";
 
         var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
         // openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -129,7 +135,10 @@ async function reportDaily(request, response) {
         console.log('Daily Email orders:', orders.length)
 
         var newOrdersPerc = (orders.length/allOrders.length)*100;
-        newOrdersPerc = "" + newOrdersPerc + "%";
+        if(!Number.isFinite(newOrdersPerc))
+        newOrdersPerc = 0;
+        
+        newOrdersPerc = "" + newOrdersPerc.toFixed(2) + "%";
 
         var purchasesQuery = new Parse.Query("Purchase");
         // purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
@@ -144,8 +153,11 @@ async function reportDaily(request, response) {
         console.log('Daily Email purchases:', purchases.length)
 
         var newPurchasesPerc = (purchases.length/allPurchases.length)*100;
-        newPurchasesPerc = "" + newPurchasesPerc + "%";
+        if(!Number.isFinite(newPurchasesPerc))
+        newPurchasesPerc = 0;
 
+        newPurchasesPerc = "" + newPurchasesPerc.toFixed(2) + "%";
+        
         var params = {};
         var fromEmail = "info@dreamdiner.io";
         var fromName = "DreamDiner";
@@ -154,6 +166,9 @@ async function reportDaily(request, response) {
         var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
         var emailSubject = "Daily Dreamdiner System Report";
+        
+        console.log("reportDaily send from", fromString);
+        console.log("reportDaily send to", toString);
 
         var data = {
           "from": {
@@ -163,22 +178,22 @@ async function reportDaily(request, response) {
             {
               "to": [
                 {
-                  "email": fromEmail
+                  "email": process.env.MAILGUN_TEST_EMAIL
                 }
               ],
               "dynamic_template_data": {
-                "business_total": allBusinesses.length,
-                "business_new": businesses.length,
-                "business_perc": newBusinessePerc,
-                "users_total": allUsers.length,
-                "users_new": users.length,
-                "users_perc": newUsersPerc,
-                "orders_total": allOrders.length,
-                "orders_new": orders.length,
-                "orders_perc": newOrdersPerc,
-                "iap_total": allPurchases.length,
-                "iap_new": purchases.length,
-                "iap_perc": newPurchasesPerc,
+                "business_total": ""+ allBusinesses.length,
+                "business_new": ""+ businesses.length,
+                "business_perc": ""+ newBusinessePerc,
+                "users_total": ""+ allUsers.length,
+                "users_new": ""+ users.length,
+                "users_perc": ""+ newUsersPerc,
+                "orders_total": ""+ allOrders.length,
+                "orders_new": ""+ orders.length,
+                "orders_perc": ""+ newOrdersPerc,
+                "iap_total": ""+ allPurchases.length,
+                "iap_new": ""+ purchases.length,
+                "iap_perc": ""+ newPurchasesPerc,
               },
             }
           ],
