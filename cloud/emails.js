@@ -69,91 +69,136 @@ async function resendEmailVerification(request, response) {
 
 async function reportDaily(request, response) {
   try {
+    // if (process.env.DEBUG)
+    //   return;
+
     console.log('Daily Email Check', global.lastSentDailyReportEmail)
-      try {
-        if (!global.lastSentDailyReportEmail ||
-          !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
-          console.log('Daily Email Not Same Day, Needs to Send Today')
+    try {
+      if (!global.lastSentDailyReportEmail ||
+        !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
+        console.log('Daily Email Not Same Day, Needs to Send Today')
 
-          global.lastSentDailyReportEmail = new Date();
-          var oneDayAgo = new Date();
-          oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+        global.lastSentDailyReportEmail = new Date();
+        var oneDayAgo = new Date();
+        oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
-          var businessesFromLastDayQuery = new Parse.Query("Business");
-          businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-          businessesFromLastDayQuery.limit(10000);
-          var businesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
-          console.log('Daily Email businesses:', businesses.length)
+        var businessesFromLastDayQuery = new Parse.Query("Business");
+        // businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        businessesFromLastDayQuery.limit(10000);
+        var allBusinesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
+        console.log('Daily Email allBusinesses:', allBusinesses.length)
 
-          var usersFromLastDayQuery = new Parse.Query("_User");
-          usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-          usersFromLastDayQuery.limit(10000);
-          var users = await usersFromLastDayQuery.find({ useMasterKey: true });
-          console.log('Daily Email users:', users.length)
+        var businessesFromLastDayQuery = new Parse.Query("Business");
+        businessesFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        businessesFromLastDayQuery.limit(10000);
+        var businesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
+        console.log('Daily Email businesses:', businesses.length)
 
-          var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
-          openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-          openedOrdersQuery.limit(10000);
-          var orders = await openedOrdersQuery.find({ useMasterKey: true });
-          console.log('Daily Email orders:', orders.length)
+        var newBusinessePerc = (businesses.length/allBusinesses.length)*100;
+        newBusinessePerc = "" + newBusinessePerc + "%";
 
-          var purchasesQuery = new Parse.Query("Purchase");
-          purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
-          purchasesQuery.limit(10000);
-          var purchases = await purchasesQuery.find({ useMasterKey: true });
-          console.log('Daily Email purchases:', purchases.length)
+        var usersFromLastDayQuery = new Parse.Query("_User");
+        // usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        usersFromLastDayQuery.limit(10000);
+        var allUsers = await usersFromLastDayQuery.find({ useMasterKey: true });
+        console.log('Daily Email allUsers:', allUsers.length)
 
-          var params = {};
-          var fromEmail = "info@dreamdiner.io";
-          var fromName = "DreamDiner";
-          var fromString = fromName + " <" + fromEmail + ">";
+        var usersFromLastDayQuery = new Parse.Query("_User");
+        usersFromLastDayQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        usersFromLastDayQuery.limit(10000);
+        var users = await usersFromLastDayQuery.find({ useMasterKey: true });
+        console.log('Daily Email users:', users.length)
 
-          var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
+        var newUsersPerc = (users.length/allUsers.length)*100;
+        newUsersPerc = "" + newUsersPerc + "%";
 
-          var emailSubject = "Daily Dreamdiner System Report";
+        var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+        // openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        openedOrdersQuery.limit(10000);
+        var allOrders = await openedOrdersQuery.find({ useMasterKey: true });
+        console.log('Daily Email allOrders:', allOrders.length)
 
-          var fs = require('fs');
-          var emailBody = fs.readFileSync('cloud/HTML/User Actions/email_dailymail.html', "utf-8");
-          emailBody = utils.replaceAll(emailBody, "date", moment(oneDayAgo).format('MM/DD/YYYY'));
-          emailBody = utils.replaceAll(emailBody, "businesses", businesses ? businesses.length : 0);
-          emailBody = utils.replaceAll(emailBody, "users", users ? users.length : 0);
-          emailBody = utils.replaceAll(emailBody, "orders", orders ? orders.length : 0);
-          emailBody = utils.replaceAll(emailBody, "purchases", purchases ? purchases.length : 0);
+        var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+        openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        openedOrdersQuery.limit(10000);
+        var orders = await openedOrdersQuery.find({ useMasterKey: true });
+        console.log('Daily Email orders:', orders.length)
 
-          // var sendAt = moment(new Date()).set({ hour: 10, minute: 34, second: 0, millisecond: 0 });
+        var newOrdersPerc = (orders.length/allOrders.length)*100;
+        newOrdersPerc = "" + newOrdersPerc + "%";
 
-          var data = {
-            from: fromString,
-            to: process.env.MAILGUN_TEST_EMAIL,
-            subject: emailSubject,
-            html: emailBody
-          };
+        var purchasesQuery = new Parse.Query("Purchase");
+        // purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        purchasesQuery.limit(10000);
+        var allPurchases = await purchasesQuery.find({ useMasterKey: true });
+        console.log('Daily Email allPurchases:', allPurchases.length)
 
-          // var data = {
-          //   from: fromString,
-          //   to: process.env.MAILGUN_TEST_EMAIL,
-          //   subject: emailSubject,
-          //   html: emailBody,
-          //   send_at: sendAt.unix()
-          // };
+        var purchasesQuery = new Parse.Query("Purchase");
+        purchasesQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
+        purchasesQuery.limit(10000);
+        var purchases = await purchasesQuery.find({ useMasterKey: true });
+        console.log('Daily Email purchases:', purchases.length)
 
-          var sgMail = require('@sendgrid/mail')
-          sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-          sgMail.send(data)
-            .then(() => {
-              console.log('Daily Email sent')
-            }).catch((error) => {
-              console.error('Daily Email', error)
-            })
-            response.success('Daily Email sent');
-        } else {
-          console.error('Daily Email sent already')
-          response.error('Daily Email sent already');
+        var newPurchasesPerc = (purchases.length/allPurchases.length)*100;
+        newPurchasesPerc = "" + newPurchasesPerc + "%";
+
+        var params = {};
+        var fromEmail = "info@dreamdiner.io";
+        var fromName = "DreamDiner";
+        var fromString = fromName + " <" + fromEmail + ">";
+
+        var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
+
+        var emailSubject = "Daily Dreamdiner System Report";
+
+        var data = {
+          "from": {
+            "email": fromString
+          },
+          "personalizations": [
+            {
+              "to": [
+                {
+                  "email": fromEmail
+                }
+              ],
+              "dynamic_template_data": {
+                "business_total": allBusinesses.length,
+                "business_new": businesses.length,
+                "business_perc": newBusinessePerc,
+                "users_total": allUsers.length,
+                "users_new": users.length,
+                "users_perc": newUsersPerc,
+                "orders_total": allOrders.length,
+                "orders_new": orders.length,
+                "orders_perc": newOrdersPerc,
+                "iap_total": allPurchases.length,
+                "iap_new": purchases.length,
+                "iap_perc": newPurchasesPerc,
+              },
+            }
+          ],
+          "template_id": SUMMARY_TEMPLATE_TYPES.Dreamdiner_daily
         }
-      } catch (error) {
-        console.error('Daily Email', error)
-        response.error(error);
+        console.log("reportDaily", data);
+
+        var sgMail = require('@sendgrid/mail')
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+        sgMail.send(data)
+          .then(() => {
+            console.log('Daily Email sent')
+          }).catch((error) => {
+            console.error('Daily Email', error)
+          })
+        response.success('Daily Email sent');
+      } else {
+        console.error('Daily Email sent already')
+        response.error('Daily Email sent already');
       }
+    } catch (error) {
+      console.error('Daily Email', error)
+      response.error(error);
+    }
   } catch (error) {
     console.error('Daily Email', error)
     response.error(error);
