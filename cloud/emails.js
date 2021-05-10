@@ -20,6 +20,10 @@ const CONTACT_TYPES = {
   Users_Client: '322fb624-e73a-4bd5-b0c5-c62b30fd0366'
 }
 
+const SUMMARY_TEMPLATE_TYPES = {
+  Dreamdiner_daily: 'd-e94785d37f274ad3a9f91be67c138101'
+}
+
 module.exports = {
   addUserToMailingList,
   sendNewUserEmail,
