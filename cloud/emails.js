@@ -99,6 +99,9 @@ async function reportDaily(request, response) {
         console.log('Daily Email businesses:', businesses.length)
 
         var newBusinessePerc = (businesses.length/allBusinesses.length)*100;
+        if(!Number.isFinite(newBusinessePerc))
+        newBusinessePerc = 0;
+
         newBusinessePerc = "" + newBusinessePerc + "%";
 
         var usersFromLastDayQuery = new Parse.Query("_User");
@@ -114,6 +117,9 @@ async function reportDaily(request, response) {
         console.log('Daily Email users:', users.length)
 
         var newUsersPerc = (users.length/allUsers.length)*100;
+        if(!Number.isFinite(newUsersPerc))
+        newUsersPerc = 0;
+
         newUsersPerc = "" + newUsersPerc + "%";
 
         var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
@@ -129,6 +135,9 @@ async function reportDaily(request, response) {
         console.log('Daily Email orders:', orders.length)
 
         var newOrdersPerc = (orders.length/allOrders.length)*100;
+        if(!Number.isFinite(newOrdersPerc))
+        newOrdersPerc = 0;
+        
         newOrdersPerc = "" + newOrdersPerc + "%";
 
         var purchasesQuery = new Parse.Query("Purchase");
@@ -144,8 +153,11 @@ async function reportDaily(request, response) {
         console.log('Daily Email purchases:', purchases.length)
 
         var newPurchasesPerc = (purchases.length/allPurchases.length)*100;
-        newPurchasesPerc = "" + newPurchasesPerc + "%";
+        if(!Number.isFinite(newPurchasesPerc))
+        newPurchasesPerc = 0;
 
+        newPurchasesPerc = "" + newPurchasesPerc + "%";
+        
         var params = {};
         var fromEmail = "info@dreamdiner.io";
         var fromName = "DreamDiner";
