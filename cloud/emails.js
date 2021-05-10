@@ -166,11 +166,22 @@ async function reportDaily(request, response) {
             {
               "to": [
                 {
-                  "email": toString
+                  "email": process.env.MAILGUN_TEST_EMAIL
                 }
               ],
               "dynamic_template_data": {
-                
+                "business_total": allBusinesses.length,
+                "business_new": businesses.length,
+                "business_perc": newBusinessePerc,
+                "users_total": allUsers.length,
+                "users_new": users.length,
+                "users_perc": newUsersPerc,
+                "orders_total": allOrders.length,
+                "orders_new": orders.length,
+                "orders_perc": newOrdersPerc,
+                "iap_total": allPurchases.length,
+                "iap_new": purchases.length,
+                "iap_perc": newPurchasesPerc,
               },
             }
           ],
