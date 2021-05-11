@@ -122,13 +122,13 @@ async function reportDaily(request, response) {
 
         newUsersPerc = "" + newUsersPerc.toFixed(2) + "%";
 
-        var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+        var openedOrdersQuery = new Parse.Query("Order");
         // openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
         openedOrdersQuery.limit(10000);
         var allOrders = await openedOrdersQuery.find({ useMasterKey: true });
         console.log('Daily Email allOrders:', allOrders.length)
 
-        var openedOrdersQuery = new Parse.Query("RestaurantOrderSummary");
+        var openedOrdersQuery = new Parse.Query("Order");
         openedOrdersQuery.greaterThanOrEqualTo("createdAt", oneDayAgo);
         openedOrdersQuery.limit(10000);
         var orders = await openedOrdersQuery.find({ useMasterKey: true });
