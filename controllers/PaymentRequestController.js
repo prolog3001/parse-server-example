@@ -90,7 +90,8 @@ async function savePayment(req) {
         var fullProduct = await getObjectByIdWithInclude('RestaurantOrderSummary', child_orders, productId);
         var fullProductParams = {
           paid: true,
-          paid_using: 1
+          paid_using: 1,
+          tip
         }
         fullProduct.save(fullProductParams, {
           success: function (orderSummary) {

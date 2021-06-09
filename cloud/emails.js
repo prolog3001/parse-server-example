@@ -98,9 +98,9 @@ async function reportDaily(request, response) {
         var businesses = await businessesFromLastDayQuery.find({ useMasterKey: true });
         console.log('Daily Email businesses:', businesses.length)
 
-        var newBusinessePerc = (businesses.length / allBusinesses.length) * 100;
-        if (!Number.isFinite(newBusinessePerc))
-          newBusinessePerc = 0;
+        var newBusinessePerc = (businesses.length/allBusinesses.length)*100;
+        if(!Number.isFinite(newBusinessePerc))
+        newBusinessePerc = 0;
 
         newBusinessePerc = "" + newBusinessePerc.toFixed(2) + "%";
 
@@ -116,9 +116,9 @@ async function reportDaily(request, response) {
         var users = await usersFromLastDayQuery.find({ useMasterKey: true });
         console.log('Daily Email users:', users.length)
 
-        var newUsersPerc = (users.length / allUsers.length) * 100;
-        if (!Number.isFinite(newUsersPerc))
-          newUsersPerc = 0;
+        var newUsersPerc = (users.length/allUsers.length)*100;
+        if(!Number.isFinite(newUsersPerc))
+        newUsersPerc = 0;
 
         newUsersPerc = "" + newUsersPerc.toFixed(2) + "%";
 
@@ -134,10 +134,10 @@ async function reportDaily(request, response) {
         var orders = await openedOrdersQuery.find({ useMasterKey: true });
         console.log('Daily Email orders:', orders.length)
 
-        var newOrdersPerc = (orders.length / allOrders.length) * 100;
-        if (!Number.isFinite(newOrdersPerc))
-          newOrdersPerc = 0;
-
+        var newOrdersPerc = (orders.length/allOrders.length)*100;
+        if(!Number.isFinite(newOrdersPerc))
+        newOrdersPerc = 0;
+        
         newOrdersPerc = "" + newOrdersPerc.toFixed(2) + "%";
 
         var purchasesQuery = new Parse.Query("Purchase");
@@ -152,12 +152,12 @@ async function reportDaily(request, response) {
         var purchases = await purchasesQuery.find({ useMasterKey: true });
         console.log('Daily Email purchases:', purchases.length)
 
-        var newPurchasesPerc = (purchases.length / allPurchases.length) * 100;
-        if (!Number.isFinite(newPurchasesPerc))
-          newPurchasesPerc = 0;
+        var newPurchasesPerc = (purchases.length/allPurchases.length)*100;
+        if(!Number.isFinite(newPurchasesPerc))
+        newPurchasesPerc = 0;
 
         newPurchasesPerc = "" + newPurchasesPerc.toFixed(2) + "%";
-
+        
         var params = {};
         var fromEmail = "info@dreamdiner.io";
         var fromName = "DreamDiner";
@@ -165,8 +165,8 @@ async function reportDaily(request, response) {
 
         var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
-        var emailSubject = "Daily Dreamdiner System Report";
-
+        var emailSubject = "Daily Dreamdiner System Report for " + moment().format('DD/MM/YYYY');
+        
         console.log("reportDaily send from", fromString);
         console.log("reportDaily send to", toString);
 
@@ -181,24 +181,26 @@ async function reportDaily(request, response) {
                   "email": process.env.MAILGUN_TEST_EMAIL
                 }
               ],
+              "subject": emailSubject,
               "dynamic_template_data": {
-                "business_total": "" + allBusinesses.length,
-                "business_new": "" + businesses.length,
-                "business_perc": "" + newBusinessePerc,
-                "users_total": "" + allUsers.length,
-                "users_new": "" + users.length,
-                "users_perc": "" + newUsersPerc,
-                "orders_total": "" + allOrders.length,
-                "orders_new": "" + orders.length,
-                "orders_perc": "" + newOrdersPerc,
-                "iap_total": "" + allPurchases.length,
-                "iap_new": "" + purchases.length,
-                "iap_perc": "" + newPurchasesPerc,
+                "business_total": ""+ allBusinesses.length,
+                "business_new": ""+ businesses.length,
+                "business_perc": ""+ newBusinessePerc,
+                "users_total": ""+ allUsers.length,
+                "users_new": ""+ users.length,
+                "users_perc": ""+ newUsersPerc,
+                "orders_total": ""+ allOrders.length,
+                "orders_new": ""+ orders.length,
+                "orders_perc": ""+ newOrdersPerc,
+                "iap_total": ""+ allPurchases.length,
+                "iap_new": ""+ purchases.length,
+                "iap_perc": ""+ newPurchasesPerc,
               },
             }
           ],
           "template_id": SUMMARY_TEMPLATE_TYPES.Dreamdiner_daily
         }
+        console.log("reportDaily", data);
 
         var sgMail = require('@sendgrid/mail')
         sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -208,7 +210,6 @@ async function reportDaily(request, response) {
           }).catch((error) => {
             console.error('Daily Email', error)
           })
-        console.log("reportDaily", JSON.stringify(data));
         response.success('Daily Email sent');
       } else {
         console.error('Daily Email sent already')
