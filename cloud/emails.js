@@ -78,7 +78,7 @@ async function reportDaily(request, response) {
 
     console.log('Daily Email Check', global.lastSentDailyReportEmail)
     try {
-      if (!global.lastSentDailyReportEmail ||
+      if (process.env.DEBUG || !global.lastSentDailyReportEmail ||
         !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
         console.log('Daily Email Not Same Day, Needs to Send Today')
 
@@ -165,10 +165,11 @@ async function reportDaily(request, response) {
 
         var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
-        var emailSubject = "Daily Dreamdiner System Report for " + moment().format('DD/MM/YYYY');
+        var emailSubject = "Daily Dreamdiner System Report for " + moment(oneDayAgo).format('DD/MM/YYYY');
         
         console.log("reportDaily send from", fromString);
         console.log("reportDaily send to", toString);
+        console.log("reportDaily send subject", emailSubject);
 
         var data = {
           "from": {
@@ -183,6 +184,7 @@ async function reportDaily(request, response) {
               ],
               "subject": emailSubject,
               "dynamic_template_data": {
+                "subject": emailSubject,
                 "business_total": ""+ allBusinesses.length,
                 "business_new": ""+ businesses.length,
                 "business_perc": ""+ newBusinessePerc,
