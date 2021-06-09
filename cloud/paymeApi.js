@@ -19,7 +19,7 @@ module.exports = {
 async function purchaseProduct(request, response) {
     console.log('purchaseProduct');
     console.log('params', request.params);
-    let { isDebug, businessId, productType, clientId, productId, amount, tip, special_note } = request.params;
+    let { isDebug, businessId, productType, clientId, productId, amount, sendAsPaymentRequest, tip, special_note, salePaymentMethod, newCreditCard } = request.params;
 
     let client = await utils.getObjectById('User', clientId);
     var product;
@@ -65,17 +65,42 @@ async function purchaseProduct(request, response) {
         sale_callback_url: process.env.WEBHOOK_BASE_URL + '/api/payment-request/success' + getWebhookUrl({ productType, product, business, client, amount, tip, note }),
         sale_name: client.get('name'),
 
-        layout: 'micro_ltr',
-        installments: 1,
         language: locale,
         sale_send_notification: false,
+        ...(salePaymentMethod && {
+            sale_payment_method: salePaymentMethod,
+            ...(salePaymentMethod == 'bit' && {
+                layout: salePaymentMethod,
+            }),
+            ...(salePaymentMethod != 'bit' && {
+                layout: 'micro_ltr',
+            }),
+        }),
+        ...(!salePaymentMethod && {
+            layout: 'micro_ltr',
+        }),
 
-        ...(!isBuyerKeyValid && {
-            capture_buyer: 1,
-        }),
-        ...(isBuyerKeyValid && {
-            buyer_key: buyerKey,
-        }),
+        ...(!sendAsPaymentRequest && {
+                ...(!isBuyerKeyValid && {
+                    ...(salePaymentMethod && {
+                        sale_payment_method: salePaymentMethod,
+                        ...(salePaymentMethod != 'bit' && {
+                            installments: 1,
+                            capture_buyer: 1
+                        }),
+                    }),
+                    ...(!salePaymentMethod && {
+                        installments: 1,
+                        capture_buyer: 1
+                    }),
+                    
+                }),
+                ...(isBuyerKeyValid && {
+                    buyer_key: buyerKey,
+                    installments: 1
+                }),
+
+            })
     };
 
     let paymentUrl = (isDebug ? process.env.PAYME_URL_DEBUG : process.env.PAYME_URL) + '/api/generate-sale';
