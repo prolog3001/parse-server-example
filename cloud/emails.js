@@ -175,7 +175,6 @@ async function reportDaily(request, response) {
           "from": {
             "email": fromString
           },
-          "subject": emailSubject,
           "personalizations": [
             {
               "to": [
