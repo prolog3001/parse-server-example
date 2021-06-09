@@ -184,6 +184,7 @@ async function reportDaily(request, response) {
               ],
               "subject": emailSubject,
               "dynamic_template_data": {
+                "subject": emailSubject,
                 "business_total": ""+ allBusinesses.length,
                 "business_new": ""+ businesses.length,
                 "business_perc": ""+ newBusinessePerc,
