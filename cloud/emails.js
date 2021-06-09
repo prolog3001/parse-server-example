@@ -165,7 +165,7 @@ async function reportDaily(request, response) {
 
         var toString = "DreamDiner Team" + " <" + process.env.MAILGUN_TEST_EMAIL + ">"
 
-        var emailSubject = "Daily Dreamdiner System Report";
+        var emailSubject = "Daily Dreamdiner System Report for " + moment().format('DD/MM/YYYY');
         
         console.log("reportDaily send from", fromString);
         console.log("reportDaily send to", toString);
@@ -181,6 +181,7 @@ async function reportDaily(request, response) {
                   "email": process.env.MAILGUN_TEST_EMAIL
                 }
               ],
+              "subject": emailSubject,
               "dynamic_template_data": {
                 "business_total": ""+ allBusinesses.length,
                 "business_new": ""+ businesses.length,
