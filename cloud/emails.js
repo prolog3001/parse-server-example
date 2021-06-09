@@ -78,7 +78,7 @@ async function reportDaily(request, response) {
 
     console.log('Daily Email Check', global.lastSentDailyReportEmail)
     try {
-      if (!global.lastSentDailyReportEmail ||
+      if (process.env.DEBUG || !global.lastSentDailyReportEmail ||
         !moment(global.lastSentDailyReportEmail).isSame(new Date(), 'day')) {
         console.log('Daily Email Not Same Day, Needs to Send Today')
 
