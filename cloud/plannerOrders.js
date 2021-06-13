@@ -63,8 +63,7 @@ function plannerOrderPushAction(user, order, action) {
               return await push.pushPlannerOrderChanged(params);
             case "cancelled":
               console.log("plannerOrderPushAction cancelled");
-              push.pushPlannerOrderCancelled(params);
-              return
+              return await push.pushPlannerOrderCancelled(params);
             default:
               break;
           }
