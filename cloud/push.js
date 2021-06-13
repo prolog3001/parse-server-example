@@ -25,6 +25,99 @@ module.exports = {
     getPushType
 };
 
+//Planner new order
+async function pushNewPlannerOrder(params, response) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('pushNewPlannerOrder');
+            console.log("params", params);
+
+            var users = params.userTokens;
+
+            var pushTitle = i18n.__({ phrase: "PLANNER_NEW_ORDER_TITLE", locale: "en" });
+
+            var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+
+            var pushData = {
+                alert: pushAlert,
+                session_alert: pushAlert,
+                push_title: pushTitle,
+                push_type: getPushType("PLANNER_NEW_ORDER"),
+                push_business_id: params.business_id,
+                push_object_id: params.business_id,
+                push_badge: "Increment"
+            };
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
+        } catch (error) {
+            console.log('error', error);
+            reject(error);
+        }
+    });
+}
+
+//Planner changed order
+async function pushPlannerOrderChanged(params, response) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('pushPlannerOrderChanged');
+            console.log("params", params);
+
+            var users = params.userTokens;
+
+            var pushTitle = i18n.__({ phrase: "PLANNER_CHANGED_ORDER_TITLE", locale: "en" });
+
+            var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+
+            var pushData = {
+                alert: pushAlert,
+                session_alert: pushAlert,
+                push_title: pushTitle,
+                push_type: getPushType("PLANNER_CHANGED_ORDER"),
+                push_business_id: params.business_id,
+                push_object_id: params.business_id,
+                push_badge: "Increment"
+            };
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
+        } catch (error) {
+            console.log('error', error);
+            reject(error);
+        }
+    });
+}
+
+//Planner deleted order
+async function pushPlannerOrderCancelled(params, response) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('pushPlannerOrderCancelled');
+            console.log("params", params);
+
+            var users = params.userTokens;
+
+            var pushTitle = i18n.__({ phrase: "PLANNER_CANCELLED_ORDER_TITLE", locale: "en" });
+
+            var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+
+            var pushData = {
+                alert: pushAlert,
+                session_alert: pushAlert,
+                push_title: pushTitle,
+                push_type: getPushType("PLANNER_CANCELLED_ORDER"),
+                push_business_id: params.business_id,
+                push_object_id: params.business_id,
+                push_badge: "Increment"
+            };
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
+        } catch (error) {
+            console.log('error', error);
+            reject(error);
+        }
+    });
+}
+
 //Business low orders push
 async function pushLowOrders(params, response) {
     return new Promise((resolve, reject) => {
@@ -42,7 +135,7 @@ async function pushLowOrders(params, response) {
                 alert: pushAlert,
                 session_alert: pushAlert,
                 push_title: pushTitle,
-                push_type: 0,
+                push_type: getPushType("LOW_ORDERS"),
                 push_business_id: params.business_id,
                 push_object_id: params.business_id,
                 push_badge: "Increment"
@@ -80,7 +173,7 @@ async function pushReadyOrders(params, response) {
                 session_alert: pushAlert,
                 push_title: pushTitle,
                 push_business_id: params.business_id,
-                push_type: 1,
+                push_type: getPushType("READY_ORDERS"),
                 push_object_id: params.order_id,
                 push_badge: "Increment"
             };
@@ -113,7 +206,7 @@ async function pushLowItems(params, response) {
                 session_alert: pushAlert,
                 push_title: pushTitle,
                 push_business_id: params.business_id,
-                push_type: 2,
+                push_type: getPushType("LOW_ITEMS"),
                 push_object_id: params.item_id,
                 push_badge: "Increment"
             };
@@ -146,7 +239,7 @@ async function pushLowRating(params, response) {
                 session_alert: pushAlert,
                 push_title: pushTitle,
                 push_business_id: params.business_id,
-                push_type: 3,
+                push_type: getPushType("LOW_RATING"),
                 push_object_id: params.order_id,
                 push_badge: "Increment"
             };
@@ -219,7 +312,10 @@ function getPushType(name) {
         "LOW_ORDERS": 0,
         "READY_ORDERS": 1,
         "LOW_ITEMS": 2,
-        "LOW_RATING": 3
+        "LOW_RATING": 3,
+        "PLANNER_NEW_ORDER": 4,
+        "PLANNER_CHANGED_ORDER": 5,
+        "PLANNER_CANCELLED_ORDER": 6
     }
 
     return pushType[name];
