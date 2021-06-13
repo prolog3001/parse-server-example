@@ -488,7 +488,7 @@ Parse.Cloud.afterSave("Order", async function (request) {
     if (request.object.existed())
         action = "changed";
 
-    plannerOrders.plannerOrderPushAction(user, order, action)
+    plannerOrders.plannerOrderPushQuery(user, order, action)
 })
 
 //Planner Orders CANCELLED
@@ -498,6 +498,6 @@ Parse.Cloud.beforeDelete("Order", async function (request, response) {
     var order = request.object;
     console.log("Object Type", order.className);
 
-    plannerOrders.plannerOrderPushAction(user, order, "cancelled")
+    await plannerOrders.plannerOrderPushAction(user, order, "cancelled")
     response.success();
 })
