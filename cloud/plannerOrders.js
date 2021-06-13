@@ -31,7 +31,7 @@ function plannerOrderPushAction(user, order, action) {
           var params = {};
           params["admin_name"] = user ? user.get("name") : "User";
           params["user_name"] = order.get("name");
-          params["table_name"] = order.get("business").get("table").get("title");
+          params["table_name"] = order.get("table").get("title");
           params["order_date"] = moment(order.get("date")).format('DD/MM/YYYY');
           params["order_time"] = moment(order.get("start_time")).format('HH:mm');
           params["order_remark"] = order.get("note");
