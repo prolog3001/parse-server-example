@@ -500,7 +500,5 @@ Parse.Cloud.beforeDelete("Order", async function (request, response) {
 
     plannerOrders.plannerOrderPushAction(user, order, "cancelled")
 
-    setInterval(function () {
-        response.success();
-    }, 1000);
+    response.success();
 })
