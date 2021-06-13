@@ -492,7 +492,7 @@ Parse.Cloud.afterSave("Order", async function (request) {
 })
 
 //Planner Orders CANCELLED
-Parse.Cloud.afterDelete("Order", async function (request) {
+Parse.Cloud.beforeDelete("Order", async function (request) {
     var user = request.user;
 
     var order = request.object;
