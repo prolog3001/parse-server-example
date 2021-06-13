@@ -47,7 +47,7 @@ async function pushNewPlannerOrder(params, response) {
             if(params["order_remark"])
             pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
             else
-            pushAlert = pushAlert.replace(" *order_remark", "");
+            pushAlert = pushAlert.replace("*order_remark", "");
 
             var pushData = {
                 alert: pushAlert,
@@ -88,7 +88,7 @@ async function pushPlannerOrderChanged(params, response) {
             if(params["order_remark"])
             pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
             else
-            pushAlert = pushAlert.replace(" *order_remark", "");
+            pushAlert = pushAlert.replace("*order_remark", "");
 
 
             var pushData = {
@@ -130,7 +130,7 @@ async function pushPlannerOrderCancelled(params, response) {
             if(params["order_remark"])
             pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
             else
-            pushAlert = pushAlert.replace(" *order_remark", "");
+            pushAlert = pushAlert.replace("*order_remark", "");
 
             var pushData = {
                 alert: pushAlert,
