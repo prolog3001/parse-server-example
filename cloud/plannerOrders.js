@@ -28,6 +28,13 @@ function plannerOrderPushAction(user, order, action) {
 
         if (order && order.className == "Order") {
           var params = {};
+          params["admin_name"] = user ? user.get("name") : "User";
+          params["user_name"] = order.get("name");
+          params["table_name"] = order.get("business").get("table").get("title");
+          params["order_date"] = moment(order.get("date")).format('DD/MM/YYYY');
+          params["order_time"] = moment(order.get("start_time")).format('HH:mm');
+          params["order_remark"] = order.get("note");
+
           params["userTokens"] = [];
 
           if (!user || user.id != order.get("business").get("admin").id)
@@ -44,6 +51,7 @@ function plannerOrderPushAction(user, order, action) {
           params["order_id"] = order.id;
           params["business_id"] = order.get("business").id;
 
+          
           switch (action) {
             case "new":
               console.log("plannerOrderPushAction new");

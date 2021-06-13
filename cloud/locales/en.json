@@ -11,7 +11,7 @@
     "TA": "Take Away",
     "DELIVERY": "Delivery",
     "PLANNER_NEW_ORDER_TITLE": "admin_name created a new Reservation:",
-    "PLANNER_PUSH_ORDER": "client_name for table_name, order_date at order_time (order_remark)",
+    "PLANNER_PUSH_ORDER": "client_name for table_name, order_date at order_time *order_remark",
     "PLANNER_CHANGED_ORDER_TITLE": "admin_name updated a Reservation:",
-    "PLANNER_CANCELLED_ORDER_TITLE": "admin_name deleted a Reservation:",
+    "PLANNER_CANCELLED_ORDER_TITLE": "admin_name deleted a Reservation:"
   }

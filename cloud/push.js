@@ -35,8 +35,14 @@ async function pushNewPlannerOrder(params, response) {
             var users = params.userTokens;
 
             var pushTitle = i18n.__({ phrase: "PLANNER_NEW_ORDER_TITLE", locale: "en" });
+            pushTitle = pushTitle.replace("admin_name", params["admin_name"]);
 
             var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+            pushAlert = pushTitle.replace("user_name", params["user_name"] ? params["user_name"] : "Client");
+            pushAlert = pushTitle.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
+            pushAlert = pushTitle.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
+            pushAlert = pushTitle.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
+            pushAlert = pushTitle.replace("order_remark", params["order_remark"] ? params["order_remark"] : "");
 
             var pushData = {
                 alert: pushAlert,
@@ -66,8 +72,14 @@ async function pushPlannerOrderChanged(params, response) {
             var users = params.userTokens;
 
             var pushTitle = i18n.__({ phrase: "PLANNER_CHANGED_ORDER_TITLE", locale: "en" });
+            pushTitle = pushTitle.replace("admin_name", params["admin_name"]);
 
             var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+            pushAlert = pushTitle.replace("user_name", params["user_name"] ? params["user_name"] : "Client");
+            pushAlert = pushTitle.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
+            pushAlert = pushTitle.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
+            pushAlert = pushTitle.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
+            pushAlert = pushTitle.replace("order_remark", params["order_remark"] ? params["order_remark"] : "");
 
             var pushData = {
                 alert: pushAlert,
@@ -97,8 +109,14 @@ async function pushPlannerOrderCancelled(params, response) {
             var users = params.userTokens;
 
             var pushTitle = i18n.__({ phrase: "PLANNER_CANCELLED_ORDER_TITLE", locale: "en" });
+            pushTitle = pushTitle.replace("admin_name", params["admin_name"]);
 
             var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+            pushAlert = pushTitle.replace("user_name", params["user_name"] ? params["user_name"] : "Client");
+            pushAlert = pushTitle.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
+            pushAlert = pushTitle.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
+            pushAlert = pushTitle.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
+            pushAlert = pushTitle.replace("order_remark", params["order_remark"] ? params["order_remark"] : "");
 
             var pushData = {
                 alert: pushAlert,
