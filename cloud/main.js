@@ -485,8 +485,8 @@ Parse.Cloud.afterSave("Order", async function (request) {
     console.log("Object Type", order.className);
 
     var action = "new";
-    if(request.object.existed())
-    action = "changed";
+    if (request.object.existed())
+        action = "changed";
 
     plannerOrders.plannerOrderPushAction(user, order, action)
 })
@@ -499,5 +499,8 @@ Parse.Cloud.beforeDelete("Order", async function (request, response) {
     console.log("Object Type", order.className);
 
     plannerOrders.plannerOrderPushAction(user, order, "cancelled")
-    response.success();
+
+    setInterval(function () {
+        response.success();
+    }, 1000);
 })
