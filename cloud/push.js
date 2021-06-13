@@ -43,7 +43,11 @@ async function pushNewPlannerOrder(params, response) {
             pushAlert = pushAlert.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
             pushAlert = pushAlert.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
             pushAlert = pushAlert.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
-            pushAlert = pushAlert.replace("order_remark", params["order_remark"] ? params["order_remark"] : "");
+
+            if(params["order_remark"])
+            pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
+            else
+            pushAlert = pushAlert.replace(" *order_remark", "");
 
             var pushData = {
                 alert: pushAlert,
@@ -80,7 +84,11 @@ async function pushPlannerOrderChanged(params, response) {
             pushAlert = pushAlert.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
             pushAlert = pushAlert.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
             pushAlert = pushAlert.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
-            pushAlert = pushAlert.replace("order_remark", params["order_remark"] ? params["order_remark"] : "");
+
+            if(params["order_remark"])
+            pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
+            else
+            pushAlert = pushAlert.replace(" *order_remark", "");
 
 
             var pushData = {
@@ -118,7 +126,11 @@ async function pushPlannerOrderCancelled(params, response) {
             pushAlert = pushAlert.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
             pushAlert = pushAlert.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
             pushAlert = pushAlert.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
-            pushAlert = pushAlert.replace("order_remark", params["order_remark"] ? params["order_remark"] : "");
+
+            if(params["order_remark"])
+            pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
+            else
+            pushAlert = pushAlert.replace(" *order_remark", "");
 
             var pushData = {
                 alert: pushAlert,
