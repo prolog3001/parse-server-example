@@ -16,6 +16,7 @@ function plannerOrderPushAction(user, order, action) {
   var orderQuery = new Parse.Query("Order");
   orderQuery.equalTo("objectId", order.id);
   orderQuery.include("business");
+  orderQuery.include("table");
   orderQuery.include("business.admin");
   orderQuery.include("business.admin.sub_admins");
 
