@@ -8,6 +8,7 @@ var tables = require('./tables.js');
 var background = require('./background.js');
 var i18n = require('i18n');
 var paymeApi = require('./paymeApi.js');
+var plannerOrders = require('./plannerOrders.js');
 const { getMaxListeners } = require('winston-daily-rotate-file');
 
 Parse.Cloud.define("addCreditsToBusinesses", businesses.addCreditsToBusinesses);
@@ -64,7 +65,7 @@ Parse.Cloud.job("addUserToMailingList", emails.addUserToMailingList);
 Parse.Cloud.job("sendNewsletter", emails.sendNewsletter);
 Parse.Cloud.job("sendNewUserEmail", emails.sendNewUserEmail);
 Parse.Cloud.job("sendNewHostEmail", emails.sendNewHostEmail);
-Parse.Cloud.job("resendEmailVerification", async (request) =>  {
+Parse.Cloud.job("resendEmailVerification", async (request) => {
     // params: passed in the job call
     // headers: from the request that triggered the job
     // log: the ParseServer logger passed in the request
@@ -105,16 +106,16 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
             console.log("New User id: " + user.id);
             console.log("New User name: " + user.get("name"));
             console.log("New User email: " + user.get("email"));
-    
+
             if (user.get("name") && user.get("name").length > 0 &&
                 user.get("email") && user.get("email").length > 0) {
-    
+
                 console.log("New User has email and name");
-    
+
                 //Check if planner or admin and choose correct email template
                 //Add new user to SG contacts
                 var contactType;
-    
+
                 if (user.get("registered_using")) {
                     if (user.get("registered_using").includes("admin")) {
                         contactType = emails.CONTACT_TYPES['Users_Admin'];
@@ -122,7 +123,7 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                     } else if (user.get("registered_using").includes("planner")) {
                         contactType = emails.CONTACT_TYPES['Users_Planner'];
 
-                        if(user.get("is_admin"))
+                        if (user.get("is_admin"))
                             emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Planner'])
                     } else if (user.get("registered_using").includes("waiter")) {
                         emails.sendNewUserEmail(user, emails.WELCOME_TEMPLATE_TYPES['Welcome_Waiter'])
@@ -132,11 +133,11 @@ Parse.Cloud.afterSave(Parse.User, async function (request) {
                         contactType = emails.CONTACT_TYPES['Users_Client'];
                     }
                 }
-    
+
                 console.log("New User contactType", contactType);
                 if (!contactType)
                     return
-    
+
                 if (process.env.DEBUG) {
                     emails.addUserToMailingList(user, contactType)
                 } else if (!user.get("email").toLowerCase().includes("mailinator")) {
@@ -474,4 +475,28 @@ Parse.Cloud.afterSave("Table", async function (request) {
         // It's an existing object
         return;
     }
+})
+
+//Planner Orders NEW/CHANGED
+Parse.Cloud.afterSave("Order", async function (request) {
+    var user = request.user;
+
+    var order = request.object;
+    console.log("Object Type", order.className);
+
+    var action = "new";
+    if(request.object.existed())
+    action = "changed";
+
+    plannerOrders.plannerOrderPushAction(use, order, action)
+})
+
+//Planner Orders CANCELLED
+Parse.Cloud.beforeDelete("Order", async function (request) {
+    var user = request.user;
+
+    var order = request.object;
+    console.log("Object Type", order.className);
+
+    plannerOrders.plannerOrderPushAction(use, order, "cancelled")
 })

@@ -1,6 +1,15 @@
 const i18n = require('i18n');
 
 module.exports = {
+    pushNewPlannerOrder: (request, response) => {
+        return pushNewPlannerOrder(request, response);
+    },
+    pushPlannerOrderChanged: (request, response) => {
+        return pushPlannerOrderChanged(request, response);
+    },
+    pushPlannerOrderCancelled: (request, response) => {
+        return pushPlannerOrderCancelled(request, response);
+    },
     pushLowOrders: (request, response) => {
         return pushLowOrders(request, response);
     },
