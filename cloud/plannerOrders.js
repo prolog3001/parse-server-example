@@ -11,35 +11,38 @@ module.exports = {
   }
 };
 
-function plannerOrderPushQuery(user, order, action) {
+async function plannerOrderPushQuery(user, order, action) {
   console.log("plannerOrderPushQuery");
-  console.log("plannerOrderPushQuery user", user);
-  console.log("plannerOrderPushQuery order", order);
-  console.log("plannerOrderPushQuery action", action);
+  return new Promise(async (resolve, reject) => {
+    console.log("plannerOrderPushQuery user", user);
+    console.log("plannerOrderPushQuery order", order);
+    console.log("plannerOrderPushQuery action", action);
 
-  var orderQuery = new Parse.Query("Order");
-  orderQuery.equalTo("objectId", order.id);
-  orderQuery.include("business");
-  orderQuery.include("table");
-  orderQuery.include("business.admin");
-  orderQuery.include("business.admin.sub_admins");
+    var orderQuery = new Parse.Query("Order");
+    orderQuery.equalTo("objectId", order.id);
+    orderQuery.include("business");
+    orderQuery.include("table");
+    orderQuery.include("business.admin");
+    orderQuery.include("business.admin.sub_admins");
 
-  orderQuery.find({
-    useMasterKey: true,
-    success: async function (orders) {
-      try {
-        console.log("Found orders: " + orders.length);
-        var order = orders[0];
+    orderQuery.find({
+      useMasterKey: true,
+      success: async function (orders) {
+        try {
+          console.log("Found orders: " + orders.length);
+          var order = orders[0];
 
-        plannerOrderPushAction(user, order, action)
-      } catch (error) {
-        console.log("error", error);
-        return error;
+          await plannerOrderPushAction(user, order, action)
+          resolve();
+        } catch (error) {
+          console.log("error", error);
+          reject(error);
+        }
+      }, error: function (error) {
+        console.log("Query Error", error);
+        reject(error);
       }
-    }, error: function (error) {
-      console.log("Query Error", error);
-      return error;
-    }
+    });
   });
 }
 

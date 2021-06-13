@@ -498,6 +498,6 @@ Parse.Cloud.beforeDelete("Order", async function (request, response) {
     var order = request.object;
     console.log("Object Type", order.className);
 
-    await plannerOrders.plannerOrderPushAction(user, order, "cancelled")
+    await plannerOrders.plannerOrderPushQuery(user, order, "cancelled")
     response.success();
 })
