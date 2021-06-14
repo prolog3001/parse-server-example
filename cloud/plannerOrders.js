@@ -1,5 +1,6 @@
 
 var push = require('./push.js');
+var utils = require('./utils.js');
 var moment = require('moment');
 
 module.exports = {
@@ -64,8 +65,11 @@ async function plannerOrderPushAction(user, order, action) {
         if (!user || user.id != order.get("business").get("admin").id)
           params["userTokens"].push(order.get("business").get("admin").get("fcm_token"));
 
-        var subAdmins = order.get("business").get("admin").get("sub_admins");
+        var subAdmins = await utils.getObjectsInRelation(order.get("business")
+        .get("admin").get("sub_admins"));
+
         if (subAdmins && subAdmins.length) {
+          console.log("plannerOrderPushAction subAdmins", subAdmins.length);
           for (var subAdmin of subAdmins) {
             if (subAdmin.get("fcm_token") && (!user || user.id != subAdmin.id))
               params["userTokens"].push(subAdmin.get("fcm_token"));
