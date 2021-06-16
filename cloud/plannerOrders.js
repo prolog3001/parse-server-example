@@ -1,7 +1,8 @@
 
 var push = require('./push.js');
 var utils = require('./utils.js');
-var moment = require('moment');
+var moment = require('moment-timezone');
+
 
 module.exports = {
   plannerOrderPushQuery: function (user, order, action) {
@@ -52,12 +53,27 @@ async function plannerOrderPushAction(user, order, action) {
   return new Promise(async (resolve, reject) => {
     try {
       if (order && order.className == "Order") {
+        var time = moment(order.get("start_time"))
+        console.log("time old", time.format('HH:mm'));
+
+        if (order.get("business").get("location") &&
+          order.get("business").get("location").latitude &&
+          order.get("business").get("location").longitude) {
+          var timezone = geoTz(
+            order.get("business").get("location").latitude,
+            order.get("business").get("location").longitude
+          );
+          console.log("timezone", timezone);
+          time = moment.tz(time, timezone);
+          console.log("time new", time.format('HH:mm'));
+        }
+
         var params = {};
         params["admin_name"] = user ? user.get("name") : "User";
         params["user_name"] = order.get("name");
         params["table_name"] = order.get("table").get("title");
         params["order_date"] = moment(order.get("date")).format('DD/MM/YYYY');
-        params["order_time"] = moment(order.get("start_time")).format('HH:mm');
+        params["order_time"] = time.format('HH:mm');
         params["order_remark"] = order.get("note");
 
         params["userTokens"] = [];
@@ -66,7 +82,7 @@ async function plannerOrderPushAction(user, order, action) {
           params["userTokens"].push(order.get("business").get("admin").get("fcm_token"));
 
         var subAdmins = await utils.getObjectsInRelation(order.get("business")
-        .get("admin").get("sub_admins"));
+          .get("admin").get("sub_admins"));
 
         if (subAdmins && subAdmins.length) {
           console.log("plannerOrderPushAction subAdmins", subAdmins.length);
