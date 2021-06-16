@@ -304,7 +304,7 @@ async function sendPushNoAdapter(users, messageData, response) {
                 isAlwaysUseFCM: false // true all messages will be sent through node-gcm (which actually uses FCM)
             };
 
-            const push = new PushNotifications(settings);
+            const pushnotifications = new PushNotifications(settings);
 
             var regTokens = [];
             for (var i = 0; i < users.length; i++) {
@@ -321,7 +321,7 @@ async function sendPushNoAdapter(users, messageData, response) {
             }
 
             console.log("Push data", data);
-            push.send(regTokens, data, (error, result) => {
+            pushnotifications.send(regTokens, data, (error, result) => {
                 if (error) {
                     console.log(JSON.stringify(error));
                 } else {

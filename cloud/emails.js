@@ -1,4 +1,3 @@
-var push = require('./push.js');
 var i18n = require('i18n');
 var utils = require('./utils.js');
 const axios = require('axios');
