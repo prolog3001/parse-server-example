@@ -506,7 +506,9 @@ Parse.Cloud.beforeDelete("Order", async function (request, response) {
 Parse.Cloud.beforeDelete("Table", async function (request, response) {
     var table = request.object;
     console.log("Object Type", table.className);
-    if(table.id == 'GVSClvitmG'){
+    if(table.id == (process.env.TATABLE ? process.env.TATABLE : 'GVSClvitmG')){
         response.error("cant delete TA table")
+    } else{
+        response.success("deleted TA table")
     }
 })
