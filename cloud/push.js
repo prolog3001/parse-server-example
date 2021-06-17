@@ -1,6 +1,16 @@
 const i18n = require('i18n');
+var moment = require('moment');
 
 module.exports = {
+    pushNewPlannerOrder: (request, response) => {
+        return pushNewPlannerOrder(request, response);
+    },
+    pushPlannerOrderChanged: (request, response) => {
+        return pushPlannerOrderChanged(request, response);
+    },
+    pushPlannerOrderCancelled: (request, response) => {
+        return pushPlannerOrderCancelled(request, response);
+    },
     pushLowOrders: (request, response) => {
         return pushLowOrders(request, response);
     },
@@ -15,6 +25,130 @@ module.exports = {
     },
     getPushType
 };
+
+//Planner new order
+async function pushNewPlannerOrder(params, response) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('pushNewPlannerOrder');
+            console.log("params", params);
+
+            var users = params.userTokens;
+
+            var pushTitle = i18n.__({ phrase: "PLANNER_NEW_ORDER_TITLE", locale: "en" });
+            pushTitle = pushTitle.replace("admin_name", params["admin_name"]);
+
+            var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+            pushAlert = pushAlert.replace("user_name", params["user_name"] ? params["user_name"] : "Client");
+            pushAlert = pushAlert.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
+            pushAlert = pushAlert.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
+            pushAlert = pushAlert.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
+
+            if(params["order_remark"])
+            pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
+            else
+            pushAlert = pushAlert.replace("*order_remark", "");
+
+            var pushData = {
+                alert: pushAlert,
+                session_alert: pushAlert,
+                push_title: pushTitle,
+                push_type: getPushType("PLANNER_NEW_ORDER"),
+                push_business_id: params.business_id,
+                push_object_id: params.business_id,
+                push_badge: "Increment"
+            };
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
+        } catch (error) {
+            console.log('error', error);
+            reject(error);
+        }
+    });
+}
+
+//Planner changed order
+async function pushPlannerOrderChanged(params, response) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('pushPlannerOrderChanged');
+            console.log("params", params);
+
+            var users = params.userTokens;
+
+            var pushTitle = i18n.__({ phrase: "PLANNER_CHANGED_ORDER_TITLE", locale: "en" });
+            pushTitle = pushTitle.replace("admin_name", params["admin_name"]);
+
+            var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+            pushAlert = pushAlert.replace("user_name", params["user_name"] ? params["user_name"] : "Client");
+            pushAlert = pushAlert.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
+            pushAlert = pushAlert.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
+            pushAlert = pushAlert.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
+
+            if(params["order_remark"])
+            pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
+            else
+            pushAlert = pushAlert.replace("*order_remark", "");
+
+
+            var pushData = {
+                alert: pushAlert,
+                session_alert: pushAlert,
+                push_title: pushTitle,
+                push_type: getPushType("PLANNER_CHANGED_ORDER"),
+                push_business_id: params.business_id,
+                push_object_id: params.business_id,
+                push_badge: "Increment"
+            };
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
+        } catch (error) {
+            console.log('error', error);
+            reject(error);
+        }
+    });
+}
+
+//Planner deleted order
+async function pushPlannerOrderCancelled(params, response) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log('pushPlannerOrderCancelled');
+            console.log("params", params);
+
+            var users = params.userTokens;
+
+            var pushTitle = i18n.__({ phrase: "PLANNER_CANCELLED_ORDER_TITLE", locale: "en" });
+            pushTitle = pushTitle.replace("admin_name", params["admin_name"]);
+
+            var pushAlert = i18n.__({ phrase: "PLANNER_PUSH_ORDER", locale: "en" });
+            pushAlert = pushAlert.replace("user_name", params["user_name"] ? params["user_name"] : "Client");
+            pushAlert = pushAlert.replace("table_name", params["table_name"] ? params["table_name"] : "Table");
+            pushAlert = pushAlert.replace("order_date", params["order_date"] ? params["order_date"] : "01/01/2001");
+            pushAlert = pushAlert.replace("order_time", params["order_time"] ? params["order_time"] : "23:24");
+
+            if(params["order_remark"])
+            pushAlert = pushAlert.replace("order_remark", params["order_remark"]);
+            else
+            pushAlert = pushAlert.replace("*order_remark", "");
+
+            var pushData = {
+                alert: pushAlert,
+                session_alert: pushAlert,
+                push_title: pushTitle,
+                push_type: getPushType("PLANNER_CANCELLED_ORDER"),
+                push_business_id: params.business_id,
+                push_object_id: params.business_id,
+                push_badge: "Increment"
+            };
+            sendPushNoAdapter(users, pushData, response);
+            resolve();
+        } catch (error) {
+            console.log('error', error);
+            reject(error);
+        }
+    });
+}
 
 //Business low orders push
 async function pushLowOrders(params, response) {
@@ -33,7 +167,7 @@ async function pushLowOrders(params, response) {
                 alert: pushAlert,
                 session_alert: pushAlert,
                 push_title: pushTitle,
-                push_type: 0,
+                push_type: getPushType("LOW_ORDERS"),
                 push_business_id: params.business_id,
                 push_object_id: params.business_id,
                 push_badge: "Increment"
@@ -71,7 +205,7 @@ async function pushReadyOrders(params, response) {
                 session_alert: pushAlert,
                 push_title: pushTitle,
                 push_business_id: params.business_id,
-                push_type: 1,
+                push_type: getPushType("READY_ORDERS"),
                 push_object_id: params.order_id,
                 push_badge: "Increment"
             };
@@ -104,7 +238,7 @@ async function pushLowItems(params, response) {
                 session_alert: pushAlert,
                 push_title: pushTitle,
                 push_business_id: params.business_id,
-                push_type: 2,
+                push_type: getPushType("LOW_ITEMS"),
                 push_object_id: params.item_id,
                 push_badge: "Increment"
             };
@@ -137,7 +271,7 @@ async function pushLowRating(params, response) {
                 session_alert: pushAlert,
                 push_title: pushTitle,
                 push_business_id: params.business_id,
-                push_type: 3,
+                push_type: getPushType("LOW_RATING"),
                 push_object_id: params.order_id,
                 push_badge: "Increment"
             };
@@ -170,7 +304,7 @@ async function sendPushNoAdapter(users, messageData, response) {
                 isAlwaysUseFCM: false // true all messages will be sent through node-gcm (which actually uses FCM)
             };
 
-            const push = new PushNotifications(settings);
+            const pushnotifications = new PushNotifications(settings);
 
             var regTokens = [];
             for (var i = 0; i < users.length; i++) {
@@ -187,7 +321,7 @@ async function sendPushNoAdapter(users, messageData, response) {
             }
 
             console.log("Push data", data);
-            push.send(regTokens, data, (error, result) => {
+            pushnotifications.send(regTokens, data, (error, result) => {
                 if (error) {
                     console.log(JSON.stringify(error));
                 } else {
@@ -210,7 +344,10 @@ function getPushType(name) {
         "LOW_ORDERS": 0,
         "READY_ORDERS": 1,
         "LOW_ITEMS": 2,
-        "LOW_RATING": 3
+        "LOW_RATING": 3,
+        "PLANNER_NEW_ORDER": 4,
+        "PLANNER_CHANGED_ORDER": 5,
+        "PLANNER_CANCELLED_ORDER": 6
     }
 
     return pushType[name];

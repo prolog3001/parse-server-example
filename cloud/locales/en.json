@@ -9,5 +9,9 @@
     "LOW_RATING": "Client gave you star_number - Star for your service :(",
     "SERVE": "You in a few secs",
     "TA": "Take Away",
-    "DELIVERY": "Delivery"
+    "DELIVERY": "Delivery",
+    "PLANNER_NEW_ORDER_TITLE": "admin_name created a new Reservation:",
+    "PLANNER_PUSH_ORDER": "Client: user_name, Table: table_name at order_date, order_time *order_remark",
+    "PLANNER_CHANGED_ORDER_TITLE": "admin_name updated a Reservation:",
+    "PLANNER_CANCELLED_ORDER_TITLE": "admin_name deleted a Reservation:"
   }
