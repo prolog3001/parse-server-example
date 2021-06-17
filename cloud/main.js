@@ -501,3 +501,12 @@ Parse.Cloud.beforeDelete("Order", async function (request, response) {
     await plannerOrders.plannerOrderPushQuery(user, order, "cancelled")
     response.success();
 })
+
+//Prevent TA table from being deleted
+Parse.Cloud.beforeDelete("Table", async function (request, response) {
+    var table = request.object;
+    console.log("Object Type", order.className);
+    if(table.id == 'GVSClvitmG'){
+        response.error("cant delete TA table")
+    }
+})
